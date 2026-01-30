@@ -1,0 +1,63 @@
+﻿@using RestaurantAlloraProjectWeb.Models.Dish
+@model IEnumerable<DishViewModel>
+<h2 class="text-center mb-4">🍽️ Menu</h2>
+@if (User.IsInRole("Admin"))
+{
+    <a asp-controller="Dish"  asp-action="Create" class="btn btn-warning mb-3">  Add Dish</a>
+}
+<table class="table table-borderless">
+    <tbody>
+        @foreach (var dish in Model)
+        {
+            <tr>
+                <td>
+                    <div class="card mb-3 shadow-sm">
+                        <div class="row g-0">
+                            <div class="col-md-9">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        @dish.NameOfTheDish
+                                        <span class="badge bg-secondary"> @dish.CategoryOfTheDish</span>
+                                    </h5>
+                                    <p class="card-text text-muted">@dish.DescriptionOfTheDish</p>
+                                    <p class="card-text fw-bold mb-1">💰 @dish.PriceOfTheDish.ToString("0.00") лв.</p>
+                                    @if (dish.AllergenNames != null && dish.AllergenNames.Any())
+                                    {
+                                        <p class="card-text small text-danger mb-0">Allergens: @string.Join(", ", dish.AllergenNames)</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="card-text small text-muted mb-0">Allergens: None</p>
+                                    }
+                                </div>
+                            </div>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <div class="col-md-3 d-flex align-items-center justify-content-end pe-3">
+                                    <div class="btn-group-vertical gap-2">
+                                        <a asp-controller="Dish"
+                                           asp-action="Edit"
+                                           asp-route-id="@dish.DishId"
+                                           class="btn btn-sm btn-outline-warning">
+                                            Edit
+                                        </a>
+                                        <form asp-controller="Dish"
+                                              asp-action="Delete"
+                                              asp-route-id="@dish.DishId"
+                                              method="post">
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    onclick="return confirm('Delete this dish?');">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
