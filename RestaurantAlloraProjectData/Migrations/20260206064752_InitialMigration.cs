@@ -72,7 +72,8 @@ namespace RestaurantAlloraProjectData.Migrations
                     NameOfTheDish = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     DescriptionOfTheDish = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     PriceOfTheDish = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CategoryOfTheDish = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    CategoryOfTheDish = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {

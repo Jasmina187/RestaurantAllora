@@ -12,7 +12,7 @@ using RestaurantAlloraProjectData;
 namespace RestaurantAlloraProjectData.Migrations
 {
     [DbContext(typeof(RestaurantAlloraProjectContext))]
-    [Migration("20260130092411_InitialMigration")]
+    [Migration("20260206064752_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -260,6 +260,10 @@ namespace RestaurantAlloraProjectData.Migrations
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NameOfTheDish")
                         .IsRequired()

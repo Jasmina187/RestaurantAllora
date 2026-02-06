@@ -28,7 +28,7 @@ namespace RestaurantAlloraProjectWeb.Controllers
                     DescriptionOfTheDish = d.DescriptionOfTheDish,
                     PriceOfTheDish = d.PriceOfTheDish,
                     CategoryOfTheDish = d.CategoryOfTheDish,
-
+                    ImageUrl = d.ImageUrl,
                     AllergenNames = d.DishAllergens
                         .Select(x => x.Allergen.AllergenName)
                         .ToList()
@@ -71,6 +71,7 @@ namespace RestaurantAlloraProjectWeb.Controllers
                 DescriptionOfTheDish = model.DescriptionOfTheDish,
                 PriceOfTheDish = model.PriceOfTheDish,
                 CategoryOfTheDish = model.CategoryOfTheDish,
+                ImageUrl = model.ImageUrl,
                 DishAllergens = new List<DishAllergen>(),
             };
 
@@ -109,7 +110,7 @@ namespace RestaurantAlloraProjectWeb.Controllers
                 DescriptionOfTheDish = dish.DescriptionOfTheDish,
                 PriceOfTheDish = dish.PriceOfTheDish,
                 CategoryOfTheDish = dish.CategoryOfTheDish,
-
+                ImageUrl = dish.ImageUrl,
                 SelectedAllergens = dish.DishAllergens.Select(x => x.AllergenId).ToList(),
                 Allergens = new MultiSelectList(allergens, "AllergenId", "AllergenName",
                                                dish.DishAllergens.Select(x => x.AllergenId))
@@ -139,6 +140,7 @@ namespace RestaurantAlloraProjectWeb.Controllers
             dish.DescriptionOfTheDish = model.DescriptionOfTheDish;
             dish.PriceOfTheDish = model.PriceOfTheDish;
             dish.CategoryOfTheDish = model.CategoryOfTheDish;
+            dish.ImageUrl = model.ImageUrl;
             dish.DishAllergens.Clear();
             foreach (var allergenId in model.SelectedAllergens)
             {

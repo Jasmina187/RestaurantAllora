@@ -19,6 +19,7 @@ namespace RestaurantAlloraProjectWeb.Models.Dish
 
         [Required, MaxLength(100)]
         public string CategoryOfTheDish { get; set; } = null!;
+        public string ImageUrl { get; set; } = null!;
         public List<string> AllergenNames { get; set; } = new();
         public List<Guid> SelectedAllergens { get; set; } = new();
         public MultiSelectList? Allergens { get; set; }

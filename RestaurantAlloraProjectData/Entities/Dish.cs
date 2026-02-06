@@ -22,7 +22,8 @@ namespace RestaurantAlloraProjectData.Entities
 
         [Required, MaxLength(100)]
         public string CategoryOfTheDish { get; set; } = null!;
-
+        [Required]
+        public string ImageUrl { get; set; }
         public ICollection<DishAllergen> DishAllergens { get; set; } = new List<DishAllergen>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
         public ICollection<CustomerOrderItem> OrderItems { get; set; } = new List<CustomerOrderItem>();

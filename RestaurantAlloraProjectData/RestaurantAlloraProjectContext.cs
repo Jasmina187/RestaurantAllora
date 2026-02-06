@@ -25,6 +25,12 @@ namespace RestaurantAlloraProjectData
         public DbSet<CustomerOrderItem> CustomerOrderItems { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<Review> Reviews { get; set; }
+
+        public async Task FindAsync(Guid tableId)
+        {
+            throw new NotImplementedException();
+        }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
