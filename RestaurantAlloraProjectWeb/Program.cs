@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RestaurantAlloraProjectData;
 using RestaurantAlloraProjectData.Entities;
+using RestaurantAlloraProject.Core.Services;
+using RestaurantAlloraProject.Core.Contracts;
+
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<RestaurantAlloraProjectContext>(options =>
@@ -24,7 +27,10 @@ builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
 // Jasmina1* - password
 
 // Add services to the container.
+
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IDishService, DishService>();
+
 
 var app = builder.Build();
 

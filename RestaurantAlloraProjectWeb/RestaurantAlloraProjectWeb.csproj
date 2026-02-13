@@ -18,6 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\RestaurantAlloraProject.Core\RestaurantAlloraProject.Core.csproj" />
+    <ProjectReference Include="..\RestaurantAlloraProject.ViewModels\RestaurantAlloraProjectViewModels.csproj" />
     <ProjectReference Include="..\RestaurantAlloraProjectData\RestaurantAlloraProjectData.csproj" />
   </ItemGroup>
 

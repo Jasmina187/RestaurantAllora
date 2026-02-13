@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using RestaurantAlloraProjectData.Entities;
-using RestaurantAlloraProjectWeb.ViewModels;
+using RestaurantAlloraProject.ViewModels.User;
 
 namespace RestaurantAlloraProjectWeb.Controllers
 {
