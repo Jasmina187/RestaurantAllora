@@ -11,4 +11,13 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.3.9" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RestaurantAlloraProjectData\RestaurantAlloraProjectData.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Reservation\" />
+    <Folder Include="Table\" />
+  </ItemGroup>
+
 </Project>

@@ -72,10 +72,12 @@ namespace RestaurantAlloraProjectWeb.Controllers
             if (!ModelState.IsValid)
             {
                 var fixedVm = await dishService.GetEditAsync(id);
-                if (fixedVm != null) model.Allergens = fixedVm.Allergens;
+                if (fixedVm != null)
+                {
+                    model.Allergens = fixedVm.Allergens;
+                }
                 return View(model);
             }
-
             await dishService.UpdateAsync(id, model);
             return RedirectToAction(nameof(Index));
         }
