@@ -15,9 +15,4 @@
     <ProjectReference Include="..\RestaurantAlloraProjectData\RestaurantAlloraProjectData.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Reservation\" />
-    <Folder Include="Table\" />
-  </ItemGroup>
-
 </Project>

@@ -221,8 +221,7 @@ namespace RestaurantAlloraProjectData.Migrations
                 name: "EmployeeProfile",
                 columns: table => new
                 {
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Position = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {

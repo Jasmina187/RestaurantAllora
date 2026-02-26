@@ -33,9 +33,24 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Dish" asp-action="Index">Меню</a>
                             </li>
                         }    *@       
-                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Dish" asp-action="Index">Меню</a>
+                       <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Dish" asp-action="Index">
+                                Меню
+                            </a>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Table" asp-action="Index">
+                                Маси
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Reservation" asp-action="Index">
+                                Резервации
+                            </a>
+                        </li>
+
+                       
                     </ul>
                 </div>
                 <partial name="_LoginPartial" />

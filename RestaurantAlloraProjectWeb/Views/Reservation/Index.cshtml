@@ -1,0 +1,40 @@
+﻿@using RestaurantAlloraProjectViewModels.Reservation
+@model List<ReservationIndexViewModel>
+
+<div class="d-flex justify-content-between align-items-center">
+    <h2>Моите резервации</h2>
+    <a asp-action="Create" class="btn btn-success">+ Нова резервация</a>
+</div>
+
+@if (!Model.Any())
+{
+    <p class="mt-3">Нямаш резервации.</p>
+}
+else
+{
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Маса</th>
+                <th>Капацитет</th>
+                <th>Гости</th>
+                <th>Статус</th>
+                <th>Служител</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model)
+            {
+                <tr>
+                    <td>@r.ReservationDate.ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>@r.TableNumber</td>
+                    <td>@r.CapacityOfTheTable</td>
+                    <td>@r.NumberOfGuests</td>
+                    <td>@r.Status</td>
+                    <td>@(string.IsNullOrWhiteSpace(r.EmployeeName) ? "-" : r.EmployeeName)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -13,8 +13,8 @@ namespace RestaurantAlloraProjectData.Entities
         public Guid UserId { get; set; }
         public User User { get; set; } = null!;
 
-        [Required, MaxLength(100)]
-        public string Position { get; set; } = null!;
+        //[Required, MaxLength(100)]
+        ////public string Position { get; set; } = null!;
         public ICollection<CustomerOrderItem> HandledOrders { get; set; } = new List<CustomerOrderItem>();
         public ICollection<Reservation> HandledReservations { get; set; } = new List<Reservation>();
     }

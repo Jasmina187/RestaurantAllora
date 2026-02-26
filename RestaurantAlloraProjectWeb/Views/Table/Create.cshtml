@@ -1,0 +1,28 @@
+﻿@using RestaurantAlloraProjectViewModels.Table
+@model TableViewModel
+
+<h2>Нова маса</h2>
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="TableNumber" class="form-label">Номер</label>
+        <input asp-for="TableNumber" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CapacityOfTheTable" class="form-label">Капацитет</label>
+        <input asp-for="CapacityOfTheTable" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="StatusOfTheTable" class="form-label">Статус</label>
+        <input asp-for="StatusOfTheTable" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</form>
+

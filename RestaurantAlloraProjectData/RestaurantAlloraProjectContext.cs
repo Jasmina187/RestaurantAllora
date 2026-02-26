@@ -26,6 +26,7 @@ namespace RestaurantAlloraProjectData
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<Review> Reviews { get; set; }
 
+
         public async Task FindAsync(Guid tableId)
         {
             throw new NotImplementedException();

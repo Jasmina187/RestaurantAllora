@@ -295,11 +295,6 @@ namespace RestaurantAlloraProjectData.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Position")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.HasKey("UserId");
 
                     b.ToTable("EmployeeProfile");

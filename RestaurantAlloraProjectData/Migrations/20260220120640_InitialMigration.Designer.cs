@@ -12,7 +12,7 @@ using RestaurantAlloraProjectData;
 namespace RestaurantAlloraProjectData.Migrations
 {
     [DbContext(typeof(RestaurantAlloraProjectContext))]
-    [Migration("20260206064752_InitialMigration")]
+    [Migration("20260220120640_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -297,11 +297,6 @@ namespace RestaurantAlloraProjectData.Migrations
                 {
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Position")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("UserId");
 
