@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace RestaurantAlloraProjectData.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class ImitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -381,6 +383,27 @@ namespace RestaurantAlloraProjectData.Migrations
                         principalTable: "Tables",
                         principalColumn: "TableId",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Allergens",
+                columns: new[] { "AllergenId", "AllergenName" },
+                values: new object[,]
+                {
+                    { new Guid("a1f1c2d3-1111-4b11-8111-111111111111"), "Зърнени култури, съдържащи глутен" },
+                    { new Guid("a4a4b5c6-dddd-47dd-8ddd-dddddddddddd"), "Серен диоксид и сулфиди" },
+                    { new Guid("a7a7c8d9-7777-4177-8777-777777777777"), "Мляко и млечни продукти" },
+                    { new Guid("b2f2c3d4-2222-4c22-8222-222222222222"), "Ракообразни и продукти от тях" },
+                    { new Guid("b5b5c6d7-eeee-48ee-8eee-eeeeeeeeeeee"), "Мекотели и продукти от тях" },
+                    { new Guid("b8b8c9e1-8888-4288-8888-888888888888"), "Ядки – бадеми, орехи, лешници, кашу и др." },
+                    { new Guid("c3f3c4d5-3333-4d33-8333-333333333333"), "Яйца и продукти от тях" },
+                    { new Guid("c9c9d1e2-9999-4399-8999-999999999999"), "Целина и продукти от нея" },
+                    { new Guid("d1d1e2f3-aaaa-44aa-8aaa-aaaaaaaaaaaa"), "Синап и продукти от него" },
+                    { new Guid("d4f4c5d6-4444-4e44-8444-444444444444"), "Риба и рибни продукти" },
+                    { new Guid("e2e2f3a4-bbbb-45bb-8bbb-bbbbbbbbbbbb"), "Сусамово семе и продукти от него" },
+                    { new Guid("e5f5c6d7-5555-4f55-8555-555555555555"), "Фъстъци и продукти от тях" },
+                    { new Guid("f3f3a4b5-cccc-46cc-8ccc-cccccccccccc"), "Лупина и продукти от нея" },
+                    { new Guid("f6f6c7d8-6666-4066-8666-666666666666"), "Соя и соеви продукти" }
                 });
 
             migrationBuilder.CreateIndex(

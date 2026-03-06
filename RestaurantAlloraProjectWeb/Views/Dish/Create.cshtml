@@ -30,8 +30,8 @@
         <label asp-for="ImageUrl" class="form-label">ImageURL</label>
         <input asp-for="ImageUrl" class="form-control" />
     </div>
-    <div class="form-group text-center mb-3">
-        <label asp-for="SelectedAllergens" class="form-label">Select allergens</label>
+    <div class="mb-3">
+         <label asp-for="SelectedAllergens" class="form-label">Allergens</label> 
         <select asp-for="SelectedAllergens"
                 asp-items="Model.Allergens"
                 id="allergensSelect"

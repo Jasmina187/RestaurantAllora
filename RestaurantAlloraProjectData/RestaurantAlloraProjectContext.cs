@@ -35,7 +35,7 @@ namespace RestaurantAlloraProjectData
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
+            builder.ApplyConfigurationsFromAssembly(typeof(RestaurantAlloraProjectContext).Assembly);
 
             builder.Entity<CustomerProfile>()
                 .HasOne(cp => cp.User)
