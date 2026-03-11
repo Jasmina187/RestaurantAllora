@@ -6,25 +6,21 @@
     <div class="mb-3">
         <label asp-for="NameOfTheDish" class="form-label">Name</label>
         <input asp-for="NameOfTheDish" class="form-control" />
-        <span asp-validation-for="NameOfTheDish" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="DescriptionOfTheDish" class="form-label">Description</label>
         <textarea asp-for="DescriptionOfTheDish" class="form-control"></textarea>
-        <span asp-validation-for="DescriptionOfTheDish" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="PriceOfTheDish" class="form-label">Price</label>
         <input asp-for="PriceOfTheDish" class="form-control" />
-        <span asp-validation-for="PriceOfTheDish" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="CategoryOfTheDish" class="form-label">Category</label>
         <select asp-for="CategoryOfTheDish" asp-items="ViewBag.Categories" class="form-select"></select>
-        <span asp-validation-for="CategoryOfTheDish" class="text-danger"></span>
     </div>
     <div class="mb-3">
         <label asp-for="ImageUrl" class="form-label">ImageUrl</label>
@@ -43,7 +39,7 @@
     <a asp-controller="Dish" asp-action="Index" class="btn btn-secondary">Back</a>
 </form>
 
-@section Scripts {
+@* @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
     <script>
@@ -60,7 +56,7 @@
             });
         });
     </script>
-}
+} *@
 
 <style>
     .choices__item {

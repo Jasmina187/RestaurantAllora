@@ -4,31 +4,31 @@
 <form asp-action="Create" method="post" asp-controller="Dish">
 
     <div class="mb-3">
-        <label asp-for="NameOfTheDish" class="form-label">Name</label>
-        <input asp-for="NameOfTheDish" class="form-control" />
+        <label asp-for="@Model.NameOfTheDish" class="form-label">Name</label>
+        <input asp-for="@Model.NameOfTheDish" class="form-control" />
         <span asp-validation-for="NameOfTheDish" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="DescriptionOfTheDish" class="form-label">Description</label>
-        <textarea asp-for="DescriptionOfTheDish" class="form-control"></textarea>
+        <label asp-for="@Model.DescriptionOfTheDish" class="form-label">Description</label>
+        <textarea asp-for="@Model.DescriptionOfTheDish" class="form-control"></textarea>
         <span asp-validation-for="DescriptionOfTheDish" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="PriceOfTheDish" class="form-label">Price</label>
-        <input asp-for="PriceOfTheDish" class="form-control" />
+        <label asp-for="@Model.PriceOfTheDish" class="form-label">Price</label>
+        <input asp-for="@Model.PriceOfTheDish" class="form-control" />
         <span asp-validation-for="PriceOfTheDish" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="CategoryOfTheDish" class="form-label">Category</label>
-        <select asp-for="CategoryOfTheDish" asp-items="ViewBag.Categories" class="form-select"></select>
-        <span asp-validation-for="CategoryOfTheDish" class="text-danger"></span>
+        <label asp-for="@Model.CategoryOfTheDish" class="form-label">Category</label>
+        <select asp-for="@Model.CategoryOfTheDish" asp-items="ViewBag.Categories" class="form-select"></select>
     </div>
     <div class="mb-3">
-        <label asp-for="ImageUrl" class="form-label">ImageURL</label>
-        <input asp-for="ImageUrl" class="form-control" />
+        <label asp-for="@Model.ImageUrl" class="form-label">ImageURL</label>
+        <input asp-for="@Model.ImageUrl" class="form-control" />
+        <span asp-validation-for="ImageUrl" class="text-danger"></span>
     </div>
     <div class="mb-3">
          <label asp-for="SelectedAllergens" class="form-label">Allergens</label> 
@@ -62,7 +62,6 @@
         });
     </script>
 }
-
 <style>
     .choices__item {
         background-color: #0d6efd;

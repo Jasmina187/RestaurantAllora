@@ -1,27 +1,23 @@
 ﻿@using RestaurantAlloraProjectViewModels.Reservation
 @model ReservationCreateViewModel
 <h2>Нова резервация</h2>
-
 <form asp-action="Create" method="post">
-    @Html.AntiForgeryToken()
-    <div asp-validation-summary="All" class="text-danger"></div>
-
     <div class="mb-3">
-        <label asp-for="ReservationDate" class="form-label">Дата и час</label>
+        <label asp-for="@Model.ReservationDate" class="form-label">Дата и час</label>
         <input asp-for="ReservationDate" class="form-control" type="datetime-local"
                value="@Model.ReservationDate.ToString("yyyy-MM-ddTHH:mm")" />
         <span asp-validation-for="ReservationDate" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="NumberOfGuests" class="form-label">Брой гости</label>
-        <input asp-for="NumberOfGuests" class="form-control" />
+        <label asp-for="@Model.NumberOfGuests" class="form-label">Брой гости</label>
+        <input asp-for="@Model.NumberOfGuests" class="form-control" />
         <span asp-validation-for="NumberOfGuests" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="TableId" class="form-label">Маса</label>
-        <select asp-for="TableId" asp-items="Model.Tables" class="form-select">
+        <label asp-for="@Model.TableId" class="form-label">Маса</label>
+        <select asp-for="@Model.TableId" asp-items="Model.Tables" class="form-select">
             <option value="">-- избери маса --</option>
         </select>
         <span asp-validation-for="TableId" class="text-danger"></span>
@@ -30,4 +26,7 @@
     <button type="submit" class="btn btn-primary">Запази</button>
     <a asp-action="Index" class="btn btn-secondary">Назад</a>
 </form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
 
