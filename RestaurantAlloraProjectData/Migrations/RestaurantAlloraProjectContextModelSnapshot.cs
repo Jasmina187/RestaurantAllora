@@ -188,56 +188,6 @@ namespace RestaurantAlloraProjectData.Migrations
                         {
                             AllergenId = new Guid("c8f84b5a-4cd4-405b-adb4-2eeb69942cfc"),
                             AllergenName = "Риба и рибни продукти"
-                        },
-                        new
-                        {
-                            AllergenId = new Guid("d72de7c5-8e83-4d4c-a8e2-c5cdcf8da39e"),
-                            AllergenName = "Фъстъци и продукти от тях"
-                        },
-                        new
-                        {
-                            AllergenId = new Guid("4cab969c-d612-4a00-9d29-3aedc8d90f3b"),
-                            AllergenName = "Соя и соеви продукти"
-                        },
-                        new
-                        {
-                            AllergenId = new Guid("be7c8688-70de-4742-a524-d3d8e99616d8"),
-                            AllergenName = "Мляко и млечни продукти"
-                        },
-                        new
-                        {
-                            AllergenId = new Guid("32aabc2d-ef09-4d9f-b85f-973062edf531"),
-                            AllergenName = "Ядки – бадеми, орехи, лешници, кашу и др."
-                        },
-                        new
-                        {
-                            AllergenId = new Guid("859bc440-5fd3-4a13-b827-48a2540ffc6c"),
-                            AllergenName = "Целина и продукти от нея"
-                        },
-                        new
-                        {
-                            AllergenId = new Guid("2138d67d-b112-4d75-8340-4130c6d49f6f"),
-                            AllergenName = "Синап и продукти от него"
-                        },
-                        new
-                        {
-                            AllergenId = new Guid("4eed56a2-0d6e-4c82-811f-d84066553249"),
-                            AllergenName = "Сусамово семе и продукти от него"
-                        },
-                        new
-                        {
-                            AllergenId = new Guid("8459d499-ec62-49a3-b93c-fdd2a75c940b"),
-                            AllergenName = "Лупина и продукти от нея"
-                        },
-                        new
-                        {
-                            AllergenId = new Guid("063e346a-e671-4710-835b-8f6132ee7744"),
-                            AllergenName = "Серен диоксид и сулфиди"
-                        },
-                        new
-                        {
-                            AllergenId = new Guid("945ea094-2772-4113-80f9-4b9c8fc5188d"),
-                            AllergenName = "Мекотели и продукти от тях"
                         });
                 });
 
@@ -345,6 +295,44 @@ namespace RestaurantAlloraProjectData.Migrations
                     b.HasKey("DishId");
 
                     b.ToTable("Dishes");
+
+                    b.HasData(
+                        new
+                        {
+                            DishId = new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec"),
+                            CategoryOfTheDish = "Салати",
+                            DescriptionOfTheDish = "Мариновани скариди, авокадо, шарена киноа, микс салати със спанак, червен лук, чери домати, японски дресинг с мисо паста и див лук.",
+                            ImageUrl = "/img/geisha.png",
+                            NameOfTheDish = "САЛАТА ГЕЙША",
+                            PriceOfTheDish = 17.30m
+                        },
+                        new
+                        {
+                            DishId = new Guid("5b48ad92-c4f7-4b93-a015-789f26f40d58"),
+                            CategoryOfTheDish = "Салати",
+                            DescriptionOfTheDish = "Козе сирене, микс салати, свежи соеви кълнове, чери домати, ябълка, карамелизирани орехи, стафиди, сушени боровинки и нар.",
+                            ImageUrl = "/img/instanbul.png",
+                            NameOfTheDish = "ИСТАНБУЛ",
+                            PriceOfTheDish = 8.69m
+                        },
+                        new
+                        {
+                            DishId = new Guid("44ce4f8a-6e15-4947-bd6b-e20bdb14d842"),
+                            CategoryOfTheDish = "Салати",
+                            DescriptionOfTheDish = "Салата Романа, микс салати, чери домати, краставици, репички, пресен червен пипер, лук, магданоз, босилек, свеж зеленчуков дресинг, хрупкав хляб, нар и дресинг нар.",
+                            ImageUrl = "/img/fatush.png",
+                            NameOfTheDish = "ФАТУШ",
+                            PriceOfTheDish = 7.49m
+                        },
+                        new
+                        {
+                            DishId = new Guid("05267740-181b-43e4-96dd-e5b9c250ac75"),
+                            CategoryOfTheDish = "Салати",
+                            DescriptionOfTheDish = "Черна леща Белуга, шарена киноа, нахут, краставици, чери домати, печен маринован пипер, маслини, магданоз, червен лук, дресинг Винегрет, мисо-лайм хумус и сумак.",
+                            ImageUrl = "/img/fatush.png",
+                            NameOfTheDish = "САЛАТА ЕНЕРДЖИ",
+                            PriceOfTheDish = 7.49m
+                        });
                 });
 
             modelBuilder.Entity("RestaurantAlloraProjectData.Entities.DishAllergen", b =>
@@ -360,6 +348,28 @@ namespace RestaurantAlloraProjectData.Migrations
                     b.HasIndex("AllergenId");
 
                     b.ToTable("DishAllergens");
+
+                    b.HasData(
+                        new
+                        {
+                            DishId = new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec"),
+                            AllergenId = new Guid("dc08b4ec-5095-4811-a672-192301357e16")
+                        },
+                        new
+                        {
+                            DishId = new Guid("5b48ad92-c4f7-4b93-a015-789f26f40d58"),
+                            AllergenId = new Guid("42ccb79f-216b-4aab-9655-944d4f7b9823")
+                        },
+                        new
+                        {
+                            DishId = new Guid("44ce4f8a-6e15-4947-bd6b-e20bdb14d842"),
+                            AllergenId = new Guid("c4399ef7-4776-4b45-92fb-35ae3dd3f977")
+                        },
+                        new
+                        {
+                            DishId = new Guid("05267740-181b-43e4-96dd-e5b9c250ac75"),
+                            AllergenId = new Guid("c8f84b5a-4cd4-405b-adb4-2eeb69942cfc")
+                        });
                 });
 
             modelBuilder.Entity("RestaurantAlloraProjectData.Entities.EmployeeProfile", b =>

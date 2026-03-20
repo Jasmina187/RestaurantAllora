@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using RestaurantAlloraProjectData.Configurations;
 using RestaurantAlloraProjectData.Entities;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,10 @@ namespace RestaurantAlloraProjectData
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.ApplyConfigurationsFromAssembly(typeof(RestaurantAlloraProjectContext).Assembly);
+            builder.ApplyConfiguration(new AllergenConfiguration());
+            builder.ApplyConfiguration(new DishAllergenConfiguration());
+            builder.ApplyConfiguration(new DishConfiguration());
+            builder.ApplyConfiguration(new TableConfiguration());
 
             builder.Entity<CustomerProfile>()
                 .HasOne(cp => cp.User)
@@ -50,20 +54,20 @@ namespace RestaurantAlloraProjectData
                 .OnDelete(DeleteBehavior.Cascade);
 
 
-            builder.Entity<DishAllergen>()
-                .HasKey(x => new { x.DishId, x.AllergenId });
+            //builder.Entity<DishAllergen>()
+            //    .HasKey(x => new { x.DishId, x.AllergenId });
 
-            builder.Entity<DishAllergen>()
-                .HasOne(x => x.Dish)
-                .WithMany(d => d.DishAllergens)
-                .HasForeignKey(x => x.DishId)
-                .OnDelete(DeleteBehavior.Cascade);
+            //builder.Entity<DishAllergen>()
+            //    .HasOne(x => x.Dish)
+            //    .WithMany(d => d.DishAllergens)
+            //    .HasForeignKey(x => x.DishId)
+            //    .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<DishAllergen>()
-                .HasOne(x => x.Allergen)
-                .WithMany(a => a.DishAllergens)
-                .HasForeignKey(x => x.AllergenId)
-                .OnDelete(DeleteBehavior.Cascade);
+            //builder.Entity<DishAllergen>()
+            //    .HasOne(x => x.Allergen)
+            //    .WithMany(a => a.DishAllergens)
+            //    .HasForeignKey(x => x.AllergenId)
+            //    .OnDelete(DeleteBehavior.Cascade);
 
 
             builder.Entity<CustomerFavorite>()

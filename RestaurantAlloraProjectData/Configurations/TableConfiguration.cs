@@ -13,7 +13,7 @@ namespace RestaurantAlloraProjectData.Configurations
             var tables = new List<Table>();
             int currentTableNumber = 1;
 
-            // 20 tables for 2 people
+     
             for (int i = 0; i < 20; i++)
             {
                 tables.Add(new Table
@@ -26,7 +26,7 @@ namespace RestaurantAlloraProjectData.Configurations
                 currentTableNumber++;
             }
 
-            // 40 tables for 4 people
+      
             for (int i = 0; i < 40; i++)
             {
                 tables.Add(new Table
@@ -39,7 +39,7 @@ namespace RestaurantAlloraProjectData.Configurations
                 currentTableNumber++;
             }
 
-            // 20 tables for 6 people
+           
             for (int i = 0; i < 20; i++)
             {
                 tables.Add(new Table
@@ -52,7 +52,7 @@ namespace RestaurantAlloraProjectData.Configurations
                 currentTableNumber++;
             }
 
-            // 10 tables for 8 people
+          
             for (int i = 0; i < 10; i++)
             {
                 tables.Add(new Table
@@ -65,7 +65,7 @@ namespace RestaurantAlloraProjectData.Configurations
                 currentTableNumber++;
             }
 
-            // 10 tables for 10 people
+        
             for (int i = 0; i < 10; i++)
             {
                 tables.Add(new Table
