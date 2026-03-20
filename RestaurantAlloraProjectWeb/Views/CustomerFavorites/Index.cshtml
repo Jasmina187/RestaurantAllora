@@ -1,0 +1,43 @@
+@model IEnumerable<RestaurantAlloraProject.ViewModels.FavoriteDish.CustomerFavoriteViewModel>
+
+@{
+    ViewData["Title"] = "Моите любими ястия";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Моите любими ястия</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            Все още нямате добавени любими ястия. Разгледайте нашето меню и добавете своите фаворити!
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var dish in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <img src="@dish.ImageUrl" class="card-img-top" alt="@dish.DishName" style="height: 200px; object-fit: cover;">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">@dish.DishName</h5>
+                            <h6 class="card-subtitle mb-3 text-success">@dish.Price.ToString("C")</h6>
+                            <p class="card-text text-muted small mb-4">Добавено на: @dish.AddedOn.ToString("dd.MM.yyyy г.")</p>
+                            
+                            <div class="mt-auto">
+                                <form asp-controller="CustomerFavorites" asp-action="ToggleFavorite" method="post">
+                                    <input type="hidden" name="dishId" value="@dish.DishId" />
+                                    <button type="submit" class="btn btn-outline-danger w-100">
+                                        <i class="bi bi-heartbreak"></i> Премахни от любими
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

@@ -45,6 +45,12 @@ namespace RestaurantAlloraProjectWeb.Controllers
             {
                 return View(vm);
             }
+            bool tableExists = await _restaurantAlloraProjectContext.Tables.AnyAsync(t => t.TableNumber == vm.TableNumber);
+            if (tableExists)
+            {
+                ModelState.AddModelError(nameof(vm.TableNumber), $"Маса с номер {vm.TableNumber} вече съществува.");
+                return View(vm);
+            }
             var table = new Table
             {
                 TableId = Guid.NewGuid(),
@@ -77,11 +83,16 @@ namespace RestaurantAlloraProjectWeb.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(TableViewModel vm)
         {
-            if (!ModelState.IsValid) return View(vm);
-
+            if (!ModelState.IsValid)
+            {
+                return View(vm);
+            }
+            bool tableExists = await _restaurantAlloraProjectContext.Tables.AnyAsync(t => t.TableNumber == vm.TableNumber && t.TableId != vm.TableId);
             var table = await _restaurantAlloraProjectContext.Tables.FirstOrDefaultAsync(t => t.TableId == vm.TableId);
-            if (table == null) return NotFound();
-
+            if (table == null)
+            {
+                return NotFound();
+            }
             table.TableNumber = vm.TableNumber;
             table.CapacityOfTheTable = vm.CapacityOfTheTable;
             table.StatusOfTheTable = vm.StatusOfTheTable;

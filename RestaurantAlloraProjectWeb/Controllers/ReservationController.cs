@@ -60,53 +60,78 @@ namespace RestaurantAlloraProjectWeb.Controllers
         }
         [Authorize(Roles = "Admin,Customer")]
         [HttpPost]
-
         public async Task<IActionResult> Create(ReservationCreateViewModel vm)
         {
             if (vm.NumberOfGuests <= 0)
-                ModelState.AddModelError(nameof(vm.NumberOfGuests), "Моля, въведи валиден брой гости.");
-
-            var table = await _restaurantAlloraProjectContext.Tables.FirstOrDefaultAsync(t => t.TableId == vm.TableId);
-            if (table == null)
-                ModelState.AddModelError(nameof(vm.TableId), "Моля, избери маса.");
-
-            if (table != null && vm.NumberOfGuests > table.CapacityOfTheTable)
-                ModelState.AddModelError(nameof(vm.NumberOfGuests), "Броят гости надвишава капацитета на масата.");
-
-
-            if (table != null)
             {
-                var taken = await _restaurantAlloraProjectContext.Reservations.AnyAsync(r =>
-                    r.TableId == vm.TableId &&
-                    r.ReservationDate == vm.ReservationDate &&
-                    r.Status != "Отказана");
-
-                if (taken)
-                    ModelState.AddModelError("", "Има вече резервация за тази маса на избрания час.");
+                ModelState.AddModelError(nameof(vm.NumberOfGuests), "Моля, въведи валиден брой гости.");
+            }          
+            if (vm.ReservationDate < DateTime.Now)
+            {
+                ModelState.AddModelError(nameof(vm.ReservationDate), "Не може да резервирате за минало време.");
             }
-
+            var reservationStart = vm.ReservationDate;
+            var reservationEnd = vm.ReservationDate.AddHours(3);
+            if (reservationStart.Hour < 8)
+            {
+                ModelState.AddModelError(nameof(vm.ReservationDate), "Ресторантът отваря в 08:00 ч.");
+            }
+            else if (reservationStart.Hour > 21 || (reservationStart.Hour == 21 && reservationStart.Minute > 0))
+            {
+                ModelState.AddModelError(nameof(vm.ReservationDate), "Резервацията е за 3 часа и надхвърля часа на затваряне (00:00 ч.). Най-късният час за резервация е 21:00 ч.");
+            }
             if (!ModelState.IsValid)
             {
-                await FillTables(vm);
                 return View(vm);
             }
+            var potentialTables = await _restaurantAlloraProjectContext.Tables
+                .Where(t => t.CapacityOfTheTable >= vm.NumberOfGuests)
+                .ToListAsync();
+            Table? availableTable = null;
+            foreach (var table in potentialTables)
+            {
+                var isOccupied = await _restaurantAlloraProjectContext.Reservations
+                    .AnyAsync(r => r.TableId == table.TableId &&
+                                   r.Status != "Отказана" &&
+                                   reservationStart < r.ReservationDate.AddHours(3) &&
+                                   reservationEnd > r.ReservationDate);
 
+                if (!isOccupied)
+                {
+                    availableTable = table;
+                    break; 
+                }
+            }
+            if (availableTable == null)
+            {
+                ModelState.AddModelError(string.Empty, "За съжаление няма свободна маса за избраното време и брой гости.");
+                return View(vm);
+            }
             var userId = Guid.Parse(_userManager.GetUserId(User)!);
+            var customerProfileExists = await _restaurantAlloraProjectContext.Set<CustomerProfile>()
+                .AnyAsync(cp => cp.UserId == userId);
 
+            if (!customerProfileExists)
+            {
+                
+                var newCustomerProfile = new CustomerProfile
+                {
+                    UserId = userId
+                };
+                _restaurantAlloraProjectContext.Add(newCustomerProfile);
+                await _restaurantAlloraProjectContext.SaveChangesAsync(); 
+            }
             var reservation = new Reservation
             {
                 ReservationId = Guid.NewGuid(),
-                TableId = vm.TableId,
-                CustomerId = userId,
-                EmployeeId = null,
+                TableId = availableTable.TableId,
+                CustomerId = userId, 
                 ReservationDate = vm.ReservationDate,
                 NumberOfGuests = vm.NumberOfGuests,
                 Status = "Очаква одобрение"
             };
-
             _restaurantAlloraProjectContext.Reservations.Add(reservation);
             await _restaurantAlloraProjectContext.SaveChangesAsync();
-
             return RedirectToAction(nameof(Index));
         }
         [Authorize(Roles = "Admin,Customer")]

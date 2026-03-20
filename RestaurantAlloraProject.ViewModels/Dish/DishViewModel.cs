@@ -15,7 +15,7 @@ namespace RestaurantAlloraProject.ViewModels.Dish
         [Required(ErrorMessage = "Името на ястието е задължително.")]
         [StringLength(20, MinimumLength = 5, ErrorMessage = "Името на ястието трябва да бъде между 5 и 20 символа.")]
         public string NameOfTheDish { get; set; } = null!;
-
+            
         [Required(ErrorMessage = "Описанието на ястието е задължително.")]
         [StringLength(50, MinimumLength = 5, ErrorMessage = "Описанието на ястието трябва да бъде между 5 и 50 символа.")]
         public string DescriptionOfTheDish { get; set; } = null!;
