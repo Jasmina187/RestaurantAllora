@@ -1,118 +1,85 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RestaurantAlloraProject.Core.Contracts;
 using RestaurantAlloraProjectData;
 using RestaurantAlloraProjectData.Entities;
 using RestaurantAlloraProjectViewModels.Table;
 
 namespace RestaurantAlloraProjectWeb.Controllers
 {
+    [Authorize(Roles = "Admin")] 
     public class TableController : Controller
     {
-        private readonly RestaurantAlloraProjectContext _restaurantAlloraProjectContext;
-        public TableController(RestaurantAlloraProjectContext restaurantAlloraProjectContext)
+        private readonly ITableService _tableService;
+        public TableController(ITableService tableService)
         {
-            _restaurantAlloraProjectContext = restaurantAlloraProjectContext;
+            _tableService = tableService;
         }
         [HttpGet]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
-            var tables = await _restaurantAlloraProjectContext.Tables
-                .OrderBy(t => t.TableNumber)
-                .Select(t => new TableViewModel
-                {
-                    TableId = t.TableId,
-                    TableNumber = t.TableNumber,
-                    CapacityOfTheTable = t.CapacityOfTheTable,
-                    StatusOfTheTable = t.StatusOfTheTable
-                })
-                .ToListAsync();
+            var tables = await _tableService.GetAllAsync();
             return View(tables);
         }
         [HttpGet]
-        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View(new TableViewModel());
         }
-
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(TableViewModel vm)
         {
             if (!ModelState.IsValid)
             {
                 return View(vm);
             }
-            bool tableExists = await _restaurantAlloraProjectContext.Tables.AnyAsync(t => t.TableNumber == vm.TableNumber);
-            if (tableExists)
+            try
             {
-                ModelState.AddModelError(nameof(vm.TableNumber), $"Маса с номер {vm.TableNumber} вече съществува.");
+                await _tableService.CreateAsync(vm);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (ArgumentException ex) 
+            {
+                ModelState.AddModelError(nameof(vm.TableNumber), ex.Message);
                 return View(vm);
             }
-            var table = new Table
-            {
-                TableId = Guid.NewGuid(),
-                TableNumber = vm.TableNumber,
-                CapacityOfTheTable = vm.CapacityOfTheTable,
-                StatusOfTheTable = string.IsNullOrWhiteSpace(vm.StatusOfTheTable) ? "Свободна" : vm.StatusOfTheTable
-            };
-            _restaurantAlloraProjectContext.Tables.Add(table);
-            await _restaurantAlloraProjectContext.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
         }
         [HttpGet]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var table = await _restaurantAlloraProjectContext.Tables.FirstOrDefaultAsync(t => t.TableId == id);
-            if (table == null) return NotFound();
-            var vm = new TableViewModel
-            {
-                TableId = table.TableId,
-                TableNumber = table.TableNumber,
-                CapacityOfTheTable = table.CapacityOfTheTable,
-                StatusOfTheTable = table.StatusOfTheTable
-            };
+            var vm = await _tableService.GetByIdAsync(id);
+            if (vm == null) return NotFound();
 
             return View(vm);
         }
-
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(TableViewModel vm)
         {
             if (!ModelState.IsValid)
             {
                 return View(vm);
             }
-            bool tableExists = await _restaurantAlloraProjectContext.Tables.AnyAsync(t => t.TableNumber == vm.TableNumber && t.TableId != vm.TableId);
-            var table = await _restaurantAlloraProjectContext.Tables.FirstOrDefaultAsync(t => t.TableId == vm.TableId);
-            if (table == null)
+            try
+            {
+                await _tableService.UpdateAsync(vm);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (ArgumentException ex) 
+            {
+                ModelState.AddModelError(nameof(vm.TableNumber), ex.Message);
+                return View(vm);
+            }
+            catch (InvalidOperationException) 
             {
                 return NotFound();
             }
-            table.TableNumber = vm.TableNumber;
-            table.CapacityOfTheTable = vm.CapacityOfTheTable;
-            table.StatusOfTheTable = vm.StatusOfTheTable;
-
-            await _restaurantAlloraProjectContext.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
         }
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-
         public async Task<IActionResult> Delete(Guid id)
         {
-            var table = await _restaurantAlloraProjectContext.Tables.FindAsync(id);
-            if (table == null) return NotFound();
-
-            _restaurantAlloraProjectContext.Tables.Remove(table);
-            await _restaurantAlloraProjectContext.SaveChangesAsync();
-
+            await _tableService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
-
     }
 }

@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RestaurantAlloraProject.ViewModels.FavoriteDish;
+using RestaurantAlloraProject.Core.Contracts;
+using RestaurantAlloraProject.ViewModels.CustomerFavorite;
 using RestaurantAlloraProjectData;
 using RestaurantAlloraProjectData.Entities;
 using System;
@@ -11,18 +12,16 @@ using System.Threading.Tasks;
 
 namespace RestaurantAlloraProjectWeb.Controllers
 {
-    [Authorize]
-    public class CustomerFavoritesController : Controller
+    [Authorize(Roles = "Admin")]
+    public class CustomerFavoriteController : Controller
     {
-        private readonly RestaurantAlloraProjectContext _context;
+        private readonly ICustomerFavoriteService _favoriteService;
         private readonly UserManager<User> _userManager;
-
-        public CustomerFavoritesController(RestaurantAlloraProjectContext context, UserManager<User> userManager)
+        public CustomerFavoriteController(ICustomerFavoriteService favoriteService, UserManager<User> userManager)
         {
-            _context = context;
+            _favoriteService = favoriteService;
             _userManager = userManager;
         }
-
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -31,23 +30,9 @@ namespace RestaurantAlloraProjectWeb.Controllers
             {
                 return Unauthorized();
             }
-
-            var favorites = await _context.CustomerFavorites
-                .Include(cf => cf.Dish)
-                .Where(cf => cf.CustomerId == userId)
-                .Select(cf => new FavoriteDishViewModel
-                {
-                    DishId = cf.DishId,
-                    DishName = cf.Dish.NameOfTheDish,
-                    Price = cf.Dish.PriceOfTheDish,
-                    ImageUrl = cf.Dish.ImageUrl,
-                    AddedOn = cf.AddedOn
-                })
-                .ToListAsync();
-
+            var favorites = await _favoriteService.GetFavoritesAsync(userId);
             return View(favorites);
         }
-
         [HttpPost]
         public async Task<IActionResult> ToggleFavorite(Guid dishId)
         {
@@ -56,40 +41,13 @@ namespace RestaurantAlloraProjectWeb.Controllers
             {
                 return Unauthorized();
             }
-
-            var existingFavorite = await _context.CustomerFavorites
-                .FirstOrDefaultAsync(cf => cf.CustomerId == userId && cf.DishId == dishId);
-
-            if (existingFavorite != null)
-            {
-                _context.CustomerFavorites.Remove(existingFavorite);
-            }
-            else
-            {
-                var profileExists = await _context.Set<CustomerProfile>().AnyAsync(cp => cp.UserId == userId);
-                if (!profileExists)
-                {
-                    _context.Add(new CustomerProfile { UserId = userId });
-                }
-
-                var newFavorite = new CustomerFavorite
-                {
-                    CustomerId = userId,
-                    DishId = dishId,
-                    AddedOn = DateTime.UtcNow
-                };
-                _context.CustomerFavorites.Add(newFavorite);
-            }
-
-            await _context.SaveChangesAsync();
-
+            await _favoriteService.ToggleFavoriteAsync(dishId, userId);
             var returnUrl = Request.Headers["Referer"].ToString();
             if (!string.IsNullOrEmpty(returnUrl))
             {
                 return Redirect(returnUrl);
             }
-
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
     }
 }

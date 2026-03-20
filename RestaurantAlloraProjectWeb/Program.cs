@@ -30,6 +30,10 @@ builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IDishService, DishService>();
+builder.Services.AddScoped<IReservationService, ReservationService>();
+builder.Services.AddScoped<ICustomerFavoriteService,CustomerFavoriteService>();
+builder.Services.AddScoped<ITableService, TableService>();
+
 
 
 var app = builder.Build();

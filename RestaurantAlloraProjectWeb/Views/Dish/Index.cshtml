@@ -1,94 +1,137 @@
 @using RestaurantAlloraProject.ViewModels.Dish
 @model IEnumerable<DishViewModel>
-
 <h2 class="text-center mb-4">🍽️ Menu</h2>
-
 @if (User.IsInRole("Admin"))
 {
     <a asp-controller="Dish" asp-action="Create" class="btn btn-warning mb-3">
-        Add Dish
+        ➕ Add Dish
     </a>
 }
-<table class="table table-borderless">
-    <tbody>
-        @foreach (var dish in Model)
-        {
-            <tr>
-                <td>
-                    <div class="card mb-3 shadow-sm">
-                        <div class="row g-0">
-                            <div class="col-md-3">
-                                @if (!string.IsNullOrWhiteSpace(dish.ImageUrl))
-                                {
-                                    <img src="@dish.ImageUrl"
-                                         class="img-fluid rounded-start"
-                                         alt="@dish.NameOfTheDish"
-                                         style="height: 100%; object-fit: cover; min-height: 180px;" />
-                                }
+<div class="row mb-4">
+    <div class="col-md-6">
+        <input type="text" id="searchInput" class="form-control" placeholder="🔍 Търси ястие...">
+    </div>
+    <div class="col-md-6">
+        <select id="categoryFilter" class="form-select">
+            <option value="">Всички категории</option>
+            @foreach (var category in Model.Select(d => d.CategoryOfTheDish).Distinct())
+            {
+                <option value="@category">@category</option>
+            }
+        </select>
+    </div>
+</div>
+<div class="row" id="menuContainer">
+    @foreach (var dish in Model)
+    {
+        <div class="col-md-4 mb-4 dish-card"
+             data-name="@dish.NameOfTheDish.ToLower()"
+             data-category="@dish.CategoryOfTheDish">
+
+            <div class="card h-100 shadow-sm menu-card">
+
+                @if (!string.IsNullOrWhiteSpace(dish.ImageUrl))
+                {
+                    <img src="@dish.ImageUrl"
+                         class="card-img-top"
+                         style="height: 200px; object-fit: cover;" />
+                }
+                <div class="card-body d-flex flex-column">
+                    <h5>
+                        @dish.NameOfTheDish
+                        <span class="badge bg-secondary">@dish.CategoryOfTheDish</span>
+                    </h5>
+
+                    <p class="text-muted small">@dish.DescriptionOfTheDish</p>
+
+                    <p class="fw-bold text-success">
+                        💰 @dish.PriceOfTheDish.ToString("0.00") €
+                    </p>
+
+                    @if (dish.AllergenNames != null && dish.AllergenNames.Any())
+                    {
+                        <p class="small text-danger">
+                            ⚠️ @string.Join(", ", dish.AllergenNames)
+                        </p>
+                    }
+                    <div class="mt-auto">
+
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <form asp-controller="CustomerFavorite"
+                                  asp-action="ToggleFavorite"
+                                  method="post">
+
+                                <input type="hidden" name="dishId" value="@dish.DishId" />
+
+                                <button type="submit" class="btn btn-outline-danger w-100">
+                                    ❤️ Любимо
+                                </button>
+                            </form>
+                        }
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <div class="mt-2 d-flex gap-2">
+                                <a asp-controller="Dish"
+                                   asp-action="Edit"
+                                   asp-route-id="@dish.DishId"
+                                   class="btn btn-sm btn-outline-warning w-50">
+                                    Edit
+                                </a>
+
+                                <form asp-controller="Dish"
+                                      asp-action="Delete"
+                                      asp-route-id="@dish.DishId"
+                                      method="post" class="w-50">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit"
+                                            class="btn btn-sm btn-outline-danger w-100"
+                                            onclick="return confirm('Delete this dish?');">
+                                        Delete
+                                    </button>
+                                </form>
                             </div>
-                            <div class="col-md-7">
-                                <div class="card-body">
-                                    <h5 class="card-title mb-1">
-                                        @dish.NameOfTheDish
-                                        <span class="badge bg-secondary ms-2">@dish.CategoryOfTheDish</span>
-                                    </h5>
-                                    <p class="card-text text-muted mb-2">
-                                        @dish.DescriptionOfTheDish
-                                    </p>
-                                    <p class="card-text fw-bold mb-2">
-                                        💰 @dish.PriceOfTheDish.ToString("0.00") лв.
-                                    </p>
+                        }
 
-                                    @if (dish.AllergenNames != null && dish.AllergenNames.Any())
-                                    {
-                                        <p class="card-text small text-danger mb-0">
-                                            Allergens: @string.Join(", ", dish.AllergenNames)
-                                        </p>
-                                    }
-                                    else
-                                    {
-                                        <p class="card-text small text-muted mb-0">
-                                            Allergens: None
-                                        </p>
-                                    }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
 
-                                    @if (User.Identity != null && User.Identity.IsAuthenticated)
-                                    {
-                                        <form asp-controller="CustomerFavorites" asp-action="ToggleFavorite" method="post" class="mt-3">
-                                            <input type="hidden" name="dishId" value="@dish.DishId" />
-                                            <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                Добави/Премахни от любими
-                                            </button>
-                                        </form>
-                                    }
-                                </div>
-                            </div>
-                            @if (User.IsInRole("Admin"))
-                            {
-                                <div class="col-md-2 d-flex align-items-center justify-content-end pe-3">
-                                    <div class="d-flex flex-column gap-2 w-100">
+<style>
+    .menu-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
 
-                                        <a asp-controller="Dish"
-                                           asp-action="Edit"
-                                           asp-route-id="@dish.DishId"
-                                           class="btn btn-sm btn-outline-warning">
-                                            Edit
-                                        </a>
-
-                                        <form asp-controller="Dish"
-                                              asp-action="Delete"
-                                              asp-route-id="@dish.DishId"
-                                              method="post">
-                                            @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-sm btn-outline-danger w-100" onclick="return confirm('Delete this dish?');"> Delete</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            }
-                        </div> 
-                    </div> 
-                </td>
-            </tr>
+        .menu-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
-    </tbody>
-</table>
+</style>
+
+<script>
+    const searchInput = document.getElementById("searchInput");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const cards = document.querySelectorAll(".dish-card");
+
+    function filterMenu() {
+        const search = searchInput.value.toLowerCase();
+        const category = categoryFilter.value;
+
+        cards.forEach(card => {
+            const name = card.dataset.name;
+            const cat = card.dataset.category;
+
+            const matchSearch = name.includes(search);
+            const matchCategory = !category || cat === category;
+
+            card.style.display = (matchSearch && matchCategory) ? "block" : "none";
+        });
+    }
+
+    searchInput.addEventListener("input", filterMenu);
+    categoryFilter.addEventListener("change", filterMenu);
+</script>

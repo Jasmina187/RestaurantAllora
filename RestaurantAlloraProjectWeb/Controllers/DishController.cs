@@ -12,80 +12,77 @@ using System.Threading.Tasks;
 
 namespace RestaurantAlloraProjectWeb.Controllers
 {
+
+    [Authorize(Roles = "Admin")]
     public class DishController : Controller
     {
-        private readonly IDishService dishService;
-        public DishController(IDishService _dishService)
+        private readonly IDishService _dishService;
+        public DishController(IDishService dishService)
         {
-            dishService = _dishService;
+            _dishService = dishService;
         }
-
         [HttpGet]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
-            var dishes = await dishService.GetAllAsync();
+            var dishes = await _dishService.GetAllAsync();
             return View(dishes);
         }
-
         [HttpGet]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
-            ViewBag.Categories = dishService.GetCategories();
-            var vm = await dishService.GetCreateAsync();
+            var vm = new DishCreateViewModel();
+            await _dishService.FillCreateDropdownsAsync(vm);
+            ViewBag.Categories = _dishService.GetCategoriesSelectList();
             return View(vm);
         }
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create(DishCreateViewModel model)
+        public async Task<IActionResult> Create(DishCreateViewModel vm)
         {
-            ViewBag.Categories = dishService.GetCategories(model.CategoryOfTheDish);
             if (!ModelState.IsValid)
             {
-                var fixedVm = await dishService.GetCreateAsync();
-                model.Allergens = fixedVm.Allergens;
-                return View(model);
+                await _dishService.FillCreateDropdownsAsync(vm);
+                ViewBag.Categories = _dishService.GetCategoriesSelectList(vm.CategoryOfTheDish);
+                return View(vm);
             }
-
-            await dishService.CreateAsync(model);
+            await _dishService.CreateAsync(vm);
             return RedirectToAction(nameof(Index));
         }
         [HttpGet]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var model = await dishService.GetEditAsync(id);
-            if (model == null)
+            var vm = await _dishService.GetByIdAsync(id);
+            if (vm == null)
             {
                 return NotFound();
             }
-            ViewBag.Categories = dishService.GetCategories(model.CategoryOfTheDish);
-            return View(model);
+
+            await _dishService.FillEditDropdownsAsync(vm);
+            ViewBag.Categories = _dishService.GetCategoriesSelectList(vm.CategoryOfTheDish);
+            return View(vm);
         }
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(Guid id, DishViewModel model)
+        public async Task<IActionResult> Edit(DishViewModel vm)
         {
-            ViewBag.Categories = dishService.GetCategories(model.CategoryOfTheDish);
-
             if (!ModelState.IsValid)
             {
-                var fixedVm = await dishService.GetEditAsync(id);
-                if (fixedVm != null)
-                {
-                    model.Allergens = fixedVm.Allergens;
-                }
-                return View(model);
+                await _dishService.FillEditDropdownsAsync(vm);
+                ViewBag.Categories = _dishService.GetCategoriesSelectList(vm.CategoryOfTheDish);
+                return View(vm);
             }
-            await dishService.UpdateAsync(id, model);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _dishService.UpdateAsync(vm);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (InvalidOperationException)
+            {
+                return NotFound();
+            }
         }
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            await dishService.DeleteAsync(id);
+            await _dishService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
     }
