@@ -1,8 +1,8 @@
 using System;
 
-namespace RestaurantAlloraProject.ViewModels.FavoriteDish
+namespace RestaurantAlloraProject.ViewModels.CustomerFavorite
 {
-    public class FavoriteDishViewModel
+    public class CustomerFavoriteViewModel
     {
         public Guid DishId { get; set; }
         public string DishName { get; set; } = null!;
