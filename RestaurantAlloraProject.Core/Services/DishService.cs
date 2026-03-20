@@ -14,14 +14,14 @@ namespace RestaurantAlloraProject.Core.Services
 {
     public class DishService : IDishService
     {
-        private readonly RestaurantAlloraProjectContext _restaurantAlloraProjectContext;
-        public DishService(RestaurantAlloraProjectContext restaurantAlloraProjectContext)
+        private readonly RestaurantAlloraProjectContext _context;
+        public DishService(RestaurantAlloraProjectContext context)
         {
-            _restaurantAlloraProjectContext = restaurantAlloraProjectContext;
+            _context = context;
         }
         public async Task<IEnumerable<DishViewModel>> GetAllAsync()
         {
-            return await _restaurantAlloraProjectContext.Dishes
+            return await _context.Dishes
                 .Include(d => d.DishAllergens)
                     .ThenInclude(da => da.Allergen)
                 .Select(d => new DishViewModel
@@ -36,14 +36,26 @@ namespace RestaurantAlloraProject.Core.Services
                 })
                 .ToListAsync();
         }
-        public async Task<DishCreateViewModel> GetCreateAsync()
+        public async Task<DishViewModel?> GetByIdAsync(Guid id)
         {
-            var allergens = await _restaurantAlloraProjectContext.Allergens
-                .OrderBy(a => a.AllergenName)
-                .ToListAsync();
-            return new DishCreateViewModel
+            var dish = await _context.Dishes
+                .Include(d => d.DishAllergens)
+                .FirstOrDefaultAsync(d => d.DishId == id);
+            if (dish == null)
             {
-                Allergens = new MultiSelectList(allergens, "AllergenId", "AllergenName")
+                return null;
+            }
+             var selectedIds = dish.DishAllergens.Select(x => x.AllergenId).ToList();
+
+            return new DishViewModel
+            {
+                DishId = dish.DishId,
+                NameOfTheDish = dish.NameOfTheDish,
+                DescriptionOfTheDish = dish.DescriptionOfTheDish,
+                PriceOfTheDish = dish.PriceOfTheDish,
+                CategoryOfTheDish = dish.CategoryOfTheDish,
+                ImageUrl = dish.ImageUrl,
+                SelectedAllergens = selectedIds
             };
         }
         public async Task CreateAsync(DishCreateViewModel model)
@@ -58,51 +70,23 @@ namespace RestaurantAlloraProject.Core.Services
                 ImageUrl = model.ImageUrl,
                 DishAllergens = new List<DishAllergen>()
             };
-            foreach (var allergenId in (model.SelectedAllergens ?? new List<Guid>()).Distinct())
+            var selectedAllergens = model.SelectedAllergens ?? new List<Guid>();
+            foreach (var allergenId in selectedAllergens.Distinct())
             {
-                dish.DishAllergens.Add(new DishAllergen
-                {
-                    DishId = dish.DishId,
-                    AllergenId = allergenId
-                });
+                dish.DishAllergens.Add(new DishAllergen { DishId = dish.DishId, AllergenId = allergenId });
             }
-            await _restaurantAlloraProjectContext.Dishes.AddAsync(dish);
-            await _restaurantAlloraProjectContext.SaveChangesAsync();
+            _context.Dishes.Add(dish);
+            await _context.SaveChangesAsync();
         }
-        public async Task<DishViewModel?> GetEditAsync(Guid id)
+        public async Task UpdateAsync(DishViewModel model)
         {
-            var dish = await _restaurantAlloraProjectContext.Dishes
+            var dish = await _context.Dishes
                 .Include(d => d.DishAllergens)
-                .FirstOrDefaultAsync(d => d.DishId == id);
-            if (dish == null)
-            {
-                return null;
-            }
-            var allergens = await _restaurantAlloraProjectContext.Allergens
-                .OrderBy(a => a.AllergenName)
-                .ToListAsync();
-            var selectedIds = dish.DishAllergens.Select(x => x.AllergenId).ToList();
-            return new DishViewModel
-            {
-                DishId = dish.DishId,
-                NameOfTheDish = dish.NameOfTheDish,
-                DescriptionOfTheDish = dish.DescriptionOfTheDish,
-                PriceOfTheDish = dish.PriceOfTheDish,
-                CategoryOfTheDish = dish.CategoryOfTheDish,
-                ImageUrl = dish.ImageUrl,
+                .FirstOrDefaultAsync(d => d.DishId == model.DishId);
 
-                SelectedAllergens = selectedIds,
-                Allergens = new MultiSelectList(allergens, "AllergenId", "AllergenName", selectedIds)
-            };
-        }
-        public async Task UpdateAsync(Guid id, DishViewModel model)
-        {
-            var dish = await _restaurantAlloraProjectContext.Dishes
-                .Include(d => d.DishAllergens)
-                .FirstOrDefaultAsync(d => d.DishId == id);
             if (dish == null)
             {
-                return;
+                throw new InvalidOperationException("Ястието не е намерено.");
             }
             dish.NameOfTheDish = model.NameOfTheDish;
             dish.DescriptionOfTheDish = model.DescriptionOfTheDish;
@@ -110,38 +94,38 @@ namespace RestaurantAlloraProject.Core.Services
             dish.CategoryOfTheDish = model.CategoryOfTheDish;
             dish.ImageUrl = model.ImageUrl;
             dish.DishAllergens.Clear();
-            foreach (var allergenId in (model.SelectedAllergens ?? new List<Guid>()).Distinct())
+            var selectedAllergens = model.SelectedAllergens ?? new List<Guid>();
+            foreach (var allergenId in selectedAllergens.Distinct())
             {
-                dish.DishAllergens.Add(new DishAllergen
-                {
-                    DishId = dish.DishId,
-                    AllergenId = allergenId
-                });
+                dish.DishAllergens.Add(new DishAllergen { DishId = dish.DishId, AllergenId = allergenId });
             }
-            await _restaurantAlloraProjectContext.SaveChangesAsync();
+
+            await _context.SaveChangesAsync();
         }
+        
         public async Task DeleteAsync(Guid id)
         {
-            var dish = await _restaurantAlloraProjectContext.Dishes.FindAsync(id);
-            if (dish == null)
+            var dish = await _context.Dishes.FindAsync(id);
+            if (dish != null)
             {
-                return;
+                _context.Dishes.Remove(dish);
+                await _context.SaveChangesAsync();
             }
-            _restaurantAlloraProjectContext.Dishes.Remove(dish);
-            await _restaurantAlloraProjectContext.SaveChangesAsync();
         }
-        public SelectList GetCategories(string? selected = null)
+        public async Task FillCreateDropdownsAsync(DishCreateViewModel vm)
         {
-            var categories = new List<string>
+            var allergens = await _context.Allergens.OrderBy(a => a.AllergenName).ToListAsync();
+            vm.Allergens = new MultiSelectList(allergens, "AllergenId", "AllergenName", vm.SelectedAllergens);
+        }
+        public async Task FillEditDropdownsAsync(DishViewModel vm)
         {
-            "Салати",
-            "Основни ястия",
-            "Десерти",
-            "Напитки"
-        };
-
+            var allergens = await _context.Allergens.OrderBy(a => a.AllergenName).ToListAsync();
+            vm.Allergens = new MultiSelectList(allergens, "AllergenId", "AllergenName", vm.SelectedAllergens);
+        }
+        public SelectList GetCategoriesSelectList(string? selected = null)
+        {
+            var categories = new List<string> { "Салати", "Основни ястия", "Десерти", "Напитки" };
             return new SelectList(categories, selected);
         }
-
     }
 }

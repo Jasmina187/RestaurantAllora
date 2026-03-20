@@ -11,11 +11,12 @@ namespace RestaurantAlloraProject.Core.Contracts
     public interface IDishService
     {
         Task<IEnumerable<DishViewModel>> GetAllAsync();
-        Task<DishCreateViewModel> GetCreateAsync();
+        Task<DishViewModel?> GetByIdAsync(Guid id);
         Task CreateAsync(DishCreateViewModel model);
-        Task<DishViewModel?> GetEditAsync(Guid id);
-        Task UpdateAsync(Guid id, DishViewModel model);
+        Task UpdateAsync(DishViewModel model);
         Task DeleteAsync(Guid id);
-        SelectList GetCategories(string? selected = null);     
+        Task FillCreateDropdownsAsync(DishCreateViewModel vm);
+        Task FillEditDropdownsAsync(DishViewModel vm);
+        SelectList GetCategoriesSelectList(string? selected = null);
     }
 }
