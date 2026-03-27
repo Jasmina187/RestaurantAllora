@@ -44,15 +44,15 @@ namespace RestaurantAlloraProjectData.Configurations
                     });
                 }
             }
-
-            Add(new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec"), new Guid("dc08b4ec-5095-4811-a672-192301357e16")); 
-            Add(new Guid("5b48ad92-c4f7-4b93-a015-789f26f40d58"), new Guid("42ccb79f-216b-4aab-9655-944d4f7b9823"));
-            Add(new Guid("44ce4f8a-6e15-4947-bd6b-e20bdb14d842"), new Guid("c4399ef7-4776-4b45-92fb-35ae3dd3f977"));
-            Add(new Guid("05267740-181b-43e4-96dd-e5b9c250ac75"), new Guid("c8f84b5a-4cd4-405b-adb4-2eeb69942cfc"));
-
-            //Add(new Guid("05267740-181b-43e4-96dd-e5b9c250ac75"), new Guid("dc08b4ec-5095-4811-a672-192301357e16"));
-            //Add(new Guid("05267740-181b-43e4-96dd-e5b9c250ac75"), new Guid("c8f84b5a-4cd4-405b-adb4-2eeb69942cfc"));
-            //Add(new Guid("05267740-181b-43e4-96dd-e5b9c250ac75"), new Guid("c8f84b5a-4cd4-405b-adb4-2eeb69942cfc"));
+            Add(new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec"), new Guid("dc08b4ec-5095-4811-a672-192301357e16"));
+            Add(new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec"), new Guid("42ccb79f-216b-4aab-9655-944d4f7b9823"));
+            Add(new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec"), new Guid("c4399ef7-4776-4b45-92fb-35ae3dd3f977"));
+            Add(new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec"), new Guid("bcccc627-fc03-40cc-bfb4-9047d4626528"));
+            Add(new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec"), new Guid("503510df-d3a4-4266-a182-3b3db962de57"));
+            Add(new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec"), new Guid("7d1e6d36-e29a-40ca-970a-3c016cfb7a99"));
+            Add(new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec"), new Guid("7f4554e9-9835-479e-bb37-b97ed9c58d6a"));
+            Add(new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec"), new Guid("64d4fbb0-ffe7-4526-9d18-300608276013"));
+          
 
 
             return list;

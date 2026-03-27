@@ -12,7 +12,7 @@ namespace RestaurantAlloraProjectData.Entities
         [Key]
         public Guid AllergenId { get; set; }
 
-        [Required, MaxLength(100)]
+        [Required, MaxLength(300)]
         public string AllergenName { get; set; } = null!;
 
 

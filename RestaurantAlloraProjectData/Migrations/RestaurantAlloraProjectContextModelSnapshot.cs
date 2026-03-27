@@ -161,8 +161,8 @@ namespace RestaurantAlloraProjectData.Migrations
 
                     b.Property<string>("AllergenName")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.HasKey("AllergenId");
 
@@ -172,7 +172,7 @@ namespace RestaurantAlloraProjectData.Migrations
                         new
                         {
                             AllergenId = new Guid("dc08b4ec-5095-4811-a672-192301357e16"),
-                            AllergenName = "Зърнени култури, съдържащи глутен"
+                            AllergenName = "Зърнени култури, съдържащи глутен: пшеница, ръж, ечемик, овес, спелта, камут, както и продукти от тях"
                         },
                         new
                         {
@@ -186,8 +186,58 @@ namespace RestaurantAlloraProjectData.Migrations
                         },
                         new
                         {
-                            AllergenId = new Guid("c8f84b5a-4cd4-405b-adb4-2eeb69942cfc"),
+                            AllergenId = new Guid("bcccc627-fc03-40cc-bfb4-9047d4626528"),
                             AllergenName = "Риба и рибни продукти"
+                        },
+                        new
+                        {
+                            AllergenId = new Guid("fe83dc00-a553-4041-8e2e-aa7c9eb5a0ed"),
+                            AllergenName = "Фъстъци и продукти от тях"
+                        },
+                        new
+                        {
+                            AllergenId = new Guid("503510df-d3a4-4266-a182-3b3db962de57"),
+                            AllergenName = "Соя и соеви продукти"
+                        },
+                        new
+                        {
+                            AllergenId = new Guid("a846b85f-53b1-4b2a-b096-825824c3b7e2"),
+                            AllergenName = "Мляко и млечни продукти"
+                        },
+                        new
+                        {
+                            AllergenId = new Guid("247f192a-3e44-480a-bde9-98089f8b398b"),
+                            AllergenName = "Ядки – бадеми, орехи, лешници, кашу и др."
+                        },
+                        new
+                        {
+                            AllergenId = new Guid("3a8c6114-15c6-4f6c-9de1-21126a38706f"),
+                            AllergenName = "Целина и продукти от нея"
+                        },
+                        new
+                        {
+                            AllergenId = new Guid("7d1e6d36-e29a-40ca-970a-3c016cfb7a99"),
+                            AllergenName = "Синап и продукти от него"
+                        },
+                        new
+                        {
+                            AllergenId = new Guid("7f4554e9-9835-479e-bb37-b97ed9c58d6a"),
+                            AllergenName = "Сусамово семе и продукти от него"
+                        },
+                        new
+                        {
+                            AllergenId = new Guid("6ab84643-d4db-4789-bf18-f43afe7e4a38"),
+                            AllergenName = "Лупина и продукти от нея"
+                        },
+                        new
+                        {
+                            AllergenId = new Guid("64d4fbb0-ffe7-4526-9d18-300608276013"),
+                            AllergenName = "Серен диоксид и сулфиди"
+                        },
+                        new
+                        {
+                            AllergenId = new Guid("6b990dac-6b4f-49f4-a715-ccaa67246c3e"),
+                            AllergenName = "Мекотели и продукти от тях"
                         });
                 });
 
@@ -332,6 +382,60 @@ namespace RestaurantAlloraProjectData.Migrations
                             ImageUrl = "/img/fatush.png",
                             NameOfTheDish = "САЛАТА ЕНЕРДЖИ",
                             PriceOfTheDish = 7.49m
+                        },
+                        new
+                        {
+                            DishId = new Guid("6482fc36-4bfc-4cda-874b-2300a5f3cc89"),
+                            CategoryOfTheDish = "Основни ястия",
+                            DescriptionOfTheDish = "Пуешки стек на BBQ със специална марината, запечени тиквички, гъби, моркови и карфиол с билкова марината.",
+                            ImageUrl = "/img/stek.png",
+                            NameOfTheDish = "ПУЕШКИ СТЕК НА BBQ",
+                            PriceOfTheDish = 9.97m
+                        },
+                        new
+                        {
+                            DishId = new Guid("12489f7b-9d30-4a28-aba0-c9bd5cc7dd57"),
+                            CategoryOfTheDish = "Основни ястия",
+                            DescriptionOfTheDish = "Кюфтета от кълцано телешко Блек Ангъс, пържени картофи и микс салати с чери домати и дресинг винегрет.",
+                            ImageUrl = "/img/meatballs.png",
+                            NameOfTheDish = "ТЕЛЕШКИ КЮФТЕТА БЛЕК АНГЪС",
+                            PriceOfTheDish = 9.20m
+                        },
+                        new
+                        {
+                            DishId = new Guid("a450b794-5144-4f72-a436-bb29fbbb00ef"),
+                            CategoryOfTheDish = "Основни ястия",
+                            DescriptionOfTheDish = "Филе бяла риба и спагети в Алфредо сос със спанак и азиатски подправки, пармезан, пресен пипер и див лук.",
+                            ImageUrl = "/img/fish.png",
+                            NameOfTheDish = "ФИЛЕ БЯЛА РИБА ИТАМЕШИ",
+                            PriceOfTheDish = 9.71m
+                        },
+                        new
+                        {
+                            DishId = new Guid("3cfc8ca4-f70c-47d8-9cc1-dee9c6de5c1b"),
+                            CategoryOfTheDish = "Основни ястия",
+                            DescriptionOfTheDish = "Традиционни китайски нудли с мариновано пилешко месо от бут, яйце, зеле, моркови, пресен зелен и червен пипер, специален сос и зелен лук.",
+                            ImageUrl = "/img/noodles.png",
+                            NameOfTheDish = "ЯЙЧНИ НУДЛИ С ПИЛЕ И ЗЕЛЕНЧУЦИ",
+                            PriceOfTheDish = 8.69m
+                        },
+                        new
+                        {
+                            DishId = new Guid("f4201dbf-1adb-4949-b235-d137db7698f7"),
+                            CategoryOfTheDish = "Основни ястия",
+                            DescriptionOfTheDish = "Пилешки късчета с леко пикантен азиатски сос и подправки, яйце, пресен босилек и магданоз върху жасминов ориз.",
+                            ImageUrl = "/img/chicken.png",
+                            NameOfTheDish = "ПИЛЕ ПАД КАПРАО",
+                            PriceOfTheDish = 9.20m
+                        },
+                        new
+                        {
+                            DishId = new Guid("a02bbc5e-4df1-4e8e-a923-33b65336614c"),
+                            CategoryOfTheDish = "Десерти",
+                            DescriptionOfTheDish = "Чийзкейк с хрупкав блат, маскарпоне крем и пистачио глазура.",
+                            ImageUrl = "/img/pistachio.png",
+                            NameOfTheDish = "ПИСТАЧИО ЧИЙЗКЕЙК",
+                            PriceOfTheDish = 5.62m
                         });
                 });
 
@@ -357,18 +461,38 @@ namespace RestaurantAlloraProjectData.Migrations
                         },
                         new
                         {
-                            DishId = new Guid("5b48ad92-c4f7-4b93-a015-789f26f40d58"),
+                            DishId = new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec"),
                             AllergenId = new Guid("42ccb79f-216b-4aab-9655-944d4f7b9823")
                         },
                         new
                         {
-                            DishId = new Guid("44ce4f8a-6e15-4947-bd6b-e20bdb14d842"),
+                            DishId = new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec"),
                             AllergenId = new Guid("c4399ef7-4776-4b45-92fb-35ae3dd3f977")
                         },
                         new
                         {
-                            DishId = new Guid("05267740-181b-43e4-96dd-e5b9c250ac75"),
-                            AllergenId = new Guid("c8f84b5a-4cd4-405b-adb4-2eeb69942cfc")
+                            DishId = new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec"),
+                            AllergenId = new Guid("bcccc627-fc03-40cc-bfb4-9047d4626528")
+                        },
+                        new
+                        {
+                            DishId = new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec"),
+                            AllergenId = new Guid("503510df-d3a4-4266-a182-3b3db962de57")
+                        },
+                        new
+                        {
+                            DishId = new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec"),
+                            AllergenId = new Guid("7d1e6d36-e29a-40ca-970a-3c016cfb7a99")
+                        },
+                        new
+                        {
+                            DishId = new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec"),
+                            AllergenId = new Guid("7f4554e9-9835-479e-bb37-b97ed9c58d6a")
+                        },
+                        new
+                        {
+                            DishId = new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec"),
+                            AllergenId = new Guid("64d4fbb0-ffe7-4526-9d18-300608276013")
                         });
                 });
 
