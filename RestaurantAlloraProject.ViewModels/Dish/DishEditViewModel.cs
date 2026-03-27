@@ -5,17 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RestaurantAlloraProject.ViewModels.Dish
+namespace RestaurantAlloraProjectViewModels.Dish
 {
-    public class DishViewModel
+    public class DishEditViewModel
     {
-        [Key]
-        public Guid DishId { get; set; }
+        public Guid Id { get; set; }
 
         [Required(ErrorMessage = "Името на ястието е задължително.")]
         [StringLength(50, MinimumLength = 5, ErrorMessage = "Името на ястието трябва да бъде между 5 и 20 символа.")]
         public string NameOfTheDish { get; set; } = null!;
-            
+
         [Required(ErrorMessage = "Описанието на ястието е задължително.")]
         [StringLength(100, MinimumLength = 5, ErrorMessage = "Описанието на ястието трябва да бъде между 5 и 50 символа.")]
         public string DescriptionOfTheDish { get; set; } = null!;
@@ -30,6 +29,8 @@ namespace RestaurantAlloraProject.ViewModels.Dish
         [Required(ErrorMessage = "URL е задължителeн.")]
         [Url(ErrorMessage = "Невалиден URL адрес. ")]
         public string ImageUrl { get; set; } = null!;
-        public List<string> AllergenNames { get; set; } = new();
+
+        public List<Guid> SelectedAllergenIds { get; set; } = new();
+        public Microsoft.AspNetCore.Mvc.Rendering.MultiSelectList? Allergens { get; set; }
     }
 }

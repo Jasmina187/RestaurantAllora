@@ -33,6 +33,7 @@ builder.Services.AddScoped<IDishService, DishService>();
 builder.Services.AddScoped<IReservationService, ReservationService>();
 builder.Services.AddScoped<ICustomerFavoriteService,CustomerFavoriteService>();
 builder.Services.AddScoped<ITableService, TableService>();
+builder.Services.AddScoped<IAllergenService, AllergenService>();
 
 
 

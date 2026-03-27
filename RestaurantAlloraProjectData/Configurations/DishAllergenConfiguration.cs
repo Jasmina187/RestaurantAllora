@@ -50,6 +50,11 @@ namespace RestaurantAlloraProjectData.Configurations
             Add(new Guid("44ce4f8a-6e15-4947-bd6b-e20bdb14d842"), new Guid("c4399ef7-4776-4b45-92fb-35ae3dd3f977"));
             Add(new Guid("05267740-181b-43e4-96dd-e5b9c250ac75"), new Guid("c8f84b5a-4cd4-405b-adb4-2eeb69942cfc"));
 
+            //Add(new Guid("05267740-181b-43e4-96dd-e5b9c250ac75"), new Guid("dc08b4ec-5095-4811-a672-192301357e16"));
+            //Add(new Guid("05267740-181b-43e4-96dd-e5b9c250ac75"), new Guid("c8f84b5a-4cd4-405b-adb4-2eeb69942cfc"));
+            //Add(new Guid("05267740-181b-43e4-96dd-e5b9c250ac75"), new Guid("c8f84b5a-4cd4-405b-adb4-2eeb69942cfc"));
+
+
             return list;
         }
     }

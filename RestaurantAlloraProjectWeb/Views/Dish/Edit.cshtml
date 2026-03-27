@@ -1,8 +1,9 @@
 ﻿@using RestaurantAlloraProject.ViewModels.Dish
-@model DishViewModel
+@using RestaurantAlloraProjectViewModels.Dish
+@model DishEditViewModel
 <h2 class="text-black">Edit dish:</h2>
 <form asp-action="Edit" method="post" asp-controller="Dish">
-    <input type="hidden" asp-for="DishId" />
+    <input type="hidden" asp-for="Id" />
     <div class="mb-3">
         <label asp-for="NameOfTheDish" class="form-label">Name</label>
         <input asp-for="NameOfTheDish" class="form-control" />
@@ -27,8 +28,8 @@
         <input asp-for="ImageUrl" class="form-control" />
     </div>
     <div class="mb-3">
-         <label asp-for="SelectedAllergens" class="form-label">Allergens</label> 
-        <select asp-for="SelectedAllergens"
+        <label class="form-label">Allergens</label>
+        <select asp-for="SelectedAllergenIds"
                 asp-items="Model.Allergens"
                 id="allergensSelect"
                 multiple
@@ -39,7 +40,7 @@
     <a asp-controller="Dish" asp-action="Index" class="btn btn-secondary">Back</a>
 </form>
 
-@* @section Scripts {
+@section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
     <script>
@@ -56,7 +57,7 @@
             });
         });
     </script>
-} *@
+}
 
 <style>
     .choices__item {

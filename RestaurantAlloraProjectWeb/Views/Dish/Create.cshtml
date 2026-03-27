@@ -31,8 +31,8 @@
         <span asp-validation-for="ImageUrl" class="text-danger"></span>
     </div>
     <div class="mb-3">
-         <label asp-for="SelectedAllergens" class="form-label">Allergens</label> 
-        <select asp-for="SelectedAllergens"
+        <label class="form-label">Allergens</label> 
+        <select asp-for="SelectedAllergenIds"
                 asp-items="Model.Allergens"
                 id="allergensSelect"
                 multiple

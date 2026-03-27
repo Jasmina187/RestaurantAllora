@@ -30,7 +30,6 @@ namespace RestaurantAlloraProject.ViewModels.Dish
         [Url(ErrorMessage = "Невалиден URL адрес. ")]
         public string ImageUrl { get; set; } = null!;
 
-        public List<Guid> SelectedAllergens { get; set; } = new();
         public List<Guid> SelectedAllergenIds { get; set; } = new();
         public Microsoft.AspNetCore.Mvc.Rendering.MultiSelectList? Allergens { get; set; } 
     }

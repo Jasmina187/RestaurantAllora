@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using RestaurantAlloraProject.ViewModels.Dish;
+using RestaurantAlloraProjectViewModels.Dish;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,12 +12,12 @@ namespace RestaurantAlloraProject.Core.Contracts
     public interface IDishService
     {
         Task<IEnumerable<DishViewModel>> GetAllAsync();
-        Task<DishViewModel?> GetByIdAsync(Guid id);
+        Task<DishEditViewModel?> GetByIdAsync(Guid id);
         Task CreateAsync(DishCreateViewModel model);
-        Task UpdateAsync(DishViewModel model);
+        Task UpdateAsync(DishEditViewModel model);
         Task DeleteAsync(Guid id);
-        Task FillCreateDropdownsAsync(DishCreateViewModel vm);
-        Task FillEditDropdownsAsync(DishViewModel vm);
+        //Task FillCreateDropdownsAsync(DishCreateViewModel vm);
+        //Task FillEditDropdownsAsync(DishViewModel vm);
         SelectList GetCategoriesSelectList(string? selected = null);
     }
 }

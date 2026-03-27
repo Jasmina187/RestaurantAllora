@@ -48,12 +48,18 @@
                         💰 @dish.PriceOfTheDish.ToString("0.00") €
                     </p>
 
-                    @if (dish.AllergenNames != null && dish.AllergenNames.Any())
+                    @foreach (var allergen in dish.AllergenNames)
+                    {
+                        <p class="small text-danger">
+                            @allergen
+                        </p>
+                    }
+                    @* @if (dish.AllergenNames != null && dish.AllergenNames.Any())
                     {
                         <p class="small text-danger">
                             ⚠️ @string.Join(", ", dish.AllergenNames)
                         </p>
-                    }
+                    } *@
                     <div class="mt-auto">
 
                         @if (User.Identity != null && User.Identity.IsAuthenticated)

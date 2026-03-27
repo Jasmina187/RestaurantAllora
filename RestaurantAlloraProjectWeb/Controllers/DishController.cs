@@ -8,6 +8,7 @@ using RestaurantAlloraProject.Core.Services;
 using RestaurantAlloraProject.ViewModels.Dish;
 using RestaurantAlloraProjectData;
 using RestaurantAlloraProjectData.Entities;
+using RestaurantAlloraProjectViewModels.Dish;
 using System.Threading.Tasks;
 
 namespace RestaurantAlloraProjectWeb.Controllers
@@ -17,9 +18,11 @@ namespace RestaurantAlloraProjectWeb.Controllers
     public class DishController : Controller
     {
         private readonly IDishService _dishService;
-        public DishController(IDishService dishService)
+        private readonly IAllergenService _allergenService;
+        public DishController(IDishService dishService, IAllergenService allergenService)
         {
             _dishService = dishService;
+            _allergenService = allergenService;
         }
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -30,8 +33,10 @@ namespace RestaurantAlloraProjectWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
+            var allergens = await _allergenService.GetAllAllergensAsync();
             var vm = new DishCreateViewModel();
-            await _dishService.FillCreateDropdownsAsync(vm);
+            vm.Allergens = new MultiSelectList(allergens, "Id", "AllergenName");
+
             ViewBag.Categories = _dishService.GetCategoriesSelectList();
             return View(vm);
         }
@@ -40,7 +45,9 @@ namespace RestaurantAlloraProjectWeb.Controllers
         {
             if (!ModelState.IsValid)
             {
-                await _dishService.FillCreateDropdownsAsync(vm);
+                var allergens = await _allergenService.GetAllAllergensAsync();
+                vm.Allergens = new MultiSelectList(allergens, "Id", "AllergenName");
+
                 ViewBag.Categories = _dishService.GetCategoriesSelectList(vm.CategoryOfTheDish);
                 return View(vm);
             }
@@ -55,17 +62,20 @@ namespace RestaurantAlloraProjectWeb.Controllers
             {
                 return NotFound();
             }
+            var allergens = await _allergenService.GetAllAllergensAsync();
+            vm.Allergens = new MultiSelectList(allergens, "Id", "AllergenName");
 
-            await _dishService.FillEditDropdownsAsync(vm);
             ViewBag.Categories = _dishService.GetCategoriesSelectList(vm.CategoryOfTheDish);
             return View(vm);
         }
         [HttpPost]
-        public async Task<IActionResult> Edit(DishViewModel vm)
+        public async Task<IActionResult> Edit(DishEditViewModel vm)
         {
             if (!ModelState.IsValid)
             {
-                await _dishService.FillEditDropdownsAsync(vm);
+                var allergens = await _allergenService.GetAllAllergensAsync();
+                vm.Allergens = new MultiSelectList(allergens, "Id", "AllergenName");
+
                 ViewBag.Categories = _dishService.GetCategoriesSelectList(vm.CategoryOfTheDish);
                 return View(vm);
             }
