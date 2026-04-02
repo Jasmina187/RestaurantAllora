@@ -1,0 +1,64 @@
+﻿@using RestaurantAlloraProjectViewModels.Order
+@model IEnumerable<OrderViewModel>
+
+@{
+    ViewData["Title"] = "Моите поръчки";
+}
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-danger fw-bold"><i class="fas fa-list me-2"></i> История на поръчките</h2>
+        <a asp-action="Create" class="btn btn-outline-danger rounded-pill">
+            <i class="fas fa-shopping-cart me-1"></i> Отвори количката
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info shadow-sm rounded">
+            <i class="fas fa-info-circle me-2"></i> Все още нямате направени поръчки.
+            <a asp-controller="Dish" asp-action="Index" class="alert-link">Разгледайте менюто!</a>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive shadow-sm rounded">
+            <table class="table table-hover bg-white mb-0 align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>№ на поръчка</th>
+                        <th>Дата</th>
+                        <th>Статус</th>
+                        <th>Обща сума</th>
+                        <th>Действие</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+                            <td><small class="text-muted">@order.OrderId.ToString().Substring(0, 8)</small></td>
+                            <td>@order.OrderDate.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>
+                                @if (order.Status == "Обработва се")
+                                {
+                                    <span class="badge bg-warning text-dark">@order.Status</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">@order.Status</span>
+                                }
+                            </td>
+                            <td class="fw-bold text-success">@order.TotalAmount.ToString("F2") лв.</td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@order.OrderId" class="btn btn-sm btn-info text-white">
+                                    <i class="fas fa-eye"></i> Детайли
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

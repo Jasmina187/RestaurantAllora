@@ -14,8 +14,6 @@ namespace RestaurantAlloraProjectData.Entities
 
         [Required, MaxLength(300)]
         public string AllergenName { get; set; } = null!;
-
-
         public ICollection<DishAllergen> DishAllergens { get; set; } = new List<DishAllergen>();
     }
 }

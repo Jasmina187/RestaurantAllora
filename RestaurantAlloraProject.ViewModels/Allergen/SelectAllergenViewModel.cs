@@ -9,7 +9,6 @@ namespace RestaurantAlloraProjectViewModels.Allergen
     public class SelectAllergenViewModel
     {
         public Guid Id { get; set; }
-
         public string AllergenName { get; set; } = null!;
     }
 }

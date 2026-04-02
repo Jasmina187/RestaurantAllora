@@ -17,8 +17,6 @@ namespace RestaurantAlloraProjectViewModels.Table
         [Required(ErrorMessage = "Капацитетът на масата е задължителен.")]
         [Range(1, 20, ErrorMessage = "Капацитетът на масата трябва да бъде между 1 и 20 човека.")]
         public int CapacityOfTheTable { get; set; }
-
-       
         [StringLength(20, ErrorMessage = "Статусът не може да бъде по-дълъг от 20 символа.")]
         public string? StatusOfTheTable { get; set; } = "Свободна";
 

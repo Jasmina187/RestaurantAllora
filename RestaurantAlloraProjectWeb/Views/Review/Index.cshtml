@@ -1,0 +1,40 @@
+﻿@using RestaurantAlloraProjectViewModels.Review
+@model IEnumerable<ReviewViewModel>
+
+@{
+    ViewData["Title"] = "Всички ревюта";
+}
+
+<div class="container mt-5">
+    <h2>Списък с ревюта</h2>
+
+    <table class="table table-striped table-hover mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>Ястие (ID)</th>
+                <th>Оценка</th>
+                <th>Коментар</th>
+                <th>Дата</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.DishId</td>
+                    <td>
+                        <span class="text-warning">
+                            @for (int i = 0; i < item.Rating; i++)
+                            {
+                                <i class="fas fa-star"></i>
+                            }
+                        </span>
+                        (@item.Rating)
+                    </td>
+                    <td>@item.Comment</td>
+                    <td>@item.CreatedOn.ToString("dd.MM.yyyy")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

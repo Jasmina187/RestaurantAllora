@@ -14,7 +14,7 @@ namespace RestaurantAlloraProjectData.Entities
         public User User { get; set; } = null!;
         public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
-        public ICollection<CustomerOrderItem> Orders { get; set; } = new List<CustomerOrderItem>();
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
         public ICollection<CustomerFavorite> Favorites { get; set; } = new List<CustomerFavorite>();
     }
 }

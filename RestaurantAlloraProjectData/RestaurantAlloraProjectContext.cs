@@ -24,6 +24,7 @@ namespace RestaurantAlloraProjectData
         public DbSet<CustomerFavorite> CustomerFavorites { get; set; }
         public DbSet<Table> Tables { get; set; }
         public DbSet<CustomerOrderItem> CustomerOrderItems { get; set; }
+        public DbSet<Order> Orders { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<Review> Reviews { get; set; }
 
@@ -42,33 +43,16 @@ namespace RestaurantAlloraProjectData
             builder.ApplyConfiguration(new TableConfiguration());
 
             builder.Entity<CustomerProfile>()
-                .HasOne(cp => cp.User)
-                .WithOne(u => u.CustomerProfile)
-                .HasForeignKey<CustomerProfile>(cp => cp.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+         .HasOne(cp => cp.User)
+         .WithOne(u => u.CustomerProfile)
+         .HasForeignKey<CustomerProfile>(cp => cp.UserId)
+         .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<EmployeeProfile>()
                 .HasOne(ep => ep.User)
                 .WithOne(u => u.EmployeeProfile)
                 .HasForeignKey<EmployeeProfile>(ep => ep.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-
-            //builder.Entity<DishAllergen>()
-            //    .HasKey(x => new { x.DishId, x.AllergenId });
-
-            //builder.Entity<DishAllergen>()
-            //    .HasOne(x => x.Dish)
-            //    .WithMany(d => d.DishAllergens)
-            //    .HasForeignKey(x => x.DishId)
-            //    .OnDelete(DeleteBehavior.Cascade);
-
-            //builder.Entity<DishAllergen>()
-            //    .HasOne(x => x.Allergen)
-            //    .WithMany(a => a.DishAllergens)
-            //    .HasForeignKey(x => x.AllergenId)
-            //    .OnDelete(DeleteBehavior.Cascade);
-
 
             builder.Entity<CustomerFavorite>()
                 .HasKey(x => new { x.CustomerId, x.DishId });
@@ -85,7 +69,6 @@ namespace RestaurantAlloraProjectData
                 .HasForeignKey(x => x.DishId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-
             builder.Entity<Review>()
                 .HasOne(r => r.Customer)
                 .WithMany(c => c.Reviews)
@@ -98,54 +81,54 @@ namespace RestaurantAlloraProjectData
                 .HasForeignKey(r => r.DishId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-
             builder.Entity<Review>()
                 .HasIndex(r => new { r.CustomerId, r.DishId })
                 .IsUnique();
 
-
+        
             builder.Entity<Reservation>()
                 .HasOne(r => r.Customer)
                 .WithMany(c => c.Reservations)
                 .HasForeignKey(r => r.CustomerId)
                 .OnDelete(DeleteBehavior.Restrict);
-
             builder.Entity<Reservation>()
                 .HasOne(r => r.Employee)
                 .WithMany(e => e.HandledReservations)
                 .HasForeignKey(r => r.EmployeeId)
                 .OnDelete(DeleteBehavior.SetNull);
-
             builder.Entity<Reservation>()
                 .HasOne(r => r.Table)
                 .WithMany(t => t.Reservations)
                 .HasForeignKey(r => r.TableId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-
-            builder.Entity<CustomerOrderItem>()
+            builder.Entity<Order>()
                 .HasOne(o => o.Customer)
                 .WithMany(c => c.Orders)
                 .HasForeignKey(o => o.CustomerId)
                 .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<Order>()
+                .Property(o => o.Status)
+                .HasDefaultValue("Обработва се");   
+            builder.Entity<CustomerOrderItem>()
+                .HasOne(oi => oi.Order)
+                .WithMany(o => o.CustomerOrderItems)
+                .HasForeignKey(oi => oi.OrderId) 
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<CustomerOrderItem>()
-                .HasOne(o => o.Employee)
-                .WithMany(e => e.HandledOrders)
-                .HasForeignKey(o => o.EmployeeId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.Entity<CustomerOrderItem>()
-                .HasOne(o => o.Dish)
+                .HasOne(oi => oi.Dish)
                 .WithMany(d => d.OrderItems)
-                .HasForeignKey(o => o.DishId)
+                .HasForeignKey(oi => oi.DishId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-
+            builder.Entity<CustomerOrderItem>()
+                .HasOne(oi => oi.Employee)
+                .WithMany(e => e.HandledOrders)
+                .HasForeignKey(oi => oi.EmployeeId)
+                .OnDelete(DeleteBehavior.SetNull);
             builder.Entity<Table>()
                 .HasIndex(t => t.TableNumber)
                 .IsUnique();
-
 
             builder.Entity<Table>()
                 .Property(t => t.StatusOfTheTable)
@@ -154,10 +137,6 @@ namespace RestaurantAlloraProjectData
             builder.Entity<Reservation>()
                 .Property(r => r.Status)
                 .HasDefaultValue("Очаква одобрение");
-
-            builder.Entity<CustomerOrderItem>()
-                .Property(o => o.Status)
-                .HasDefaultValue("Обработва се");
         }
     }   
 }

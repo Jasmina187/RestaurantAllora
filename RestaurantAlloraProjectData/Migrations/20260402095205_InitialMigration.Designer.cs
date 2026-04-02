@@ -12,7 +12,7 @@ using RestaurantAlloraProjectData;
 namespace RestaurantAlloraProjectData.Migrations
 {
     [DbContext(typeof(RestaurantAlloraProjectContext))]
-    [Migration("20260327121000_InitialMigration")]
+    [Migration("20260402095205_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -264,45 +264,32 @@ namespace RestaurantAlloraProjectData.Migrations
 
             modelBuilder.Entity("RestaurantAlloraProjectData.Entities.CustomerOrderItem", b =>
                 {
-                    b.Property<Guid>("CustomerOrderId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CustomerId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("DishId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("EmployeeId")
+                    b.Property<Guid?>("EmployeeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("IsPickup")
-                        .HasColumnType("bit");
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime2");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasDefaultValue("Обработва се");
-
-                    b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("CustomerOrderId");
-
-                    b.HasIndex("CustomerId");
+                    b.HasKey("Id");
 
                     b.HasIndex("DishId");
 
                     b.HasIndex("EmployeeId");
+
+                    b.HasIndex("OrderId");
 
                     b.ToTable("CustomerOrderItems");
                 });
@@ -507,6 +494,34 @@ namespace RestaurantAlloraProjectData.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("EmployeeProfile");
+                });
+
+            modelBuilder.Entity("RestaurantAlloraProjectData.Entities.Order", b =>
+                {
+                    b.Property<Guid>("OrderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("Обработва се");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("OrderId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("RestaurantAlloraProjectData.Entities.Reservation", b =>
@@ -1455,12 +1470,6 @@ namespace RestaurantAlloraProjectData.Migrations
 
             modelBuilder.Entity("RestaurantAlloraProjectData.Entities.CustomerOrderItem", b =>
                 {
-                    b.HasOne("RestaurantAlloraProjectData.Entities.CustomerProfile", "Customer")
-                        .WithMany("Orders")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("RestaurantAlloraProjectData.Entities.Dish", "Dish")
                         .WithMany("OrderItems")
                         .HasForeignKey("DishId")
@@ -1470,14 +1479,19 @@ namespace RestaurantAlloraProjectData.Migrations
                     b.HasOne("RestaurantAlloraProjectData.Entities.EmployeeProfile", "Employee")
                         .WithMany("HandledOrders")
                         .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
-                    b.Navigation("Customer");
+                    b.HasOne("RestaurantAlloraProjectData.Entities.Order", "Order")
+                        .WithMany("CustomerOrderItems")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Dish");
 
                     b.Navigation("Employee");
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("RestaurantAlloraProjectData.Entities.CustomerProfile", b =>
@@ -1519,6 +1533,17 @@ namespace RestaurantAlloraProjectData.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("RestaurantAlloraProjectData.Entities.Order", b =>
+                {
+                    b.HasOne("RestaurantAlloraProjectData.Entities.CustomerProfile", "Customer")
+                        .WithMany("Orders")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("RestaurantAlloraProjectData.Entities.Reservation", b =>
@@ -1598,6 +1623,11 @@ namespace RestaurantAlloraProjectData.Migrations
                     b.Navigation("HandledOrders");
 
                     b.Navigation("HandledReservations");
+                });
+
+            modelBuilder.Entity("RestaurantAlloraProjectData.Entities.Order", b =>
+                {
+                    b.Navigation("CustomerOrderItems");
                 });
 
             modelBuilder.Entity("RestaurantAlloraProjectData.Entities.Table", b =>

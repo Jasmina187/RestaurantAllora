@@ -12,8 +12,6 @@ namespace RestaurantAlloraProjectData.Configurations
         {
             var tables = new List<Table>();
             int currentTableNumber = 1;
-
-     
             for (int i = 0; i < 20; i++)
             {
                 tables.Add(new Table

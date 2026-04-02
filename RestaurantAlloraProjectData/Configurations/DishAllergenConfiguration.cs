@@ -15,13 +15,11 @@ namespace RestaurantAlloraProjectData.Configurations
         {
             builder
                 .HasKey(x => new { x.DishId, x.AllergenId });
-
             builder
                 .HasOne(x => x.Dish)
                 .WithMany(d => d.DishAllergens)
                 .HasForeignKey(x => x.DishId)
                 .OnDelete(DeleteBehavior.Cascade);
-
             builder
                 .HasOne(x => x.Allergen)
                 .WithMany(a => a.DishAllergens)
@@ -32,7 +30,6 @@ namespace RestaurantAlloraProjectData.Configurations
         public List<DishAllergen> CreateDishAllergens()
         {
             var list = new List<DishAllergen>();
-
             void Add(Guid dishId, Guid allergenId)
             {
                 if (!list.Any(x => x.DishId == dishId && x.AllergenId == allergenId))
@@ -52,9 +49,6 @@ namespace RestaurantAlloraProjectData.Configurations
             Add(new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec"), new Guid("7d1e6d36-e29a-40ca-970a-3c016cfb7a99"));
             Add(new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec"), new Guid("7f4554e9-9835-479e-bb37-b97ed9c58d6a"));
             Add(new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec"), new Guid("64d4fbb0-ffe7-4526-9d18-300608276013"));
-          
-
-
             return list;
         }
     }

@@ -286,6 +286,27 @@ namespace RestaurantAlloraProjectData.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "Обработва се"),
+                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.OrderId);
+                    table.ForeignKey(
+                        name: "FK_Orders_CustomerProfile_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "CustomerProfile",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Reviews",
                 columns: table => new
                 {
@@ -311,43 +332,6 @@ namespace RestaurantAlloraProjectData.Migrations
                         principalTable: "Dishes",
                         principalColumn: "DishId",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CustomerOrderItems",
-                columns: table => new
-                {
-                    CustomerOrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DishId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, defaultValue: "Обработва се"),
-                    IsPickup = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CustomerOrderItems", x => x.CustomerOrderId);
-                    table.ForeignKey(
-                        name: "FK_CustomerOrderItems_CustomerProfile_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "CustomerProfile",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_CustomerOrderItems_Dishes_DishId",
-                        column: x => x.DishId,
-                        principalTable: "Dishes",
-                        principalColumn: "DishId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_CustomerOrderItems_EmployeeProfile_EmployeeId",
-                        column: x => x.EmployeeId,
-                        principalTable: "EmployeeProfile",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -383,6 +367,40 @@ namespace RestaurantAlloraProjectData.Migrations
                         principalTable: "Tables",
                         principalColumn: "TableId",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustomerOrderItems",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DishId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerOrderItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustomerOrderItems_Dishes_DishId",
+                        column: x => x.DishId,
+                        principalTable: "Dishes",
+                        principalColumn: "DishId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_CustomerOrderItems_EmployeeProfile_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "EmployeeProfile",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_CustomerOrderItems_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "OrderId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -590,11 +608,6 @@ namespace RestaurantAlloraProjectData.Migrations
                 column: "DishId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CustomerOrderItems_CustomerId",
-                table: "CustomerOrderItems",
-                column: "CustomerId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_CustomerOrderItems_DishId",
                 table: "CustomerOrderItems",
                 column: "DishId");
@@ -605,9 +618,19 @@ namespace RestaurantAlloraProjectData.Migrations
                 column: "EmployeeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CustomerOrderItems_OrderId",
+                table: "CustomerOrderItems",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DishAllergens_AllergenId",
                 table: "DishAllergens",
                 column: "AllergenId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_CustomerId",
+                table: "Orders",
+                column: "CustomerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reservations_CustomerId",
@@ -679,6 +702,9 @@ namespace RestaurantAlloraProjectData.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Orders");
+
+            migrationBuilder.DropTable(
                 name: "Allergens");
 
             migrationBuilder.DropTable(
@@ -688,10 +714,10 @@ namespace RestaurantAlloraProjectData.Migrations
                 name: "Tables");
 
             migrationBuilder.DropTable(
-                name: "CustomerProfile");
+                name: "Dishes");
 
             migrationBuilder.DropTable(
-                name: "Dishes");
+                name: "CustomerProfile");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
