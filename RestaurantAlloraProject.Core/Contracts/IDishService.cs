@@ -16,8 +16,6 @@ namespace RestaurantAlloraProject.Core.Contracts
         Task CreateAsync(DishCreateViewModel model);
         Task UpdateAsync(DishEditViewModel model);
         Task DeleteAsync(Guid id);
-        //Task FillCreateDropdownsAsync(DishCreateViewModel vm);
-        //Task FillEditDropdownsAsync(DishViewModel vm);
         SelectList GetCategoriesSelectList(string? selected = null);
     }
 }

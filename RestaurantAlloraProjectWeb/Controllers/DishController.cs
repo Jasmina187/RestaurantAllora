@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 
 namespace RestaurantAlloraProjectWeb.Controllers
 {
-
     [Authorize(Roles = "Admin")]
     public class DishController : Controller
     {

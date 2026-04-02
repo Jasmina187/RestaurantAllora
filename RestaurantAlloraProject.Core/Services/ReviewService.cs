@@ -14,12 +14,10 @@ namespace RestaurantAlloraProject.Core.Services
     public class ReviewService: IReviewService
     {
         private readonly RestaurantAlloraProjectContext _context;
-
         public ReviewService(RestaurantAlloraProjectContext context)
         {
             _context = context;
         }
-
         public async Task AddReviewAsync(ReviewViewModel model)
         {
             var review = new Review
@@ -35,7 +33,6 @@ namespace RestaurantAlloraProject.Core.Services
             await _context.Reviews.AddAsync(review);
             await _context.SaveChangesAsync();
         }
-
         public async Task<IEnumerable<ReviewViewModel>> GetDishReviewsAsync(Guid dishId)
         {
             return await _context.Reviews

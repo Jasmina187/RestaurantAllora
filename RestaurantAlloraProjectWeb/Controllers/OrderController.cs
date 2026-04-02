@@ -5,18 +5,15 @@ using RestaurantAlloraProjectViewModels.Order;
 using System.Security.Claims;
 
 namespace RestaurantAlloraProjectWeb.Controllers
-{
-    
+{  
     [Authorize]
     public class OrderController : Controller
     {
         private readonly IOrderService _orderService;
-
         public OrderController(IOrderService orderService)
         {
             _orderService = orderService;
         }
-
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -26,13 +23,11 @@ namespace RestaurantAlloraProjectWeb.Controllers
             {
                 return View(new List<OrderViewModel>());
             }
-
             var userId = Guid.Parse(userIdString);
             var orders = await _orderService.GetCustomerOrdersAsync(userId);
 
             return View(orders);
         }
-
         [HttpGet]
         public IActionResult Create()
         {
@@ -44,7 +39,6 @@ namespace RestaurantAlloraProjectWeb.Controllers
 
             return View(model);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(OrderViewModel model)
@@ -53,29 +47,23 @@ namespace RestaurantAlloraProjectWeb.Controllers
             {
                 return View(model);
             }
-
             await _orderService.CreateOrderAsync(model);
             return RedirectToAction("Index");
         }
-
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             if (string.IsNullOrEmpty(userIdString))
             {
                 return RedirectToPage("/Account/Login", new { area = "Identity" });
             }
-
             var orders = await _orderService.GetCustomerOrdersAsync(Guid.Parse(userIdString));
             var order = orders.FirstOrDefault(o => o.OrderId == id);
-
             if (order == null)
             {
                 return NotFound();
             }
-
             return View(order);
         }
     }

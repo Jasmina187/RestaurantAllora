@@ -1,4 +1,4 @@
-html {
+/*html {
   font-size: 14px;
 }
 
@@ -19,4 +19,67 @@ html {
 
 body {
   margin-bottom: 60px;
+}*/
+:root {
+    --dark-bg: #0f1216; /* Дълбоко черно-синьо */
+    --gold-accent: #c5a059; /* Матово злато */
+    --soft-white: #e4e4e4;
+    --card-bg: #1a1e23;
+}
+
+body {
+    background-color: var(--dark-bg);
+    color: var(--soft-white);
+    font-family: 'Montserrat', sans-serif; /* Модерен и изчистен */
+}
+
+/* Разчупен лукс за заглавията */
+h1, h2, h3, .navbar-brand {
+    font-family: 'Playfair Display', serif; /* Елегантен Serif шрифт */
+    letter-spacing: 1px;
+    color: var(--gold-accent);
+}
+.dish-card {
+    background: var(--card-bg);
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+    .dish-card:hover {
+        transform: scale(1.03);
+        box-shadow: 0 15px 45px rgba(197, 160, 89, 0.2); /* Златисто сияние */
+    }
+
+.btn-primary {
+    background-color: var(--gold-accent);
+    border: none;
+    color: #000;
+    font-weight: bold;
+    border-radius: 30px; /* Овални бутони за по-луксозно излъчване */
+}
+.table-card {
+    animation: fadeIn 0.5s ease forwards;
+    opacity: 0;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Всяка следваща маса се появява с малко закъснение */
+@foreach (var i in Enumerable.Range(1, 20)) {
+    .table-card:nth-child(@i) {
+        animation-delay: @(i * 0.1)s;
+    }
 }

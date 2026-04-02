@@ -14,12 +14,10 @@ namespace RestaurantAlloraProject.Core.Services
     public class OrderService : IOrderService
     {
         private readonly RestaurantAlloraProjectContext _context;
-
         public OrderService(RestaurantAlloraProjectContext context)
         {
             this._context = context;
         }
-
         public async Task<Guid> CreateOrderAsync(OrderViewModel model)
         {
             var order = new Order
@@ -30,7 +28,6 @@ namespace RestaurantAlloraProject.Core.Services
                 TotalAmount = model.TotalAmount,
                 Status = "Обработва се"
             };
-
             foreach (var item in model.CustomerOrderItems)
             {
                 order.CustomerOrderItems.Add(new CustomerOrderItem
@@ -42,12 +39,10 @@ namespace RestaurantAlloraProject.Core.Services
                     Price = item.Price
                 });
             }
-
             await _context.Orders.AddAsync(order);
             await _context.SaveChangesAsync();
             return order.OrderId;
         }
-
         public async Task<IEnumerable<OrderViewModel>> GetCustomerOrdersAsync(Guid customerId)
         {
             return await _context.Orders

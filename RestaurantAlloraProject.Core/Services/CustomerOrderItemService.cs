@@ -13,12 +13,10 @@ namespace RestaurantAlloraProject.Core.Services
     public class CustomerOrderItemService : ICustomerOrderItemService
     {
         private readonly RestaurantAlloraProjectContext _context;
-
         public CustomerOrderItemService(RestaurantAlloraProjectContext context)
         {
             _context = context;
         }
-
         public async Task UpdateQuantityAsync(Guid id, int newQuantity)
         {
             var item = await _context.CustomerOrderItems.FindAsync(id);
@@ -28,7 +26,6 @@ namespace RestaurantAlloraProject.Core.Services
                 await _context.SaveChangesAsync();
             }
         }
-
         public async Task RemoveItemAsync(Guid id)
         {
             var item = await _context.CustomerOrderItems.FindAsync(id);
@@ -38,8 +35,7 @@ namespace RestaurantAlloraProject.Core.Services
                 await _context.SaveChangesAsync();
             }
         }
-
-        public async Task<CustomerOrderItemViewModel> GetByIdAsync(Guid id)
+        public async Task<CustomerOrderItemViewModel?> GetByIdAsync(Guid id)
         {
             return await _context.CustomerOrderItems
                 .Where(oi => oi.Id == id)

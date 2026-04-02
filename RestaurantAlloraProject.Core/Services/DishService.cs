@@ -76,8 +76,6 @@ namespace RestaurantAlloraProject.Core.Services
             var selectedAllergens = await _context.Allergens
                 .Where(a => model.SelectedAllergenIds.Contains(a.AllergenId))
                 .ToListAsync();
-
-            // var selectedAllergens = model.SelectedAllergens ?? new List<Guid>();
             if (selectedAllergens.Count > 0)
             {
                 foreach (var allergenId in selectedAllergens)
@@ -113,16 +111,8 @@ namespace RestaurantAlloraProject.Core.Services
             {
                 dish.DishAllergens.Add(new DishAllergen { Dish = dish, Allergen = allergenId });
             }
-
-            //var selectedAllergens = model.SelectedAllergens ?? new List<Guid>();
-            //foreach (var allergenId in selectedAllergens.Distinct())
-            //{
-            //    dish.DishAllergens.Add(new DishAllergen { DishId = dish.DishId, AllergenId = allergenId });
-            //}
-
             await _context.SaveChangesAsync();
-        }
-        
+        }  
         public async Task DeleteAsync(Guid id)
         {
             var dish = await _context.Dishes.FindAsync(id);
@@ -132,16 +122,6 @@ namespace RestaurantAlloraProject.Core.Services
                 await _context.SaveChangesAsync();
             }
         }
-        //public async Task FillCreateDropdownsAsync(DishCreateViewModel vm)
-        //{
-        //    var allergens = await _context.Allergens.OrderBy(a => a.AllergenName).ToListAsync();
-        //    vm.Allergens = new MultiSelectList(allergens, "AllergenId", "AllergenName", vm.SelectedAllergens);
-        //}
-        //public async Task FillEditDropdownsAsync(DishViewModel vm)
-        //{
-        //    var allergens = await _context.Allergens.OrderBy(a => a.AllergenName).ToListAsync();
-        //    vm.Allergens = new MultiSelectList(allergens, "AllergenId", "AllergenName", vm.SelectedAllergens);
-        //}
         public SelectList GetCategoriesSelectList(string? selected = null)
         {
             var categories = new List<string> { "Салати", "Основни ястия", "Десерти", "Напитки" };

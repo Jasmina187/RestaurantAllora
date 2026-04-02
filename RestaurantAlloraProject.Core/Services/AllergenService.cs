@@ -13,12 +13,10 @@ namespace RestaurantAlloraProject.Core.Services
     public class AllergenService : IAllergenService
     {
         private readonly RestaurantAlloraProjectContext _context;
-
         public AllergenService(RestaurantAlloraProjectContext context)
         {
             this._context = context;
         }
-
         public async Task<IEnumerable<SelectAllergenViewModel>> GetAllAllergensAsync()
         {
             return await _context.Allergens.Select(a => new SelectAllergenViewModel

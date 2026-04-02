@@ -11,6 +11,6 @@ namespace RestaurantAlloraProject.Core.Contracts
     {
         Task UpdateQuantityAsync(Guid id, int newQuantity);
         Task RemoveItemAsync(Guid id);
-        Task<CustomerOrderItemViewModel> GetByIdAsync(Guid id);
+        Task<CustomerOrderItemViewModel?> GetByIdAsync(Guid id);
     }
 }

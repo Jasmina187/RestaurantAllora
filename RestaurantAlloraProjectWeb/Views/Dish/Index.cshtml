@@ -1,6 +1,6 @@
 @using RestaurantAlloraProject.ViewModels.Dish
 @model IEnumerable<DishViewModel>
-<h2 class="text-center mb-4">🍽️ Menu</h2>
+<h2 class="text-center mb-4">🍽️ Меню</h2>
 @if (User.IsInRole("Admin"))
 {
     <a asp-controller="Dish" asp-action="Create" class="btn btn-warning mb-3">

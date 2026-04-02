@@ -22,6 +22,14 @@ namespace RestaurantAlloraProjectWeb.Controllers
             var tables = await _tableService.GetAllAsync();
             return View(tables);
         }
+  
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> ChooseTable()
+        {
+            var tables = await _tableService.GetAllAsync();
+            return View(tables);
+        }
         [HttpGet]
         public IActionResult Create()
         {
@@ -81,5 +89,6 @@ namespace RestaurantAlloraProjectWeb.Controllers
             await _tableService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
+        
     }
 }

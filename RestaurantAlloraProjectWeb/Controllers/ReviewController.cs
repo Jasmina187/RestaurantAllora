@@ -9,12 +9,10 @@ namespace RestaurantAlloraProjectWeb.Controllers
     public class ReviewController : Controller
     {
         private readonly IReviewService _reviewService;
-
         public ReviewController(IReviewService reviewService)
         {
             _reviewService = reviewService;
         }
-
         [HttpGet]
         public IActionResult Add(Guid dishId)
         {

@@ -56,7 +56,6 @@ namespace RestaurantAlloraProject.Core.Services
                 };
                 _context.CustomerFavorites.Add(newFavorite);
             }
-
             await _context.SaveChangesAsync();
         }
     }

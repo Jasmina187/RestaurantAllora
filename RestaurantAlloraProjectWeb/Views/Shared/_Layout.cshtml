@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/RestaurantAlloraProjectWeb.styles.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
 </head>
@@ -40,6 +41,11 @@
                         </li>
 
                         <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Table" asp-action="ChooseTable">
+                                Маси
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Table" asp-action="Index">
                                 Маси
                             </a>
@@ -57,6 +63,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="Index">Поръчки</a>
                         </li>   
+
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Review" asp-action="Index">Ревюта</a>
                         </li>
@@ -76,7 +83,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2026 - RestaurantAlloraProjectWeb - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2026 - RestaurantAlloraProjectWeb - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> -
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

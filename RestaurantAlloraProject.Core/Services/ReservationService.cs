@@ -66,7 +66,7 @@ namespace RestaurantAlloraProject.Core.Services
         }
         public async Task CreateReservationAsync(ReservationCreateViewModel vm, Guid userId)
         {
-         
+
             if (vm.NumberOfGuests <= 0)
             {
                 throw new ArgumentException("Моля, въведи валиден брой гости.");
@@ -86,9 +86,9 @@ namespace RestaurantAlloraProject.Core.Services
             {
                 throw new ArgumentException("Резервацията е за 3 часа и надхвърля часа на затваряне (00:00 ч.). Най-късният час за резервация е 21:00 ч.");
             }
-                var potentialTables = await _context.Tables
-                .Where(t => t.CapacityOfTheTable >= vm.NumberOfGuests)
-                .ToListAsync();
+            var potentialTables = await _context.Tables
+            .Where(t => t.CapacityOfTheTable >= vm.NumberOfGuests)
+            .ToListAsync();
             Table? availableTable = null;
             foreach (var table in potentialTables)
             {
@@ -115,7 +115,7 @@ namespace RestaurantAlloraProject.Core.Services
                 var newCustomerProfile = new CustomerProfile { UserId = userId };
                 _context.Add(newCustomerProfile);
                 await _context.SaveChangesAsync();
-            }   
+            }
             var reservation = new Reservation
             {
                 ReservationId = Guid.NewGuid(),
