@@ -1,0 +1,308 @@
+﻿@using RestaurantAlloraProject.ViewModels.Dish
+@model IEnumerable<DishViewModel>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Онлайн Меню";
+    var categories = Model.Select(d => d.CategoryOfTheDish).Distinct().ToList();
+}
+
+<div class="menu-layout">
+    <div class="menu-main">
+        <h1 class="allora-title text-center mb-4">Меню Allora</h1>
+
+        <div class="category-pills mb-5 text-center">
+            <button class="pill-btn active" onclick="filterMenu('all')">Всички</button>
+            @foreach (var category in categories)
+            {
+                <button class="pill-btn" onclick="filterMenu('@category')">@category</button>
+            }
+        </div>
+
+        <div class="dishes-grid">
+            @foreach (var dish in Model)
+            {
+                <div class="dish-card" data-category="@dish.CategoryOfTheDish">
+                    <div class="dish-img-wrapper">
+                        <img src="@dish.ImageUrl" alt="@dish.NameOfTheDish">
+                    </div>
+                    <div class="dish-info">
+                        <h4 class="dish-name">@dish.NameOfTheDish</h4>
+                        <p class="dish-desc">@dish.DescriptionOfTheDish</p>
+                        <div class="dish-action mt-auto">
+                            <span class="dish-price">@dish.PriceOfTheDish.ToString("0.00") €</span>
+                            <button class="add-btn" onclick="addToCart('@dish.DishId', '@dish.NameOfTheDish.Replace("'", "\\'")', @dish.PriceOfTheDish.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture))">
+                                <i class="fas fa-plus"></i> Добави
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="cart-sidebar">
+        <h3 class="cart-title"><i class="fas fa-shopping-bag"></i> Вашата поръчка</h3>
+        <div id="cart-items" class="cart-items">
+            <div class="empty-cart text-center text-muted mt-5">
+                <i class="fas fa-shopping-cart fa-3x mb-3 opacity-25"></i>
+                <p>Количката е празна</p>
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="d-flex justify-content-between mb-3">
+                <span style="color:white;">Общо:</span>
+                <span id="cart-total" style="color:#c5a059; font-weight:bold;">0.00 €</span>
+            </div>
+            <button id="checkout-btn" class="checkout-btn" disabled>Поръчай</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #080a0c;
+        color: #fff;
+    }
+
+    .menu-layout {
+        display: flex;
+        max-width: 1400px;
+        margin: 0 auto;
+        gap: 30px;
+        padding: 20px;
+        align-items: flex-start;
+    }
+
+    .menu-main {
+        flex: 1;
+    }
+
+    .allora-title {
+        font-family: 'Playfair Display', serif;
+        color: #c5a059;
+        font-size: 3rem;
+    }
+
+    .category-pills {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-bottom: 30px;
+    }
+
+    .pill-btn {
+        background: #12151a;
+        border: 1px solid #2a2e35;
+        color: #aaa;
+        padding: 10px 20px;
+        border-radius: 30px;
+        cursor: pointer;
+    }
+
+        .pill-btn.active {
+            background: #c5a059;
+            color: #000;
+        }
+
+    .dishes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .dish-card {
+        background: #12151a;
+        border-radius: 15px;
+        border: 1px solid #1f2329;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .dish-img-wrapper {
+        height: 180px;
+        padding: 15px;
+        text-align: center;
+    }
+
+        .dish-img-wrapper img {
+            max-height: 100%;
+            max-width: 100%;
+        }
+
+    .dish-info {
+        padding: 15px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .dish-price {
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .add-btn {
+        background: transparent;
+        color: #c5a059;
+        border: 1px solid #c5a059;
+        padding: 5px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .cart-sidebar {
+        width: 350px;
+        background: #12151a;
+        padding: 20px;
+        border-radius: 15px;
+        position: sticky;
+        top: 20px;
+    }
+
+    .cart-item {
+        background: #0b0d0f;
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .qty-controls {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .qty-btn {
+        background: #c5a059;
+        border: none;
+        color: #000;
+        width: 25px;
+        height: 25px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .checkout-btn {
+        width: 100%;
+        background: #c5a059;
+        border: none;
+        padding: 15px;
+        border-radius: 10px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+        .checkout-btn:disabled {
+            background: #333;
+            cursor: not-allowed;
+        }
+</style>
+
+<script>
+    let cart = [];
+
+    function formatPrice(price) {
+        return parseFloat(price).toFixed(2) + " €";
+    }
+
+    function addToCart(id, name, price) {
+        let existingItem = cart.find(i => i.id === id); 
+        if (existingItem) {
+            existingItem.quantity++;
+        } else {
+            cart.push({ id: id, name: name, price: parseFloat(price), quantity: 1 });
+        }
+        updateCartUI();
+    }
+
+    function changeQuantity(id, delta) {
+        let item = cart.find(i => i.id === id);
+        if (item) {
+            item.quantity += delta;
+            if (item.quantity <= 0) {
+                cart = cart.filter(i => i.id !== id);
+            }
+            updateCartUI();
+        }
+    }
+
+    function updateCartUI() {
+        const cartContainer = document.getElementById('cart-items');
+        const checkoutBtn = document.getElementById('checkout-btn');
+        const totalElem = document.getElementById('cart-total');
+
+        if (cart.length === 0) {
+            cartContainer.innerHTML = '<div class="empty-cart text-center mt-5"><p>Количката е празна</p></div>';
+            totalElem.innerText = "0.00 €";
+            checkoutBtn.disabled = true;
+            return;
+        }
+
+        checkoutBtn.disabled = false;
+        let html = '';
+        let total = 0;
+
+        cart.forEach(item => {
+            let itemTotal = item.price * item.quantity;
+            total += itemTotal;
+            html += `
+                <div class="cart-item">
+                    <div>
+                        <h6 style="margin:0; color:white;">${item.name}</h6>
+                        <small style="color:#c5a059;">${formatPrice(itemTotal)}</small>
+                    </div>
+                    <div class="qty-controls">
+                        <button class="qty-btn" onclick="changeQuantity('${item.id}', -1)">-</button>
+                        <span>${item.quantity}</span>
+                        <button class="qty-btn" onclick="changeQuantity('${item.id}', 1)">+</button>
+                    </div>
+                </div>`;
+        });
+
+        cartContainer.innerHTML = html;
+        totalElem.innerText = formatPrice(total);
+    }
+    function filterMenu(category) {
+        document.querySelectorAll('.pill-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        document.querySelectorAll('.dish-card').forEach(card => {
+            if (category === 'all' || card.getAttribute('data-category') === category) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+    document.getElementById('checkout-btn').addEventListener('click', async function () {
+        const formattedCart = cart.map(item => ({
+            dishId: item.id,
+            dishName: item.name,
+            price: item.price,
+            quantity: item.quantity
+        }));
+
+        const btn = document.getElementById('checkout-btn');
+        btn.disabled = true;
+        btn.innerText = "Обработка...";
+
+        const response = await fetch('/Order/SubmitOrder', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formattedCart)
+        });
+
+        if (response.ok) {
+            alert("Поръчката е приета!");
+            cart = [];
+            window.location.href = '/Order/Index';
+        } else {
+            alert("Грешка при поръчката.");
+            btn.disabled = false;
+            btn.innerText = "Поръчай";
+        }
+    });
+</script>

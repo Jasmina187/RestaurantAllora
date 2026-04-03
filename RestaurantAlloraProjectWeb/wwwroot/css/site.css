@@ -1,28 +1,7 @@
-/*html {
-  font-size: 14px;
-}
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
-  margin-bottom: 60px;
-}*/
 :root {
-    --dark-bg: #0f1216; /* Дълбоко черно-синьо */
-    --gold-accent: #c5a059; /* Матово злато */
+    --dark-bg: #0f1216;
+    --gold-accent: #c5a059; 
     --soft-white: #e4e4e4;
     --card-bg: #1a1e23;
 }
@@ -30,12 +9,10 @@ body {
 body {
     background-color: var(--dark-bg);
     color: var(--soft-white);
-    font-family: 'Montserrat', sans-serif; /* Модерен и изчистен */
+    font-family: 'Montserrat', sans-serif; 
 }
-
-/* Разчупен лукс за заглавията */
 h1, h2, h3, .navbar-brand {
-    font-family: 'Playfair Display', serif; /* Елегантен Serif шрифт */
+    font-family: 'Playfair Display', serif; 
     letter-spacing: 1px;
     color: var(--gold-accent);
 }
@@ -50,7 +27,7 @@ h1, h2, h3, .navbar-brand {
 
     .dish-card:hover {
         transform: scale(1.03);
-        box-shadow: 0 15px 45px rgba(197, 160, 89, 0.2); /* Златисто сияние */
+        box-shadow: 0 15px 45px rgba(197, 160, 89, 0.2); 
     }
 
 .btn-primary {
@@ -58,7 +35,7 @@ h1, h2, h3, .navbar-brand {
     border: none;
     color: #000;
     font-weight: bold;
-    border-radius: 30px; /* Овални бутони за по-луксозно излъчване */
+    border-radius: 30px; 
 }
 .table-card {
     animation: fadeIn 0.5s ease forwards;
@@ -76,10 +53,25 @@ h1, h2, h3, .navbar-brand {
         transform: translateY(0);
     }
 }
-
-/* Всяка следваща маса се появява с малко закъснение */
 @foreach (var i in Enumerable.Range(1, 20)) {
     .table-card:nth-child(@i) {
         animation-delay: @(i * 0.1)s;
     }
+}
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    background-color: #080a0c; 
+}
+main {
+    flex: 1;
+}
+.allora-footer {
+    background-color: #0b0d0f;
+    border-top: 1px solid #2a2e35;
+    width: 100%;
 }

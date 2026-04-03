@@ -29,6 +29,13 @@ namespace RestaurantAlloraProjectWeb.Controllers
             var dishes = await _dishService.GetAllAsync();
             return View(dishes);
         }
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> ClientMenu()
+        {
+            var dishes = await _dishService.GetAllAsync();
+            return View(dishes);
+        }
         [HttpGet]
         public async Task<IActionResult> Create()
         {
