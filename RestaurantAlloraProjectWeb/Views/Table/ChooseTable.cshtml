@@ -13,7 +13,7 @@
 
     <div class="category-grid">
 
-        <div class="category-item" onclick="filterTables(2, 2)">
+        <div class="category-item js-table-filter" data-min-cap="2" data-max-cap="2">
             <div class="img-wrapper">
                 <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=800" alt="Romantic">
                 <div class="overlay">
@@ -24,7 +24,7 @@
             </div>
         </div>
 
-        <div class="category-item" onclick="filterTables(4, 4)">
+        <div class="category-item js-table-filter" data-min-cap="4" data-max-cap="4">
             <div class="img-wrapper">
                 <img src="https://images.pexels.com/photos/1581554/pexels-photo-1581554.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Friends">
                 <div class="overlay">
@@ -35,7 +35,7 @@
             </div>
         </div>
 
-        <div class="category-item" onclick="filterTables(6, 6)">
+        <div class="category-item js-table-filter" data-min-cap="6" data-max-cap="6">
             <div class="img-wrapper">
                 <img src="https://images.pexels.com/photos/1537635/pexels-photo-1537635.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Family">
                 <div class="overlay">
@@ -46,7 +46,7 @@
             </div>
         </div>
 
-        <div class="category-item" onclick="filterTables(8, 10)">
+        <div class="category-item js-table-filter" data-min-cap="8" data-max-cap="10">
             <div class="img-wrapper">
                 <img src="https://images.pexels.com/photos/3184183/pexels-photo-3184183.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Party">
                 <div class="overlay">
@@ -61,16 +61,28 @@
 
     <div id="results-area" class="results-hidden">
         <h2 id="filter-title" class="text-center mb-4"></h2>
+        <div class="table-status-legend">
+            <span><i class="legend-dot legend-dot-available"></i>Свободна</span>
+            <span><i class="legend-dot legend-dot-reserved"></i>Резервирана</span>
+        </div>
+        <div id="table-reservation-info" class="table-reservation-info" aria-live="polite"></div>
         <div class="tables-flex-grid">
             @foreach (var table in Model)
             {
-                <a asp-action="Details" asp-route-id="@table.TableId"
-                   class="luxury-table-card"
-                   data-cap="@table.CapacityOfTheTable">
+                var isAvailable = !table.ActiveReservationStarts.Any();
+                var tableStatus = isAvailable ? "Свободна" : "Резервирана";
+                var statusClass = isAvailable ? "table-card-available" : "table-card-reserved";
+                var reservationRanges = string.Join("|", table.ActiveReservationStarts.Select(start => $"{start:dd.MM.yyyy} от {start:HH:mm} до {start.AddHours(3):HH:mm}"));
+
+                <a asp-controller="Reservation" asp-action="Create" asp-route-tableId="@table.TableId"
+                   class="luxury-table-card @statusClass"
+                   data-cap="@table.CapacityOfTheTable"
+                   data-table-number="@table.TableNumber"
+                   data-reservation-ranges="@reservationRanges">
                     <div class="table-inner">
-                        <i class="fas fa-wine-glass-alt"></i>
                         <span class="t-num">#@table.TableNumber</span>
                         <span class="t-cap">@table.CapacityOfTheTable места</span>
+                        <span class="t-status">@tableStatus</span>
                     </div>
                 </a>
             }
@@ -78,210 +90,3 @@
     </div>
 </div>
 
-<style>
-    .luxury-container {
-        background: #080a0c;
-        padding: 60px 20px;
-        color: #fff;
-        min-height: 100vh;
-    }
-
-    .allora-title {
-        font-family: 'Playfair Display', serif;
-        color: #c5a059;
-        font-size: 3.5rem;
-        margin-bottom: 10px;
-        text-transform: uppercase;
-        letter-spacing: 3px;
-    }
-
-    .allora-subtitle {
-        font-family: 'Montserrat', sans-serif;
-        color: #888;
-        letter-spacing: 1px;
-        margin-bottom: 60px;
-    }
-    .category-grid {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        flex-wrap: wrap;
-        margin-bottom: 80px;
-        max-width: 1400px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .category-item {
-        width: 280px;
-        height: 400px;
-        cursor: pointer;
-        transition: 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-
-    .img-wrapper {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        border-radius: 20px;
-        overflow: hidden;
-        border: 1px solid rgba(197, 160, 89, 0.2);
-    }
-
-        .img-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0.7;
-            transition: 0.6s;
-        }
-
-    .overlay {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        padding: 25px;
-        text-align: center;
-    }
-
-    .cap-number {
-        font-size: 4rem;
-        color: #c5a059;
-        font-weight: bold;
-        opacity: 0.3;
-        position: absolute;
-        top: 10px;
-        right: 20px;
-    }
-
-    .overlay h3 {
-        color: #c5a059;
-        font-family: 'Playfair Display', serif;
-        font-size: 1.5rem;
-        margin: 0;
-    }
-
-    .overlay p {
-        color: #fff;
-        margin: 5px 0 0;
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    .category-item:hover {
-        transform: translateY(-15px);
-    }
-
-        .category-item:hover img {
-            opacity: 1;
-            transform: scale(1.1);
-        }
-
-        .category-item:hover .img-wrapper {
-            border-color: #c5a059;
-            box-shadow: 0 15px 30px rgba(197, 160, 89, 0.2);
-        }
-    .results-hidden {
-        opacity: 0;
-        transform: translateY(30px);
-        transition: 0.8s;
-        pointer-events: none;
-    }
-
-    .results-visible {
-        opacity: 1;
-        transform: translateY(0);
-        pointer-events: auto;
-    }
-
-    .tables-flex-grid {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-
-    .luxury-table-card {
-        width: 130px;
-        height: 130px;
-        background: #12151a;
-        border: 2px solid #23282f;
-        border-radius: 15px;
-        text-decoration: none;
-        color: #fff;
-        transition: 0.4s;
-        display: block;
-    }
-
-    .table-inner {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 5px;
-    }
-
-    .luxury-table-card i {
-        font-size: 1.3rem;
-        color: #c5a059;
-    }
-
-    .t-num {
-        font-size: 1.4rem;
-        font-weight: bold;
-    }
-
-    .t-cap {
-        font-size: 0.65rem;
-        color: #666;
-        text-transform: uppercase;
-    }
-
-    .luxury-table-card:hover {
-        background: #c5a059;
-        border-color: #fff;
-        transform: scale(1.1) rotate(4deg);
-    }
-
-        .luxury-table-card:hover i, .luxury-table-card:hover .t-num, .luxury-table-card:hover .t-cap {
-            color: #000;
-        }
-
-    .hidden-table {
-        display: none !important;
-    }
-</style>
-
-<script>
-    function filterTables(minCap, maxCap) {
-        const resultsArea = document.getElementById('results-area');
-        const title = document.getElementById('filter-title');
-        const tables = document.querySelectorAll('.luxury-table-card');
-        resultsArea.classList.remove('results-visible');
-
-        setTimeout(() => {
-            let visibleCount = 0;
-
-            tables.forEach(t => {
-                const tableCap = parseInt(t.getAttribute('data-cap'));
-                if (tableCap >= minCap && tableCap <= maxCap) {
-                    t.classList.remove('hidden-table');
-                    visibleCount++;
-                } else {
-                    t.classList.add('hidden-table');
-                }
-            });
-            let titleText = minCap === maxCap ? `за ${minCap} души` : `от 8 до 10 души`;
-            title.innerHTML = `<span style="color:#c5a059">Налични маси ${titleText}:</span> ${visibleCount} опции`;
-            resultsArea.classList.add('results-visible');
-            window.scrollTo({ top: resultsArea.offsetTop - 50, behavior: 'smooth' });
-        }, 300);
-    }
-</script>
