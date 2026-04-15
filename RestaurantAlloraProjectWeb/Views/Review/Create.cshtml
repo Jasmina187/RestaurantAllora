@@ -9,20 +9,12 @@
 
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create" method="post">
+        <form asp-action="Add" method="post">
+            @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="form-group mb-3">
-                <label asp-for="DishId" class="control-label">Ястие (ID)</label>
-                <input asp-for="DishId" class="form-control" />
-                <span asp-validation-for="DishId" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-3">
-                <label asp-for="CustomerId" class="control-label">Клиент (ID)</label>
-                <input asp-for="CustomerId" class="form-control" />
-                <span asp-validation-for="CustomerId" class="text-danger"></span>
-            </div>
+            <input type="hidden" asp-for="DishId" />
+            <input type="hidden" asp-for="CustomerId" />
 
             <div class="form-group mb-3">
                 <label asp-for="Rating" class="control-label">Оценка (1-5)</label>
@@ -44,6 +36,3 @@
     </div>
 </div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}

@@ -20,27 +20,53 @@ namespace RestaurantAlloraProject.Core.Services
         }
         public async Task<IEnumerable<TableViewModel>> GetAllAsync()
         {
-            return await _context.Tables
+            var now = DateTime.Now;
+
+            var tables = await _context.Tables
+                .Include(t => t.Reservations)
                 .OrderBy(t => t.TableNumber)
-                .Select(t => new TableViewModel
+                .ToListAsync();
+
+            return tables.Select(t =>
+            {
+                var activeReservationStarts = t.Reservations
+                    .Where(r => r.Status == "Одобрена" && r.ReservationDate.AddHours(3) > now)
+                    .OrderBy(r => r.ReservationDate)
+                    .Select(r => r.ReservationDate)
+                    .ToList();
+
+                return new TableViewModel
                 {
                     TableId = t.TableId,
                     TableNumber = t.TableNumber,
                     CapacityOfTheTable = t.CapacityOfTheTable,
-                    StatusOfTheTable = t.StatusOfTheTable
-                })
-                .ToListAsync();
+                    StatusOfTheTable = activeReservationStarts.Any() ? "Резервирана" : "Свободна",
+                    NextReservationStart = activeReservationStarts.Select(r => (DateTime?)r).FirstOrDefault(),
+                    ActiveReservationStarts = activeReservationStarts
+                };
+            });
         }
         public async Task<TableViewModel?> GetByIdAsync(Guid id)
         {
-            var table = await _context.Tables.FirstOrDefaultAsync(t => t.TableId == id);
+            var table = await _context.Tables
+                .Include(t => t.Reservations)
+                .FirstOrDefaultAsync(t => t.TableId == id);
             if (table == null) return null;
+
+            var activeReservationStarts = table.Reservations
+                .Where(r => r.Status == "Одобрена" && r.ReservationDate.AddHours(3) > DateTime.Now)
+                .OrderBy(r => r.ReservationDate)
+                .Select(r => r.ReservationDate)
+                .ToList();
+
             return new TableViewModel
             {
                 TableId = table.TableId,
                 TableNumber = table.TableNumber,
                 CapacityOfTheTable = table.CapacityOfTheTable,
-                StatusOfTheTable = table.StatusOfTheTable
+                StatusOfTheTable = activeReservationStarts.Any() ? "Резервирана" : "Свободна",
+                NextReservationStart = activeReservationStarts.Select(r => (DateTime?)r).FirstOrDefault(),
+                ActiveReservationStarts = activeReservationStarts
             };
         }
         public async Task CreateAsync(TableViewModel vm)
@@ -75,7 +101,7 @@ namespace RestaurantAlloraProject.Core.Services
             }
             table.TableNumber = vm.TableNumber;
             table.CapacityOfTheTable = vm.CapacityOfTheTable;
-            table.StatusOfTheTable = vm.StatusOfTheTable;
+            table.StatusOfTheTable = string.IsNullOrWhiteSpace(vm.StatusOfTheTable) ? "Свободна" : vm.StatusOfTheTable;
             await _context.SaveChangesAsync();
         }
         public async Task DeleteAsync(Guid id)

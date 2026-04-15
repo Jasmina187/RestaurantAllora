@@ -1,14 +1,9 @@
-﻿using RestaurantAlloraProjectData.Entities;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RestaurantAlloraProjectViewModels.Reservation
 {
-    public  class ReservationIndexViewModel
+    public class ReservationIndexViewModel
     {
         public Guid ReservationId { get; set; }
 
@@ -30,13 +25,16 @@ namespace RestaurantAlloraProjectViewModels.Reservation
         [Range(1, 20, ErrorMessage = "Броят гости трябва да бъде между 1 и 20.")]
         public int NumberOfGuests { get; set; }
 
-        public string StatusOfTheTable { get; set; } = "Заета";
+        public string StatusOfTheTable { get; set; } = "Свободна";
 
-        [Required(ErrorMessage = "Името на клиента е задължително.")]
         [StringLength(100, ErrorMessage = "Името на клиента не може да бъде по-дълго от 100 символа.")]
         public string? CustomerName { get; set; }
 
         [StringLength(100, ErrorMessage = "Името на служителя не може да бъде по-дълго от 100 символа.")]
-        public string? EmployeeName { get; set; }           
+        public string? EmployeeName { get; set; }
+
+        public bool CanApprove => Status == "Очаква одобрение";
+
+        public bool CanReject => Status == "Очаква одобрение" || Status == "Одобрена";
     }
 }

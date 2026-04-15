@@ -20,5 +20,10 @@ namespace RestaurantAlloraProjectViewModels.Table
         [StringLength(20, ErrorMessage = "Статусът не може да бъде по-дълъг от 20 символа.")]
         public string? StatusOfTheTable { get; set; } = "Свободна";
 
+        public DateTime? NextReservationStart { get; set; }
+
+        public DateTime? NextReservationEnd => NextReservationStart?.AddHours(3);
+
+        public List<DateTime> ActiveReservationStarts { get; set; } = new List<DateTime>();
     }
 }

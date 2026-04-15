@@ -1,9 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RestaurantAlloraProjectViewModels.Dish
 {
@@ -31,6 +28,5 @@ namespace RestaurantAlloraProjectViewModels.Dish
         public string ImageUrl { get; set; } = null!;
 
         public List<Guid> SelectedAllergenIds { get; set; } = new();
-        public Microsoft.AspNetCore.Mvc.Rendering.MultiSelectList? Allergens { get; set; }
     }
 }

@@ -11,6 +11,7 @@ namespace RestaurantAlloraProject.Core.Contracts
     {
         Task<List<ReservationIndexViewModel>> GetUserReservationsAsync(Guid userId);
         Task<List<ReservationIndexViewModel>> GetPendingReservationsAsync();
+        Task<ReservationManagementViewModel> GetReservationsForManagementAsync(ReservationFilterViewModel filter);
         Task CreateReservationAsync(ReservationCreateViewModel vm, Guid userId);
         Task ApproveReservationAsync(Guid id, Guid employeeId);
         Task RejectReservationAsync(Guid id, Guid employeeId);

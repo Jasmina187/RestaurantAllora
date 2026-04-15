@@ -12,7 +12,7 @@ using RestaurantAlloraProjectData;
 namespace RestaurantAlloraProjectData.Migrations
 {
     [DbContext(typeof(RestaurantAlloraProjectContext))]
-    [Migration("20260402095205_InitialMigration")]
+    [Migration("20260415050530_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />

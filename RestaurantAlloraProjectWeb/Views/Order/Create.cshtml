@@ -5,76 +5,6 @@
     ViewData["Title"] = "Вашата поръчка";
 }
 
-<style>
-    .order-container {
-        background-color: #fcf9f2;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-        padding: 40px;
-        margin-top: 50px;
-        margin-bottom: 50px;
-    }
-
-    .order-header {
-        color: #d32f2f;
-        font-weight: 700;
-        border-bottom: 2px dashed #e0e0e0;
-        padding-bottom: 15px;
-        margin-bottom: 30px;
-    }
-
-    .item-card {
-        background: #fff;
-        border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 15px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.04);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        transition: 0.2s ease;
-    }
-
-        .item-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-        }
-
-    .btn-update {
-        background-color: #2e7d32;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        padding: 8px 15px;
-    }
-
-    .btn-remove {
-        background-color: #ffebee;
-        color: #d32f2f;
-        border: none;
-        border-radius: 8px;
-        padding: 8px 15px;
-    }
-
-    .total-section {
-        background-color: #222;
-        color: white;
-        padding: 30px;
-        border-radius: 12px;
-        margin-top: 40px;
-    }
-
-    .btn-checkout {
-        background-color: #d32f2f;
-        color: white;
-        padding: 12px 35px;
-        border-radius: 30px;
-        border: none;
-        font-weight: bold;
-        text-transform: uppercase;
-    }
-</style>
-
 <div class="container">
     <div class="order-container">
         <h2 class="order-header"><i class="fas fa-utensils me-2"></i> Количка, Allora!</h2>
@@ -93,18 +23,18 @@
                 @foreach (var item in Model.CustomerOrderItems)
                 {
                     <div class="item-card flex-column flex-md-row">
-                        <div class="mb-3 mb-md-0" style="flex: 1;">
-                            <div class="fw-bold" style="font-size: 1.25rem;">@item.DishName</div>
+                        <div class="mb-3 mb-md-0 order-item-details">
+                            <div class="fw-bold order-item-name">@item.DishName</div>
                             <div class="text-muted">@item.Price.ToString("F2") лв. / порция</div>
                         </div>
 
                         <form asp-controller="CustomerOrderItem" asp-action="UpdateQuantity" method="post" class="d-flex align-items-center mb-3 mb-md-0 mx-md-4">
                             <input type="hidden" name="id" value="@item.Id" />
-                            <input type="number" name="quantity" class="form-control text-center me-2" value="@item.Quantity" min="1" style="width: 80px; font-weight: bold;" />
+                            <input type="number" name="quantity" class="form-control text-center me-2 order-quantity-input" value="@item.Quantity" min="1" />
                             <button type="submit" class="btn-update"><i class="fas fa-sync-alt"></i></button>
                         </form>
 
-                        <div class="fw-bold mb-3 mb-md-0 text-center mx-md-4" style="font-size: 1.2rem; color: #2e7d32; width: 100px;">
+                        <div class="fw-bold mb-3 mb-md-0 text-center mx-md-4 order-item-total">
                             @((item.Quantity * item.Price).ToString("F2")) лв.
                         </div>
 
@@ -120,7 +50,7 @@
 
             <div class="total-section d-flex flex-column flex-md-row align-items-center justify-content-between">
                 <div>
-                    <span class="text-uppercase text-muted" style="letter-spacing: 1px;">Общо за плащане</span>
+                    <span class="text-uppercase text-muted total-label">Общо за плащане</span>
                     <h2 class="mb-0 text-warning fw-bold">@Model.TotalAmount.ToString("F2") лв.</h2>
                 </div>
 

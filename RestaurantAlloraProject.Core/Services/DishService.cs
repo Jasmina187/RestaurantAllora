@@ -1,4 +1,3 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RestaurantAlloraProject.Core.Contracts;
 using RestaurantAlloraProject.ViewModels.Dish;
@@ -8,8 +7,6 @@ using RestaurantAlloraProjectViewModels.Dish;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace RestaurantAlloraProject.Core.Services
@@ -17,10 +14,12 @@ namespace RestaurantAlloraProject.Core.Services
     public class DishService : IDishService
     {
         private readonly RestaurantAlloraProjectContext _context;
+
         public DishService(RestaurantAlloraProjectContext context)
         {
             _context = context;
         }
+
         public async Task<IEnumerable<DishViewModel>> GetAllAsync()
         {
             return await _context.Dishes
@@ -38,16 +37,17 @@ namespace RestaurantAlloraProject.Core.Services
                 })
                 .ToListAsync();
         }
+
         public async Task<DishEditViewModel?> GetByIdAsync(Guid id)
         {
             var dish = await _context.Dishes
                 .Include(d => d.DishAllergens)
                 .FirstOrDefaultAsync(d => d.DishId == id);
+
             if (dish == null)
             {
                 return null;
             }
-             var selectedIds = dish.DishAllergens.Select(x => x.AllergenId).ToList();
 
             return new DishEditViewModel
             {
@@ -57,9 +57,10 @@ namespace RestaurantAlloraProject.Core.Services
                 PriceOfTheDish = dish.PriceOfTheDish,
                 CategoryOfTheDish = dish.CategoryOfTheDish,
                 ImageUrl = dish.ImageUrl,
-                SelectedAllergenIds = selectedIds
+                SelectedAllergenIds = dish.DishAllergens.Select(x => x.AllergenId).ToList()
             };
         }
+
         public async Task CreateAsync(DishCreateViewModel model)
         {
             var dish = new Dish
@@ -76,16 +77,16 @@ namespace RestaurantAlloraProject.Core.Services
             var selectedAllergens = await _context.Allergens
                 .Where(a => model.SelectedAllergenIds.Contains(a.AllergenId))
                 .ToListAsync();
-            if (selectedAllergens.Count > 0)
+
+            foreach (var allergen in selectedAllergens.Distinct())
             {
-                foreach (var allergenId in selectedAllergens)
-                {
-                    dish.DishAllergens.Add(new DishAllergen { Dish = dish, Allergen = allergenId });
-                }
+                dish.DishAllergens.Add(new DishAllergen { Dish = dish, Allergen = allergen });
             }
+
             _context.Dishes.Add(dish);
             await _context.SaveChangesAsync();
         }
+
         public async Task UpdateAsync(DishEditViewModel model)
         {
             var dish = await _context.Dishes
@@ -96,6 +97,7 @@ namespace RestaurantAlloraProject.Core.Services
             {
                 throw new InvalidOperationException("Ястието не е намерено.");
             }
+
             dish.NameOfTheDish = model.NameOfTheDish;
             dish.DescriptionOfTheDish = model.DescriptionOfTheDish;
             dish.PriceOfTheDish = model.PriceOfTheDish;
@@ -107,25 +109,28 @@ namespace RestaurantAlloraProject.Core.Services
                 .Where(a => model.SelectedAllergenIds.Contains(a.AllergenId))
                 .ToListAsync();
 
-            foreach (var allergenId in selectedAllergens.Distinct())
+            foreach (var allergen in selectedAllergens.Distinct())
             {
-                dish.DishAllergens.Add(new DishAllergen { Dish = dish, Allergen = allergenId });
+                dish.DishAllergens.Add(new DishAllergen { Dish = dish, Allergen = allergen });
             }
+
             await _context.SaveChangesAsync();
-        }  
+        }
+
         public async Task DeleteAsync(Guid id)
         {
             var dish = await _context.Dishes.FindAsync(id);
+
             if (dish != null)
             {
                 _context.Dishes.Remove(dish);
                 await _context.SaveChangesAsync();
             }
         }
-        public SelectList GetCategoriesSelectList(string? selected = null)
+
+        public IEnumerable<string> GetCategories()
         {
-            var categories = new List<string> { "Салати", "Основни ястия", "Десерти", "Напитки" };
-            return new SelectList(categories, selected);
+            return new List<string> { "Салати", "Основни ястия", "Десерти", "Напитки" };
         }
     }
 }

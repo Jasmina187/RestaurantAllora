@@ -52,8 +52,24 @@ namespace RestaurantAlloraProjectWeb.Controllers
             {
                 return View(model);
             }
-            await _orderService.CreateOrderAsync(model);
-            return RedirectToAction("Index");
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!Guid.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized();
+            }
+
+            model.CustomerId = userId;
+
+            try
+            {
+                await _orderService.CreateOrderAsync(model);
+                return RedirectToAction("Index");
+            }
+            catch (ArgumentException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View(model);
+            }
         }
 
         [HttpGet]
@@ -74,6 +90,7 @@ namespace RestaurantAlloraProjectWeb.Controllers
             return View(order);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SubmitOrder([FromBody] List<CustomerOrderItemViewModel> cartItems)
         {
             if (cartItems == null || !cartItems.Any())
@@ -81,7 +98,7 @@ namespace RestaurantAlloraProjectWeb.Controllers
                 return BadRequest("Количката е празна.");
             }
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userIdString))
+            if (!Guid.TryParse(userIdString, out var userId))
             {
                 return Unauthorized();
             }
@@ -95,12 +112,18 @@ namespace RestaurantAlloraProjectWeb.Controllers
                 OrderId = newOrderId,
                 OrderDate = DateTime.Now,
                 Status = "Обработва се",
-                CustomerId = Guid.Parse(userIdString),
-                TotalAmount = cartItems.Sum(c => c.Price * c.Quantity), 
+                CustomerId = userId,
                 CustomerOrderItems = cartItems 
             };
-            await _orderService.CreateOrderAsync(order);
-            return Json(new { success = true });
+            try
+            {
+                await _orderService.CreateOrderAsync(order);
+                return Json(new { success = true });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

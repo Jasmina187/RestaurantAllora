@@ -12,12 +12,16 @@ namespace RestaurantAlloraProjectWeb.Controllers
         private readonly SignInManager<User> signInManager;
         private readonly RoleManager<IdentityRole<Guid>> roleManager;
 
-        public UserController(UserManager<User> _userManager,SignInManager<User> _signInManager, RoleManager<IdentityRole<Guid>> _roleManager)
+        public UserController(
+            UserManager<User> _userManager,
+            SignInManager<User> _signInManager,
+            RoleManager<IdentityRole<Guid>> _roleManager)
         {
             userManager = _userManager;
             signInManager = _signInManager;
             roleManager = _roleManager;
         }
+
         [HttpGet]
         public IActionResult Register()
         {
@@ -25,8 +29,10 @@ namespace RestaurantAlloraProjectWeb.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+
             var roles = new string[] { "Customer", "Employee" };
             ViewBag.Roles = new SelectList(roles);
+
             var model = new RegisterViewModel();
             return View(model);
         }
@@ -35,9 +41,16 @@ namespace RestaurantAlloraProjectWeb.Controllers
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             var roles = new string[] { "Customer", "Employee" };
-            
+
             if (!ModelState.IsValid)
             {
+                ViewBag.Roles = new SelectList(roles);
+                return View(model);
+            }
+
+            if (!roles.Contains(model.Role))
+            {
+                ModelState.AddModelError(nameof(model.Role), "Невалидна роля.");
                 ViewBag.Roles = new SelectList(roles);
                 return View(model);
             }
@@ -52,6 +65,19 @@ namespace RestaurantAlloraProjectWeb.Controllers
 
             if (result.Succeeded)
             {
+                var roleResult = await userManager.AddToRoleAsync(user, model.Role);
+
+                if (!roleResult.Succeeded)
+                {
+                    foreach (var item in roleResult.Errors)
+                    {
+                        ModelState.AddModelError("", item.Description);
+                    }
+
+                    ViewBag.Roles = new SelectList(roles);
+                    return View(model);
+                }
+
                 return RedirectToAction("LogIn", "User");
             }
 
@@ -60,6 +86,7 @@ namespace RestaurantAlloraProjectWeb.Controllers
                 ModelState.AddModelError("", item.Description);
             }
 
+            ViewBag.Roles = new SelectList(roles);
             return View(model);
         }
 
@@ -70,6 +97,7 @@ namespace RestaurantAlloraProjectWeb.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+
             var model = new LoginViewModel();
             return View(model);
         }
@@ -97,12 +125,12 @@ namespace RestaurantAlloraProjectWeb.Controllers
             ModelState.AddModelError("", "Invalid Login");
             return View(model);
         }
+
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
 
             return RedirectToAction("LogIn", "User");
         }
-
     }
 }

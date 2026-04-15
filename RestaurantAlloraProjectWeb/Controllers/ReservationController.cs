@@ -1,56 +1,66 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using RestaurantAlloraProject.Core.Contracts;
-using RestaurantAlloraProjectData;
 using RestaurantAlloraProjectData.Entities;
 using RestaurantAlloraProjectViewModels.Reservation;
 
 namespace RestaurantAlloraProjectWeb.Controllers
 {
-    [Authorize(Roles = "Admin,Customer")]
+    [Authorize]
     public class ReservationController : Controller
     {
         private readonly IReservationService _reservationService;
         private readonly UserManager<User> _userManager;
+
         public ReservationController(IReservationService reservationService, UserManager<User> userManager)
         {
             _reservationService = reservationService;
             _userManager = userManager;
         }
+
         [HttpGet]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Index()
         {
             var userId = Guid.Parse(_userManager.GetUserId(User)!);
             var data = await _reservationService.GetUserReservationsAsync(userId);
+
             return View(data);
         }
+
         [HttpGet]
-        public async Task<IActionResult> Create()
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> Create(Guid? tableId)
         {
             var vm = new ReservationCreateViewModel
             {
+                TableId = tableId ?? Guid.Empty,
                 ReservationDate = DateTime.Now.AddHours(1)
             };
+
             await _reservationService.FillTablesAsync(vm);
+
             return View(vm);
         }
 
         [HttpPost]
+        [Authorize(Roles = "Customer")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ReservationCreateViewModel vm)
         {
             if (!ModelState.IsValid)
             {
-                await _reservationService.FillTablesAsync(vm); 
+                await _reservationService.FillTablesAsync(vm);
                 return View(vm);
             }
+
             try
             {
                 var userId = Guid.Parse(_userManager.GetUserId(User)!);
                 await _reservationService.CreateReservationAsync(vm, userId);
 
+                TempData["ReservationSuccess"] = "Резервацията е изпратена и очаква одобрение.";
                 return RedirectToAction(nameof(Index));
             }
             catch (ArgumentException ex)
@@ -60,30 +70,52 @@ namespace RestaurantAlloraProjectWeb.Controllers
                 return View(vm);
             }
         }
+
         [HttpGet]
-        public async Task<IActionResult> Pending()
+        [Authorize(Roles = "Admin,Employee")]
+        public async Task<IActionResult> Pending([FromQuery] ReservationFilterViewModel filter)
         {
-            var data = await _reservationService.GetPendingReservationsAsync();
-            return View(data);
+            var model = await _reservationService.GetReservationsForManagementAsync(filter);
+
+            return View(model);
         }
+
         [HttpPost]
+        [Authorize(Roles = "Admin,Employee")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Approve(Guid id)
         {
-            var employeeId = Guid.Parse(_userManager.GetUserId(User)!);
-            await _reservationService.ApproveReservationAsync(id, employeeId);
+            try
+            {
+                var employeeId = Guid.Parse(_userManager.GetUserId(User)!);
+                await _reservationService.ApproveReservationAsync(id, employeeId);
+                TempData["ReservationSuccess"] = "Резервацията е одобрена.";
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ReservationError"] = ex.Message;
+            }
+
             return RedirectToAction(nameof(Pending));
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Employee")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Reject(Guid id)
         {
-            var employeeId = Guid.Parse(_userManager.GetUserId(User)!);
-            await _reservationService.RejectReservationAsync(id, employeeId);
+            try
+            {
+                var employeeId = Guid.Parse(_userManager.GetUserId(User)!);
+                await _reservationService.RejectReservationAsync(id, employeeId);
+                TempData["ReservationSuccess"] = "Резервацията е отказана.";
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ReservationError"] = ex.Message;
+            }
+
             return RedirectToAction(nameof(Pending));
         }
     }
-
 }
-
-
-

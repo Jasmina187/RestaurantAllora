@@ -12,11 +12,11 @@ namespace RestaurantAlloraProject.ViewModels.User
 
         [Required(ErrorMessage = "Потребителското име е задължително.")]
         [StringLength(50, MinimumLength = 3, ErrorMessage = "Потребителското име трябва да бъде между 3 и 50 символа.")]
-        public string UserName { get; set; }
+        public string UserName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Паролата е задължителна.")]
         [DataType(DataType.Password)]
         [StringLength(100, MinimumLength = 6, ErrorMessage = "Паролата трябва да бъде поне 6 символа.")]
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
     }
 }

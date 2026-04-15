@@ -8,7 +8,6 @@ using RestaurantAlloraProjectViewModels.Table;
 
 namespace RestaurantAlloraProjectWeb.Controllers
 {
-    [Authorize(Roles = "Admin")] 
     public class TableController : Controller
     {
         private readonly ITableService _tableService;
@@ -16,26 +15,30 @@ namespace RestaurantAlloraProjectWeb.Controllers
         {
             _tableService = tableService;
         }
+        [Authorize(Roles = "Admin,Employee")]
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             var tables = await _tableService.GetAllAsync();
             return View(tables);
         }
-  
-        [AllowAnonymous]
+
+        [Authorize(Roles = "Customer")]
         [HttpGet]
         public async Task<IActionResult> ChooseTable()
         {
             var tables = await _tableService.GetAllAsync();
             return View(tables);
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult Create()
         {
             return View(new TableViewModel());
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TableViewModel vm)
         {
             if (!ModelState.IsValid)
@@ -47,12 +50,13 @@ namespace RestaurantAlloraProjectWeb.Controllers
                 await _tableService.CreateAsync(vm);
                 return RedirectToAction(nameof(Index));
             }
-            catch (ArgumentException ex) 
+            catch (ArgumentException ex)
             {
                 ModelState.AddModelError(nameof(vm.TableNumber), ex.Message);
                 return View(vm);
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
@@ -61,6 +65,7 @@ namespace RestaurantAlloraProjectWeb.Controllers
 
             return View(vm);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Edit(TableViewModel vm)
         {
@@ -73,22 +78,23 @@ namespace RestaurantAlloraProjectWeb.Controllers
                 await _tableService.UpdateAsync(vm);
                 return RedirectToAction(nameof(Index));
             }
-            catch (ArgumentException ex) 
+            catch (ArgumentException ex)
             {
                 ModelState.AddModelError(nameof(vm.TableNumber), ex.Message);
                 return View(vm);
             }
-            catch (InvalidOperationException) 
+            catch (InvalidOperationException)
             {
                 return NotFound();
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Delete(Guid id)
         {
             await _tableService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
-        
+
     }
 }

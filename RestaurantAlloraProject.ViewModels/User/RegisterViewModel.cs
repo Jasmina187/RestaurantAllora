@@ -11,25 +11,25 @@ namespace RestaurantAlloraProject.ViewModels.User
     {
         [Required(ErrorMessage = "Потребителското име е задължително.")]
         [StringLength(20, MinimumLength = 5, ErrorMessage = "Потребителското име трябва да бъде между 5 и 20 символа.")]
-        public string UserName { get; set; }
+        public string UserName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Имейл адресът е задължителен.")]
         [EmailAddress(ErrorMessage = "Моля въведете валиден имейл адрес.")]
         [StringLength(60, MinimumLength = 10, ErrorMessage = "Имейлът трябва да бъде между 10 и 60 символа.")]
-        public string EmailAddress { get; set; }
+        public string EmailAddress { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Паролата е задължителна.")]
         [StringLength(20, MinimumLength = 5, ErrorMessage = "Паролата трябва да бъде между 5 и 20 символа.")]
         [DataType(DataType.Password)]
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Моля потвърдете паролата.")]
         [Compare(nameof(Password), ErrorMessage = "Паролите не съвпадат.")]
         [DataType(DataType.Password)]
-        public string ConfirmPassword { get; set; }
+        public string ConfirmPassword { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Ролята е задължителна.")]
-        public string Role { get; set; }
+        public string Role { get; set; } = string.Empty;
     }
         
 }

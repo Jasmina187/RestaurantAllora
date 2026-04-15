@@ -14,31 +14,45 @@ namespace RestaurantAlloraProjectWeb.Controllers
             _reviewService = reviewService;
         }
         [HttpGet]
+        [Authorize(Roles = "Customer")]
         public IActionResult Add(Guid dishId)
         {
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!Guid.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized();
+            }
 
             var model = new ReviewViewModel
             {
                 DishId = dishId,
-                CustomerId = string.IsNullOrEmpty(userIdString) ? Guid.Empty : Guid.Parse(userIdString)
+                CustomerId = userId
             };
 
-            return View(model);
-        }      [HttpPost]
+            return View("Create", model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Customer")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(ReviewViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                return View(model); 
+                return View("Create", model); 
             }
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            model.CustomerId = Guid.Parse(userIdString);
+            if (!Guid.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized();
+            }
+
+            model.CustomerId = userId;
 
             await _reviewService.AddReviewAsync(model);
 
             TempData["Success"] = "Благодарим ви за оценката!";
-            return RedirectToAction("Details", "Dish", new { id = model.DishId });
+            return RedirectToAction("ClientMenu", "Dish");
         }
         [HttpGet]
         [Authorize(Roles = "Admin")] 

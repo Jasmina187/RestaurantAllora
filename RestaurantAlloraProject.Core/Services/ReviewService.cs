@@ -20,6 +20,27 @@ namespace RestaurantAlloraProject.Core.Services
         }
         public async Task AddReviewAsync(ReviewViewModel model)
         {
+            var profileExists = await _context.Set<CustomerProfile>()
+                .AnyAsync(cp => cp.UserId == model.CustomerId);
+
+            if (!profileExists)
+            {
+                _context.Add(new CustomerProfile { UserId = model.CustomerId });
+                await _context.SaveChangesAsync();
+            }
+
+            var existingReview = await _context.Reviews
+                .FirstOrDefaultAsync(r => r.CustomerId == model.CustomerId && r.DishId == model.DishId);
+
+            if (existingReview != null)
+            {
+                existingReview.Rating = model.Rating;
+                existingReview.Comment = model.Comment;
+                existingReview.CreatedOn = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+                return;
+            }
+
             var review = new Review
             {
                 ReviewId = Guid.NewGuid(),
