@@ -3,82 +3,103 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - RestaurantAlloraProjectWeb</title>
+    <title>@ViewData["Title"] - RestaurantAllora</title>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/RestaurantAlloraProjectWeb.styles.css" asp-append-version="true" />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
-    
 </head>
-<body>
+<body class="@ViewData["BodyClass"]">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">RestaurantAllora</a>
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                       @*  <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li> *@             
-                        @* @if (User.IsInRole("Customer"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Dish" asp-action="Index">Меню</a>
-                            </li>
-                        }    *@       
-                       <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Dish" asp-action="Index">
                                 Меню
                             </a>
                         </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Table" asp-action="ChooseTable">
-                                Маси
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Table" asp-action="Index">
-                                Маси
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Reservation" asp-action="Index">
-                                Резервации
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="CustomerFavorite" asp-action="Index">
-                                Любими ястия на клиента
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="Index">Поръчки</a>
-                        </li>   
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Dish" asp-action="ClientMenu">Онлайн Меню</a>
-                        </li>
+                        @if (User.Identity?.IsAuthenticated ?? false)
+                        {
+                            @if (User.IsInRole("Customer"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Dish" asp-action="ClientMenu">
+                                        Онлайн поръчка
+                                    </a>
+                                </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Review" asp-action="Index">Ревюта</a>
-                        </li>
-                       
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Table" asp-action="ChooseTable">
+                                        Избери маса
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Reservation" asp-action="Index">
+                                        Моите резервации
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="CustomerFavorite" asp-action="Index">
+                                        Любими ястия
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="Index">
+                                        Моите поръчки
+                                    </a>
+                                </li>
+                            }
+
+                            @if (User.IsInRole("Admin") || User.IsInRole("Employee"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Table" asp-action="Index">
+                                        Управление на маси
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Reservation" asp-action="Pending">
+                                        Чакащи резервации
+                                    </a>
+                                </li>
+                            }
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Review" asp-action="Index">
+                                        Ревюта
+                                    </a>
+                                </li>
+                            }
+                        }
+
                     </ul>
                 </div>
+
                 <partial name="_LoginPartial" />
             </div>
         </nav>
-
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -88,16 +109,25 @@
     <footer class="allora-footer mt-auto py-3">
         <div class="container text-center">
             <span class="text-muted">
-                &copy; 2026 - <span style="color: #c5a059; font-weight: bold;">Allora</span> -
-                <a asp-area="" asp-controller="Home" asp-action="Privacy" style="color: #888; text-decoration: none;">Privacy</a>
+                &copy; 2026 - <span class="footer-brand">Allora</span> -
+                <a asp-area="" asp-controller="Home" asp-action="Privacy" class="footer-link">Privacy</a>
             </span>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script src="~/js/client-menu.js" asp-append-version="true"></script>
+    <script src="~/js/dish-index.js" asp-append-version="true"></script>
+    <script src="~/js/dish-form.js" asp-append-version="true"></script>
+    <script src="~/js/choose-table.js" asp-append-version="true"></script>
+    <script src="~/js/reservation-create.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
