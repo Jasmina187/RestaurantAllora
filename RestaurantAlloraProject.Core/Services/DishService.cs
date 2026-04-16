@@ -70,7 +70,7 @@ namespace RestaurantAlloraProject.Core.Services
                 DescriptionOfTheDish = model.DescriptionOfTheDish,
                 PriceOfTheDish = model.PriceOfTheDish,
                 CategoryOfTheDish = model.CategoryOfTheDish,
-                ImageUrl = model.ImageUrl,
+                ImageUrl = model.ImageUrl!,
                 DishAllergens = new List<DishAllergen>()
             };
 
@@ -102,7 +102,7 @@ namespace RestaurantAlloraProject.Core.Services
             dish.DescriptionOfTheDish = model.DescriptionOfTheDish;
             dish.PriceOfTheDish = model.PriceOfTheDish;
             dish.CategoryOfTheDish = model.CategoryOfTheDish;
-            dish.ImageUrl = model.ImageUrl;
+            dish.ImageUrl = model.ImageUrl!;
             dish.DishAllergens.Clear();
 
             var selectedAllergens = await _context.Allergens

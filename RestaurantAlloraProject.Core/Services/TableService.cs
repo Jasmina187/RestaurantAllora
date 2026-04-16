@@ -13,6 +13,9 @@ namespace RestaurantAlloraProject.Core.Services
 {
     public class TableService : ITableService
     {
+        private static readonly string[] ApprovedReservationStatuses = { "Одобрена", "РћРґРѕР±СЂРµРЅР°" };
+        private static readonly string[] PendingReservationStatuses = { "Очаква одобрение", "РћС‡Р°РєРІР° РѕРґРѕР±СЂРµРЅРёРµ" };
+
         private readonly RestaurantAlloraProjectContext _context;
         public TableService(RestaurantAlloraProjectContext context)
         {
@@ -30,7 +33,13 @@ namespace RestaurantAlloraProject.Core.Services
             return tables.Select(t =>
             {
                 var activeReservationStarts = t.Reservations
-                    .Where(r => r.Status == "Одобрена" && r.ReservationDate.AddHours(3) > now)
+                    .Where(r => ApprovedReservationStatuses.Contains(r.Status) && r.ReservationDate.AddHours(3) > now)
+                    .OrderBy(r => r.ReservationDate)
+                    .Select(r => r.ReservationDate)
+                    .ToList();
+
+                var pendingReservationStarts = t.Reservations
+                    .Where(r => PendingReservationStatuses.Contains(r.Status) && r.ReservationDate.AddHours(3) > now)
                     .OrderBy(r => r.ReservationDate)
                     .Select(r => r.ReservationDate)
                     .ToList();
@@ -40,9 +49,12 @@ namespace RestaurantAlloraProject.Core.Services
                     TableId = t.TableId,
                     TableNumber = t.TableNumber,
                     CapacityOfTheTable = t.CapacityOfTheTable,
-                    StatusOfTheTable = activeReservationStarts.Any() ? "Резервирана" : "Свободна",
+                    StatusOfTheTable = activeReservationStarts.Any()
+                        ? "Резервирана"
+                        : pendingReservationStarts.Any() ? "Очаква одобрение" : "Свободна",
                     NextReservationStart = activeReservationStarts.Select(r => (DateTime?)r).FirstOrDefault(),
-                    ActiveReservationStarts = activeReservationStarts
+                    ActiveReservationStarts = activeReservationStarts,
+                    PendingReservationStarts = pendingReservationStarts
                 };
             });
         }
@@ -54,7 +66,13 @@ namespace RestaurantAlloraProject.Core.Services
             if (table == null) return null;
 
             var activeReservationStarts = table.Reservations
-                .Where(r => r.Status == "Одобрена" && r.ReservationDate.AddHours(3) > DateTime.Now)
+                .Where(r => ApprovedReservationStatuses.Contains(r.Status) && r.ReservationDate.AddHours(3) > DateTime.Now)
+                .OrderBy(r => r.ReservationDate)
+                .Select(r => r.ReservationDate)
+                .ToList();
+
+            var pendingReservationStarts = table.Reservations
+                .Where(r => PendingReservationStatuses.Contains(r.Status) && r.ReservationDate.AddHours(3) > DateTime.Now)
                 .OrderBy(r => r.ReservationDate)
                 .Select(r => r.ReservationDate)
                 .ToList();
@@ -64,9 +82,12 @@ namespace RestaurantAlloraProject.Core.Services
                 TableId = table.TableId,
                 TableNumber = table.TableNumber,
                 CapacityOfTheTable = table.CapacityOfTheTable,
-                StatusOfTheTable = activeReservationStarts.Any() ? "Резервирана" : "Свободна",
+                StatusOfTheTable = activeReservationStarts.Any()
+                    ? "Резервирана"
+                    : pendingReservationStarts.Any() ? "Очаква одобрение" : "Свободна",
                 NextReservationStart = activeReservationStarts.Select(r => (DateTime?)r).FirstOrDefault(),
-                ActiveReservationStarts = activeReservationStarts
+                ActiveReservationStarts = activeReservationStarts,
+                PendingReservationStarts = pendingReservationStarts
             };
         }
         public async Task CreateAsync(TableViewModel vm)

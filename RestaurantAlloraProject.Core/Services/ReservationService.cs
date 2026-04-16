@@ -4,6 +4,7 @@ using RestaurantAlloraProjectData;
 using RestaurantAlloraProjectData.Entities;
 using RestaurantAlloraProjectViewModels;
 using RestaurantAlloraProjectViewModels.Reservation;
+using System;
 
 namespace RestaurantAlloraProject.Core.Services
 {
@@ -32,11 +33,44 @@ namespace RestaurantAlloraProject.Core.Services
                 .ToListAsync();
         }
 
+        public async Task<ReservationListViewModel> GetUserReservationsPageAsync(Guid userId, int page, int pageSize)
+        {
+            page = Math.Max(1, page);
+            pageSize = Math.Max(1, pageSize);
+
+            var query = BuildReservationQuery()
+                .Where(r => r.CustomerId == userId);
+
+            var totalReservations = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalReservations / (double)pageSize);
+
+            if (totalPages > 0 && page > totalPages)
+            {
+                page = totalPages;
+            }
+
+            var reservations = await query
+                .OrderByDescending(r => r.ReservationDate)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(r => ToReservationIndexViewModel(r))
+                .ToListAsync();
+
+            return new ReservationListViewModel
+            {
+                Reservations = reservations,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalReservations = totalReservations
+            };
+        }
+
         public async Task<List<ReservationIndexViewModel>> GetPendingReservationsAsync()
         {
             var managementModel = await GetReservationsForManagementAsync(new ReservationFilterViewModel
             {
-                Status = PendingStatus
+                Status = PendingStatus,
+                PageSize = int.MaxValue
             });
 
             return managementModel.Reservations;
@@ -45,6 +79,8 @@ namespace RestaurantAlloraProject.Core.Services
         public async Task<ReservationManagementViewModel> GetReservationsForManagementAsync(ReservationFilterViewModel filter)
         {
             filter ??= new ReservationFilterViewModel();
+            filter.Page = Math.Max(1, filter.Page);
+            filter.PageSize = Math.Max(1, filter.PageSize);
 
             var query = BuildReservationQuery();
 
@@ -75,9 +111,19 @@ namespace RestaurantAlloraProject.Core.Services
                     (r.Employee != null && r.Employee.User.Email != null && r.Employee.User.Email.Contains(searchTerm)));
             }
 
+            var totalReservations = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalReservations / (double)filter.PageSize);
+
+            if (totalPages > 0 && filter.Page > totalPages)
+            {
+                filter.Page = totalPages;
+            }
+
             var reservations = await query
                 .OrderBy(r => r.Status == PendingStatus ? 0 : 1)
                 .ThenBy(r => r.ReservationDate)
+                .Skip((filter.Page - 1) * filter.PageSize)
+                .Take(filter.PageSize)
                 .Select(r => ToReservationIndexViewModel(r))
                 .ToListAsync();
 
@@ -85,7 +131,10 @@ namespace RestaurantAlloraProject.Core.Services
             {
                 Filter = filter,
                 Reservations = reservations,
-                Statuses = new List<string> { AllStatuses, PendingStatus, ApprovedStatus, RejectedStatus }
+                Statuses = new List<string> { AllStatuses, PendingStatus, ApprovedStatus, RejectedStatus },
+                CurrentPage = filter.Page,
+                PageSize = filter.PageSize,
+                TotalReservations = totalReservations
             };
         }
 

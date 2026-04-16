@@ -54,6 +54,64 @@ namespace RestaurantAlloraProject.Core.Services
             await _context.Reviews.AddAsync(review);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<ReviewViewModel>> GetAllReviewsAsync()
+        {
+            return await _context.Reviews
+                .Include(r => r.Dish)
+                .OrderByDescending(r => r.CreatedOn)
+                .Select(r => new ReviewViewModel
+                {
+                    ReviewId = r.ReviewId,
+                    CustomerId = r.CustomerId,
+                    DishId = r.DishId,
+                    DishName = r.Dish.NameOfTheDish,
+                    Rating = r.Rating,
+                    Comment = r.Comment,
+                    CreatedOn = r.CreatedOn
+                })
+                .ToListAsync();
+        }
+
+        public async Task<ReviewListViewModel> GetAllReviewsPageAsync(int page, int pageSize)
+        {
+            page = Math.Max(1, page);
+            pageSize = Math.Max(1, pageSize);
+
+            var totalReviews = await _context.Reviews.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalReviews / (double)pageSize);
+
+            if (totalPages > 0 && page > totalPages)
+            {
+                page = totalPages;
+            }
+
+            var reviews = await _context.Reviews
+                .Include(r => r.Dish)
+                .OrderByDescending(r => r.CreatedOn)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(r => new ReviewViewModel
+                {
+                    ReviewId = r.ReviewId,
+                    CustomerId = r.CustomerId,
+                    DishId = r.DishId,
+                    DishName = r.Dish.NameOfTheDish,
+                    Rating = r.Rating,
+                    Comment = r.Comment,
+                    CreatedOn = r.CreatedOn
+                })
+                .ToListAsync();
+
+            return new ReviewListViewModel
+            {
+                Reviews = reviews,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalReviews = totalReviews
+            };
+        }
+
         public async Task<IEnumerable<ReviewViewModel>> GetDishReviewsAsync(Guid dishId)
         {
             return await _context.Reviews
@@ -61,6 +119,8 @@ namespace RestaurantAlloraProject.Core.Services
                 .Select(r => new ReviewViewModel
                 {
                     ReviewId = r.ReviewId,
+                    CustomerId = r.CustomerId,
+                    DishId = r.DishId,
                     Rating = r.Rating,
                     Comment = r.Comment,
                     CreatedOn = r.CreatedOn
