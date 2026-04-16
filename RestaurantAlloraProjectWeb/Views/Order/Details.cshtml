@@ -1,31 +1,99 @@
-﻿@using RestaurantAlloraProjectViewModels.Order
+@using RestaurantAlloraProjectViewModels.Order
 @model OrderViewModel
 
 @{
     ViewData["Title"] = "Детайли за поръчка";
+    var isStaff = User.IsInRole("Admin") || User.IsInRole("Employee");
+    var backAction = isStaff ? "Manage" : "Index";
+    var statusClass = Model.Status switch
+    {
+        "Обработва се" => "bg-warning text-dark",
+        "Отказана" => "bg-danger",
+        "Доставена" => "bg-success",
+        "Готова" => "bg-primary",
+        _ => "bg-info text-dark"
+    };
 }
 
-<div class="container mt-5">
+<div class="container mt-5 order-page">
+    @if (TempData["OrderSuccess"] != null)
+    {
+        <div class="alert alert-success">@TempData["OrderSuccess"]</div>
+    }
+
+    @if (TempData["OrderStatusSuccess"] != null)
+    {
+        <div class="alert alert-success">@TempData["OrderStatusSuccess"]</div>
+    }
+
+    @if (TempData["OrderStatusError"] != null)
+    {
+        <div class="alert alert-danger">@TempData["OrderStatusError"]</div>
+    }
+
     <div class="card shadow-sm border-0 rounded-3">
-        <div class="card-header bg-dark text-white p-4">
-            <h3 class="mb-0"><i class="fas fa-receipt me-2"></i> Поръчка № @Model.OrderId.ToString().Substring(0, 8)</h3>
-            <small>Направена на: @Model.OrderDate.ToString("dd.MM.yyyy HH:mm")</small>
+        <div class="card-header order-details-header p-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+                <div>
+                    <h3 class="mb-1"><i class="fas fa-receipt me-2"></i> Поръчка № @Model.OrderId.ToString().Substring(0, 8)</h3>
+                    <small>Направена на: @Model.OrderDate.ToString("dd.MM.yyyy HH:mm")</small>
+                </div>
+                <span class="badge @statusClass fs-6">@Model.Status</span>
+            </div>
         </div>
 
         <div class="card-body p-4">
-            <div class="row mb-4">
+            @if (isStaff)
+            {
+                <div class="border rounded-3 p-3 mb-4 bg-light">
+                    <form asp-action="UpdateStatus" method="post" class="row g-3 align-items-end">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.OrderId" />
+                        <div class="col-md-8">
+                            <label class="form-label fw-semibold" for="status">Статус на поръчката</label>
+                            <select id="status" name="status" class="form-select" asp-items="ViewBag.OrderStatuses"></select>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-danger w-100">
+                                <i class="fas fa-save me-1"></i> Обнови статус
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            }
+
+            <div class="row mb-4 gy-3">
                 <div class="col-md-6">
-                    <h5 class="text-muted">
-                        Статус:
-                        <span class="badge bg-info text-dark ms-2 order-status-badge">@Model.Status</span>
-                    </h5>
+                    <h5 class="text-muted mb-3">Клиент</h5>
+                    <div><strong>Име:</strong> @Model.CustomerFullName</div>
+                    <div><strong>Телефон:</strong> @Model.CustomerPhone</div>
+                    @if (isStaff && !string.IsNullOrWhiteSpace(Model.CustomerEmail))
+                    {
+                        <div><strong>Имейл:</strong> @Model.CustomerEmail</div>
+                    }
+                    @if (isStaff && !string.IsNullOrWhiteSpace(Model.CustomerUserName))
+                    {
+                        <div><strong>Потребител:</strong> @Model.CustomerUserName</div>
+                    }
+                </div>
+                <div class="col-md-6">
+                    <h5 class="text-muted mb-3">Получаване</h5>
+                    <div><strong>Тип:</strong> @Model.FulfillmentType</div>
+                    @if (Model.FulfillmentType == "Доставка")
+                    {
+                        <div><strong>Адрес:</strong> @Model.DeliveryAddress</div>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.Notes))
+                    {
+                        <div><strong>Бележка:</strong> @Model.Notes</div>
+                    }
                 </div>
             </div>
 
             <h4 class="mb-3 border-bottom pb-2">Артикули:</h4>
 
             <ul class="list-group list-group-flush mb-4">
-                @if (Model.CustomerOrderItems != null)
+                @if (Model.CustomerOrderItems != null && Model.CustomerOrderItems.Any())
                 {
                     @foreach (var item in Model.CustomerOrderItems)
                     {
@@ -34,20 +102,24 @@
                                 <span class="fw-bold">@item.DishName</span>
                                 <span class="text-muted ms-2">x @item.Quantity</span>
                             </div>
-                            <span>@((item.Quantity * item.Price).ToString("F2")) лв.</span>
+                            <span>@((item.Quantity * item.Price).ToString("F2")) €</span>
                         </li>
                     }
+                }
+                else
+                {
+                    <li class="list-group-item px-0 text-muted">Няма намерени артикули към тази поръчка.</li>
                 }
             </ul>
 
             <div class="d-flex justify-content-end border-top pt-3">
-                <h4 class="fw-bold text-success">Общо: @Model.TotalAmount.ToString("F2") лв.</h4>
+                <h4 class="fw-bold text-success">Общо: @Model.TotalAmount.ToString("F2") €</h4>
             </div>
         </div>
 
         <div class="card-footer bg-white p-3 text-center">
-            <a asp-action="Index" class="btn btn-secondary">
-                <i class="fas fa-arrow-left me-1"></i> Назад към всички поръчки
+            <a asp-action="@backAction" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Назад към поръчките
             </a>
         </div>
     </div>

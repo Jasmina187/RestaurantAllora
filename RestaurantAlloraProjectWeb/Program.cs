@@ -1,9 +1,13 @@
+using CloudinaryDotNet;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RestaurantAlloraProjectData;
 using RestaurantAlloraProjectData.Entities;
 using RestaurantAlloraProject.Core.Services;
 using RestaurantAlloraProject.Core.Contracts;
+using RestaurantAlloraProjectWeb.Contracts;
+using RestaurantAlloraProjectWeb.Helpers;
+using RestaurantAlloraProjectWeb.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,9 +28,20 @@ builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
 }).AddEntityFrameworkStores<RestaurantAlloraProjectContext>();
 
 // Add services to the container.
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection(nameof(CloudinarySettings)));
+builder.Services.AddSingleton(serviceProvider =>
+{
+    var settings = serviceProvider
+        .GetRequiredService<Microsoft.Extensions.Options.IOptions<CloudinarySettings>>()
+        .Value;
+
+    return new Cloudinary(new Account(settings.CloudName, settings.ApiKey, settings.ApiSecret));
+});
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IDishService, DishService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IReservationService, ReservationService>();
 builder.Services.AddScoped<ICustomerFavoriteService, CustomerFavoriteService>();
 builder.Services.AddScoped<ITableService, TableService>();
@@ -40,6 +55,8 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
+    var dbContext = scope.ServiceProvider.GetRequiredService<RestaurantAlloraProjectContext>();
+    await dbContext.Database.MigrateAsync();
     await DataSeeder.SeedRolesAsync(scope.ServiceProvider);
     await DataSeeder.SeedAdminAsync(scope.ServiceProvider);
 }

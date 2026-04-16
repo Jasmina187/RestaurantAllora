@@ -1,0 +1,68 @@
+@using RestaurantAlloraProjectViewModels.Category
+@model IEnumerable<CategoryViewModel>
+
+@{
+    ViewData["Title"] = "Категории";
+}
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Категории</h2>
+        <a asp-action="Create" class="btn btn-primary">Добави категория</a>
+    </div>
+
+    @if (TempData["CategorySuccess"] != null)
+    {
+        <div class="alert alert-success">@TempData["CategorySuccess"]</div>
+    }
+
+    @if (TempData["CategoryError"] != null)
+    {
+        <div class="alert alert-danger">@TempData["CategoryError"]</div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">Няма добавени категории.</div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-striped align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Име</th>
+                        <th class="text-end">Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var category in Model)
+                    {
+                        <tr>
+                            <td class="fw-semibold">@category.Name</td>
+                            <td class="text-end">
+                                <a asp-action="Edit"
+                                   asp-route-id="@category.CategoryId"
+                                   class="btn btn-sm btn-warning">
+                                    Редактирай
+                                </a>
+
+                                <form asp-action="Delete"
+                                      asp-route-id="@category.CategoryId"
+                                      method="post"
+                                      class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit"
+                                            class="btn btn-sm btn-danger"
+                                            data-confirm="Да изтрием ли тази категория?">
+                                        Изтрий
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

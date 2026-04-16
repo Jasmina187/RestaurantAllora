@@ -3,7 +3,7 @@
 
 <h2 class="text-black">Edit dish:</h2>
 
-<form asp-action="Edit" method="post" asp-controller="Dish">
+<form asp-action="Edit" method="post" asp-controller="Dish" enctype="multipart/form-data">
     @Html.AntiForgeryToken()
 
     <input type="hidden" asp-for="Id" />
@@ -21,7 +21,7 @@
     </div>
 
     <div class="mb-3">
-        <label asp-for="PriceOfTheDish" class="form-label">Price</label>
+        <label asp-for="PriceOfTheDish" class="form-label">Цена (€)</label>
         <input asp-for="PriceOfTheDish" class="form-control" />
         <span asp-validation-for="PriceOfTheDish" class="text-danger"></span>
     </div>
@@ -32,8 +32,21 @@
         <span asp-validation-for="CategoryOfTheDish" class="text-danger"></span>
     </div>
 
+    @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+    {
+        <div class="mb-3">
+            <img src="@Model.ImageUrl" alt="@Model.NameOfTheDish" style="max-width: 220px; height: auto;" />
+        </div>
+    }
+
     <div class="mb-3">
-        <label asp-for="ImageUrl" class="form-label">ImageUrl</label>
+        <label asp-for="Picture" class="form-label">Upload new image</label>
+        <input asp-for="Picture" type="file" accept="image/gif,image/jpeg,image/png,image/webp" class="form-control" />
+        <span asp-validation-for="Picture" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ImageUrl" class="form-label">Image URL</label>
         <input asp-for="ImageUrl" class="form-control" />
         <span asp-validation-for="ImageUrl" class="text-danger"></span>
     </div>

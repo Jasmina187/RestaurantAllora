@@ -13,6 +13,10 @@ namespace RestaurantAlloraProjectData.Configurations
     {
         public void Configure(EntityTypeBuilder<Dish> builder)
         {
+            builder
+                .Property(d => d.PriceOfTheDish)
+                .HasPrecision(18, 2);
+
             builder.HasData(Dishes());
         }
         public List<Dish> Dishes()

@@ -48,7 +48,7 @@
         }
 
         if (cart.length === 0) {
-            cartContainer.innerHTML = '<div class="empty-cart text-center mt-5"><p>Количката е празна</p></div>';
+            cartContainer.innerHTML = '<div class="empty-cart text-center"><p>Количката е празна</p></div>';
             totalElem.innerText = "0.00 €";
 
             if (checkoutBtn) {
@@ -76,9 +76,9 @@
                         <small class="cart-item-price">${formatPrice(itemTotal)}</small>
                     </div>
                     <div class="qty-controls">
-                        <button class="qty-btn js-cart-quantity" data-dish-id="${item.id}" data-delta="-1">-</button>
+                        <button type="button" class="qty-btn js-cart-quantity" data-dish-id="${item.id}" data-delta="-1">-</button>
                         <span>${item.quantity}</span>
-                        <button class="qty-btn js-cart-quantity" data-dish-id="${item.id}" data-delta="1">+</button>
+                        <button type="button" class="qty-btn js-cart-quantity" data-dish-id="${item.id}" data-delta="1">+</button>
                     </div>
                 </div>`;
         });
@@ -100,38 +100,39 @@
         });
     }
 
-    async function submitOrder(button) {
-        const formattedCart = cart.map(item => ({
-            dishId: item.id,
-            dishName: item.name,
-            price: item.price,
-            quantity: item.quantity
-        }));
+    function addHiddenInput(form, name, value) {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = name;
+        input.value = value;
+        form.appendChild(input);
+    }
 
-        button.disabled = true;
-        button.innerText = "Обработка...";
-
-        const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
-
-        const response = await fetch("/Order/SubmitOrder", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "RequestVerificationToken": tokenInput ? tokenInput.value : ""
-            },
-            body: JSON.stringify(formattedCart)
-        });
-
-        if (response.ok) {
-            alert("Поръчката е приета!");
-            cart = [];
-            window.location.href = "/Order/Index";
+    function goToCheckout(button) {
+        if (cart.length === 0) {
             return;
         }
 
-        alert("Грешка при поръчката.");
-        button.disabled = false;
-        button.innerText = "Поръчай";
+        const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+        const form = document.createElement("form");
+        form.method = "post";
+        form.action = "/Order/Checkout";
+
+        if (tokenInput) {
+            addHiddenInput(form, "__RequestVerificationToken", tokenInput.value);
+        }
+
+        cart.forEach((item, index) => {
+            addHiddenInput(form, `CustomerOrderItems[${index}].DishId`, item.id);
+            addHiddenInput(form, `CustomerOrderItems[${index}].DishName`, item.name);
+            addHiddenInput(form, `CustomerOrderItems[${index}].Quantity`, item.quantity);
+            addHiddenInput(form, `CustomerOrderItems[${index}].Price`, item.price);
+        });
+
+        button.disabled = true;
+        button.innerText = "Към финализиране...";
+        document.body.appendChild(form);
+        form.submit();
     }
 
     document.addEventListener("click", function (event) {
@@ -157,7 +158,7 @@
 
     if (checkoutButton) {
         checkoutButton.addEventListener("click", function () {
-            submitOrder(checkoutButton);
+            goToCheckout(checkoutButton);
         });
     }
 })();

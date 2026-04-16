@@ -10,6 +10,8 @@ namespace RestaurantAlloraProjectWeb.Controllers
     [Authorize]
     public class ReservationController : Controller
     {
+        private const int ReservationPageSize = 10;
+
         private readonly IReservationService _reservationService;
         private readonly UserManager<User> _userManager;
 
@@ -21,10 +23,10 @@ namespace RestaurantAlloraProjectWeb.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
             var userId = Guid.Parse(_userManager.GetUserId(User)!);
-            var data = await _reservationService.GetUserReservationsAsync(userId);
+            var data = await _reservationService.GetUserReservationsPageAsync(userId, page, ReservationPageSize);
 
             return View(data);
         }
@@ -75,6 +77,9 @@ namespace RestaurantAlloraProjectWeb.Controllers
         [Authorize(Roles = "Admin,Employee")]
         public async Task<IActionResult> Pending([FromQuery] ReservationFilterViewModel filter)
         {
+            filter.Page = Math.Max(1, filter.Page);
+            filter.PageSize = ReservationPageSize;
+
             var model = await _reservationService.GetReservationsForManagementAsync(filter);
 
             return View(model);

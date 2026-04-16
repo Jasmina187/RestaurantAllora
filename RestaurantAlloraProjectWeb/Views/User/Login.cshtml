@@ -1,26 +1,32 @@
-﻿@using RestaurantAlloraProject.ViewModels.User
-@model LoginViewModel​
-<h1 class="text-center">Log in</h1>​
-<div class="row">​
-    <div class="col-md-4 offset-md-4">​
-        <section>​
-            <form asp-action="Login" id="account" method="post">​
-                <hr />​
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>​
-                <div class="text-center mb-3">​
-                    <label asp-for="@Model.UserName" class="form-label"></label>​
-                    <input asp-for="@Model.UserName" class="form-control" autocomplete="username" aria-required="true" />​
-                    <span asp-validation-for="UserName" class="text-danger"></span>​
-                </div>​
-                <div class="text-center mb-3">​
-                    <label asp-for="@Model.Password" class="form-label"></label>​
-                    <input asp-for="@Model.Password" type="password" class="form-control" autocomplete="current-password" aria-required="true" />​
-                    <span asp-validation-for="Password" class="text-danger"></span>​
-                </div>​
-                <div class="text-center">​
-                    <button id="login-submit" type="submit" class="btn btn-primary">Log in</button>​
-                </div>​
-            </form>​
-        </section>​
-    </div>​
+@using RestaurantAlloraProject.ViewModels.User
+@model LoginViewModel
+
+<h1 class="text-center">Log in</h1>
+<div class="row">
+    <div class="col-md-4 offset-md-4">
+        <section>
+            <form asp-action="LogIn" id="account" method="post">
+                <hr />
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="text-center mb-3">
+                    <label asp-for="UserName" class="form-label"></label>
+                    <input asp-for="UserName" class="form-control" autocomplete="username" aria-required="true" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+                <div class="text-center mb-3">
+                    <label asp-for="Password" class="form-label"></label>
+                    <input asp-for="Password" type="password" class="form-control" autocomplete="current-password" aria-required="true" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="show-login-password" data-toggle-password="#Password" />
+                    <label class="form-check-label" for="show-login-password">Покажи паролата</label>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <a asp-action="ForgotPassword">Забравена парола?</a>
+                    <button id="login-submit" type="submit" class="btn btn-primary">Log in</button>
+                </div>
+            </form>
+        </section>
+    </div>
 </div>

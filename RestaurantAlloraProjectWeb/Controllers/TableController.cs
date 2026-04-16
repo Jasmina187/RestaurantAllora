@@ -25,18 +25,19 @@ namespace RestaurantAlloraProjectWeb.Controllers
 
         [Authorize(Roles = "Customer")]
         [HttpGet]
-        public async Task<IActionResult> ChooseTable()
+        public async Task<IActionResult> ChooseTable(int? capacity)
         {
             var tables = await _tableService.GetAllAsync();
+            ViewBag.SelectedCapacity = capacity;
             return View(tables);
         }
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Employee")]
         [HttpGet]
         public IActionResult Create()
         {
             return View(new TableViewModel());
         }
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Employee")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TableViewModel vm)
@@ -56,7 +57,7 @@ namespace RestaurantAlloraProjectWeb.Controllers
                 return View(vm);
             }
         }
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Employee")]
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
@@ -65,8 +66,9 @@ namespace RestaurantAlloraProjectWeb.Controllers
 
             return View(vm);
         }
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Employee")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(TableViewModel vm)
         {
             if (!ModelState.IsValid)
@@ -88,8 +90,9 @@ namespace RestaurantAlloraProjectWeb.Controllers
                 return NotFound();
             }
         }
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Employee")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Guid id)
         {
             await _tableService.DeleteAsync(id);

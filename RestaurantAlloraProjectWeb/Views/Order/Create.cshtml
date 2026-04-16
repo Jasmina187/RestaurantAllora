@@ -1,75 +1,137 @@
-﻿@using RestaurantAlloraProjectViewModels.Order
+@using RestaurantAlloraProjectViewModels.Order
 @model OrderViewModel
 
 @{
-    ViewData["Title"] = "Вашата поръчка";
+    ViewData["Title"] = "Финализиране на поръчка";
+    var items = Model.CustomerOrderItems?.ToList() ?? new List<RestaurantAlloraProjectViewModels.CustomerOrderItem.CustomerOrderItemViewModel>();
 }
 
 <div class="container">
     <div class="order-container">
-        <h2 class="order-header"><i class="fas fa-utensils me-2"></i> Количка, Allora!</h2>
+        <h2 class="order-header"><i class="fas fa-utensils me-2"></i> Финализиране на поръчка</h2>
 
-        @if (Model.CustomerOrderItems == null || !Model.CustomerOrderItems.Any())
+        @if (!items.Any())
         {
             <div class="text-center py-5">
                 <i class="fas fa-shopping-basket fa-4x text-muted mb-3"></i>
                 <h4 class="text-muted">Количката ви е празна.</h4>
-                <a asp-controller="Dish" asp-action="Index" class="btn btn-outline-danger btn-lg mt-3">Разгледайте менюто</a>
+                <a asp-controller="Dish" asp-action="ClientMenu" class="btn btn-outline-danger btn-lg mt-3">Разгледайте менюто</a>
             </div>
         }
         else
         {
-            <div class="items-list">
-                @foreach (var item in Model.CustomerOrderItems)
+            <form asp-action="Create" method="post" class="checkout-form">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="TotalAmount" />
+
+                @for (var i = 0; i < items.Count; i++)
                 {
-                    <div class="item-card flex-column flex-md-row">
-                        <div class="mb-3 mb-md-0 order-item-details">
-                            <div class="fw-bold order-item-name">@item.DishName</div>
-                            <div class="text-muted">@item.Price.ToString("F2") лв. / порция</div>
-                        </div>
-
-                        <form asp-controller="CustomerOrderItem" asp-action="UpdateQuantity" method="post" class="d-flex align-items-center mb-3 mb-md-0 mx-md-4">
-                            <input type="hidden" name="id" value="@item.Id" />
-                            <input type="number" name="quantity" class="form-control text-center me-2 order-quantity-input" value="@item.Quantity" min="1" />
-                            <button type="submit" class="btn-update"><i class="fas fa-sync-alt"></i></button>
-                        </form>
-
-                        <div class="fw-bold mb-3 mb-md-0 text-center mx-md-4 order-item-total">
-                            @((item.Quantity * item.Price).ToString("F2")) лв.
-                        </div>
-
-                        <form asp-controller="CustomerOrderItem" asp-action="Delete" method="post">
-                            <input type="hidden" name="id" value="@item.Id" />
-                            <button type="submit" class="btn-remove" title="Премахни">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </form>
-                    </div>
+                    <input type="hidden" name="CustomerOrderItems[@i].DishId" value="@items[i].DishId" />
+                    <input type="hidden" name="CustomerOrderItems[@i].DishName" value="@items[i].DishName" />
+                    <input type="hidden" name="CustomerOrderItems[@i].Quantity" value="@items[i].Quantity" />
+                    <input type="hidden" name="CustomerOrderItems[@i].Price" value="@items[i].Price" />
                 }
-            </div>
 
-            <div class="total-section d-flex flex-column flex-md-row align-items-center justify-content-between">
-                <div>
-                    <span class="text-uppercase text-muted total-label">Общо за плащане</span>
-                    <h2 class="mb-0 text-warning fw-bold">@Model.TotalAmount.ToString("F2") лв.</h2>
+                <div class="row g-4">
+                    <div class="col-lg-7">
+                        <h4 class="mb-3 border-bottom pb-2">Данни за поръчката</h4>
+
+                        <div class="checkout-methods mb-3">
+                            <label class="checkout-method">
+                                <input asp-for="FulfillmentType" type="radio" value="Вземане на място" />
+                                <span>
+                                    <strong>Вземане на място</strong>
+                                    <small>Ще вземете поръчката лично от ресторанта.</small>
+                                </span>
+                            </label>
+
+                            <label class="checkout-method">
+                                <input asp-for="FulfillmentType" type="radio" value="Доставка" />
+                                <span>
+                                    <strong>Доставка</strong>
+                                    <small>Ще доставим поръчката до посочения адрес.</small>
+                                </span>
+                            </label>
+                        </div>
+                        <span asp-validation-for="FulfillmentType" class="text-danger"></span>
+
+                        <div class="mb-3">
+                            <label asp-for="CustomerFullName" class="form-label">Име и фамилия</label>
+                            <input asp-for="CustomerFullName" class="form-control" autocomplete="name" />
+                            <span asp-validation-for="CustomerFullName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="CustomerPhone" class="form-label">Телефон</label>
+                            <input asp-for="CustomerPhone" class="form-control" autocomplete="tel" />
+                            <span asp-validation-for="CustomerPhone" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3 checkout-delivery-address">
+                            <label asp-for="DeliveryAddress" class="form-label">Адрес за доставка</label>
+                            <input asp-for="DeliveryAddress" class="form-control" autocomplete="street-address" />
+                            <span asp-validation-for="DeliveryAddress" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Notes" class="form-label">Бележка към поръчката</label>
+                            <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="Notes" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-5">
+                        <h4 class="mb-3 border-bottom pb-2">Артикули</h4>
+
+                        <div class="items-list">
+                            @foreach (var item in items)
+                            {
+                                <div class="item-card">
+                                    <div class="order-item-details">
+                                        <div class="fw-bold order-item-name">@item.DishName</div>
+                                        <div class="text-muted">@item.Price.ToString("F2") € / порция</div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div>x @item.Quantity</div>
+                                        <strong>@((item.Quantity * item.Price).ToString("F2")) €</strong>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="total-section mt-3">
+                            <span class="text-uppercase text-muted total-label">Общо за плащане</span>
+                            <h2 class="mb-0 text-warning fw-bold">@Model.TotalAmount.ToString("F2") €</h2>
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-2 mt-3">
+                            <a asp-controller="Dish" asp-action="ClientMenu" class="btn btn-secondary">Назад към менюто</a>
+                            <button type="submit" class="btn-checkout">Потвърди поръчката</button>
+                        </div>
+                    </div>
                 </div>
-
-                <div class="mt-4 mt-md-0">
-                    <form asp-action="Create" method="post">
-                        <input type="hidden" asp-for="CustomerId" />
-                        <input type="hidden" asp-for="TotalAmount" />
-
-                        @for (int i = 0; i < Model.CustomerOrderItems.Count; i++)
-                        {
-                            <input type="hidden" asp-for="CustomerOrderItems.ElementAt(i).DishId" />
-                            <input type="hidden" asp-for="CustomerOrderItems.ElementAt(i).Quantity" />
-                            <input type="hidden" asp-for="CustomerOrderItems.ElementAt(i).Price" />
-                        }
-
-                        <button type="submit" class="btn-checkout">Финализирай поръчката <i class="fas fa-check-circle ms-2"></i></button>
-                    </form>
-                </div>
-            </div>
+            </form>
         }
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const deliveryAddress = document.querySelector(".checkout-delivery-address");
+            const methodInputs = document.querySelectorAll('input[name="FulfillmentType"]');
+
+            function syncDeliveryAddress() {
+                const selectedMethod = document.querySelector('input[name="FulfillmentType"]:checked');
+                const isDelivery = selectedMethod && selectedMethod.value === "Доставка";
+
+                if (deliveryAddress) {
+                    deliveryAddress.classList.toggle("d-none", !isDelivery);
+                }
+            }
+
+            methodInputs.forEach(input => input.addEventListener("change", syncDeliveryAddress));
+            syncDeliveryAddress();
+        })();
+    </script>
+}

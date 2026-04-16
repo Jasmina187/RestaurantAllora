@@ -1,22 +1,23 @@
-﻿@using RestaurantAlloraProjectViewModels.Order
-@model IEnumerable<OrderViewModel>
+@using RestaurantAlloraProjectViewModels.Order
+@model OrderListViewModel
 
 @{
     ViewData["Title"] = "Моите поръчки";
 }
-<div class="container mt-5">
+
+<div class="container mt-5 order-page">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="text-danger fw-bold"><i class="fas fa-list me-2"></i> История на поръчките</h2>
-        <a asp-action="Create" class="btn btn-outline-danger rounded-pill">
-            <i class="fas fa-shopping-cart me-1"></i> Отвори количката
+        <a asp-controller="Dish" asp-action="ClientMenu" class="btn btn-outline-danger rounded-pill">
+            <i class="fas fa-shopping-cart me-1"></i> Нова поръчка
         </a>
     </div>
 
-    @if (!Model.Any())
+    @if (!Model.Orders.Any())
     {
         <div class="alert alert-info shadow-sm rounded">
             <i class="fas fa-info-circle me-2"></i> Все още нямате направени поръчки.
-            <a asp-controller="Dish" asp-action="Index" class="alert-link">Разгледайте менюто!</a>
+            <a asp-controller="Dish" asp-action="ClientMenu" class="alert-link">Разгледайте менюто!</a>
         </div>
     }
     else
@@ -28,12 +29,13 @@
                         <th>№ на поръчка</th>
                         <th>Дата</th>
                         <th>Статус</th>
+                        <th>Получаване</th>
                         <th>Обща сума</th>
                         <th>Действие</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var order in Model)
+                    @foreach (var order in Model.Orders)
                     {
                         <tr>
                             <td><small class="text-muted">@order.OrderId.ToString().Substring(0, 8)</small></td>
@@ -48,9 +50,10 @@
                                     <span class="badge bg-success">@order.Status</span>
                                 }
                             </td>
-                            <td class="fw-bold text-success">@order.TotalAmount.ToString("F2") лв.</td>
+                            <td>@order.FulfillmentType</td>
+                            <td class="fw-bold text-success">@order.TotalAmount.ToString("F2") €</td>
                             <td>
-                                <a asp-action="Details" asp-route-id="@order.OrderId" class="btn btn-sm btn-info text-white">
+                                <a asp-action="Details" asp-route-id="@order.OrderId" class="btn btn-sm btn-info text-dark">
                                     <i class="fas fa-eye"></i> Детайли
                                 </a>
                             </td>
@@ -59,5 +62,48 @@
                 </tbody>
             </table>
         </div>
+
+        @if (Model.TotalPages > 1)
+        {
+            <nav aria-label="Пагинация на поръчките" class="mt-4">
+                <ul class="pagination justify-content-center flex-wrap gap-1">
+                    <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                        @if (Model.HasPreviousPage)
+                        {
+                            <a class="page-link" asp-action="Index" asp-route-page="@(Model.CurrentPage - 1)">Предишна</a>
+                        }
+                        else
+                        {
+                            <span class="page-link">Предишна</span>
+                        }
+                    </li>
+
+                    @for (var pageNumber = 1; pageNumber <= Model.TotalPages; pageNumber++)
+                    {
+                        <li class="page-item @(pageNumber == Model.CurrentPage ? "active" : "")">
+                            @if (pageNumber == Model.CurrentPage)
+                            {
+                                <span class="page-link">@pageNumber</span>
+                            }
+                            else
+                            {
+                                <a class="page-link" asp-action="Index" asp-route-page="@pageNumber">@pageNumber</a>
+                            }
+                        </li>
+                    }
+
+                    <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                        @if (Model.HasNextPage)
+                        {
+                            <a class="page-link" asp-action="Index" asp-route-page="@(Model.CurrentPage + 1)">Следваща</a>
+                        }
+                        else
+                        {
+                            <span class="page-link">Следваща</span>
+                        }
+                    </li>
+                </ul>
+            </nav>
+        }
     }
 </div>

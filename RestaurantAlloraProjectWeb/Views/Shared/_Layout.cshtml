@@ -80,6 +80,12 @@
                                         Чакащи резервации
                                     </a>
                                 </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Order" asp-action="Manage">
+                                        Поръчки
+                                    </a>
+                                </li>
                             }
 
                             @if (User.IsInRole("Admin"))
@@ -87,6 +93,18 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Review" asp-action="Index">
                                         Ревюта
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Category" asp-action="Index">
+                                        Категории
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="User" asp-action="Manage">
+                                        Потребители
                                     </a>
                                 </li>
                             }

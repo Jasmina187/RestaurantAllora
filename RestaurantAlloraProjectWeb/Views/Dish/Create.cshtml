@@ -1,7 +1,7 @@
 ﻿@using RestaurantAlloraProject.ViewModels.Dish
 @model DishCreateViewModel
 <h2 class="text-black">Create dish:</h2>
-<form asp-action="Create" method="post" asp-controller="Dish">
+<form asp-action="Create" method="post" asp-controller="Dish" enctype="multipart/form-data">
 
     <div class="mb-3">
         <label asp-for="@Model.NameOfTheDish" class="form-label">Name</label>
@@ -16,7 +16,7 @@
     </div>
 
     <div class="mb-3">
-        <label asp-for="@Model.PriceOfTheDish" class="form-label">Price</label>
+        <label asp-for="@Model.PriceOfTheDish" class="form-label">Цена (€)</label>
         <input asp-for="@Model.PriceOfTheDish" class="form-control" />
         <span asp-validation-for="PriceOfTheDish" class="text-danger"></span>
     </div>
@@ -26,8 +26,14 @@
         <select asp-for="@Model.CategoryOfTheDish" asp-items="ViewBag.Categories" class="form-select"></select>
     </div>
     <div class="mb-3">
-        <label asp-for="@Model.ImageUrl" class="form-label">ImageURL</label>
-        <input asp-for="@Model.ImageUrl" class="form-control" />
+        <label asp-for="@Model.Picture" class="form-label">Upload image</label>
+        <input asp-for="@Model.Picture" type="file" accept="image/gif,image/jpeg,image/png,image/webp" class="form-control" />
+        <span asp-validation-for="Picture" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="@Model.ImageUrl" class="form-label">Image URL</label>
+        <input asp-for="@Model.ImageUrl" class="form-control" placeholder="Optional if you upload an image" />
         <span asp-validation-for="ImageUrl" class="text-danger"></span>
     </div>
     <div class="mb-3">

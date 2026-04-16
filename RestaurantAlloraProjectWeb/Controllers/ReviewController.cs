@@ -8,6 +8,8 @@ namespace RestaurantAlloraProjectWeb.Controllers
 {
     public class ReviewController : Controller
     {
+        private const int ReviewPageSize = 10;
+
         private readonly IReviewService _reviewService;
         public ReviewController(IReviewService reviewService)
         {
@@ -56,11 +58,10 @@ namespace RestaurantAlloraProjectWeb.Controllers
         }
         [HttpGet]
         [Authorize(Roles = "Admin")] 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            
-            var emptyList = new List<ReviewViewModel>();
-            return View(emptyList);
+            var reviews = await _reviewService.GetAllReviewsPageAsync(page, ReviewPageSize);
+            return View(reviews);
         }
     }
 }

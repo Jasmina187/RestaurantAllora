@@ -1,81 +1,164 @@
-﻿@using RestaurantAlloraProject.ViewModels.Dish
+@using RestaurantAlloraProject.ViewModels.Dish
 @model IEnumerable<DishViewModel>
 
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "Онлайн Меню";
-    var categories = Model.Select(d => d.CategoryOfTheDish).Distinct().ToList();
+    ViewData["Title"] = "Онлайн поръчка";
+    var categories = Model
+        .Select(d => d.CategoryOfTheDish)
+        .Distinct()
+        .OrderBy(c => c)
+        .ToList();
 }
 
-<div class="menu-layout">
-    <div class="menu-main">
-        <h1 class="allora-title text-center mb-4">Меню Allora</h1>
+@functions {
+    private static bool HasText(string value, string text)
+    {
+        return value.Contains(text, StringComparison.OrdinalIgnoreCase);
+    }
 
-        <div class="category-pills mb-5 text-center">
-            <button class="pill-btn active js-menu-filter" data-category="all">Всички</button>
-            @foreach (var category in categories)
+    private string GetAllergenIconPath(string allergenName)
+    {
+        if (HasText(allergenName, "глутен")) return "~/img/allergens/gluten.svg";
+        if (HasText(allergenName, "Ракообразни")) return "~/img/allergens/crustaceans.svg";
+        if (HasText(allergenName, "Яйца")) return "~/img/allergens/eggs.svg";
+        if (HasText(allergenName, "Риба")) return "~/img/allergens/fish.svg";
+        if (HasText(allergenName, "Фъстъци")) return "~/img/allergens/peanuts.svg";
+        if (HasText(allergenName, "Соя")) return "~/img/allergens/soy.svg";
+        if (HasText(allergenName, "Мляко")) return "~/img/allergens/milk.svg";
+        if (HasText(allergenName, "Ядки")) return "~/img/allergens/nuts.svg";
+        if (HasText(allergenName, "Целина")) return "~/img/allergens/celery.svg";
+        if (HasText(allergenName, "Синап")) return "~/img/allergens/mustard.svg";
+        if (HasText(allergenName, "Сусам")) return "~/img/allergens/sesame.svg";
+        if (HasText(allergenName, "Лупина")) return "~/img/allergens/lupin.svg";
+        if (HasText(allergenName, "Серен")) return "~/img/allergens/sulfites.svg";
+        if (HasText(allergenName, "Мекотели")) return "~/img/allergens/molluscs.svg";
+
+        return "~/img/allergens/generic.svg";
+    }
+
+    private string GetAllergenLabel(string allergenName)
+    {
+        var separatorIndex = allergenName.IndexOf(':');
+        return separatorIndex > 0 ? allergenName[..separatorIndex] : allergenName;
+    }
+}
+
+<section class="client-menu-shell">
+    <div class="menu-layout">
+        <div class="menu-main">
+            <div class="menu-heading">
+                <span class="menu-eyebrow">Restaurant Allora</span>
+                <h1 class="allora-title">Онлайн поръчка</h1>
+                <p class="menu-lead">Свежи салати, основни ястия и десерти за масата или за вкъщи.</p>
+            </div>
+
+            @if (TempData["OrderError"] != null)
             {
-                <button class="pill-btn js-menu-filter" data-category="@category">@category</button>
+                <div class="alert alert-warning">@TempData["OrderError"]</div>
             }
-        </div>
 
-        <div class="dishes-grid">
-            @foreach (var dish in Model)
-            {
-                <div class="dish-card" data-category="@dish.CategoryOfTheDish">
-                    <div class="dish-img-wrapper">
-                        <img src="@dish.ImageUrl" alt="@dish.NameOfTheDish">
-                    </div>
+            <div class="category-pills" aria-label="Категории">
+                <button class="pill-btn active js-menu-filter" data-category="all" type="button">Всички</button>
+                @foreach (var category in categories)
+                {
+                    <button class="pill-btn js-menu-filter" data-category="@category" type="button">@category</button>
+                }
+            </div>
 
-                    <div class="dish-info">
-                        <h4 class="dish-name">@dish.NameOfTheDish</h4>
-                        <p class="dish-desc">@dish.DescriptionOfTheDish</p>
-
-                        <div class="dish-action mt-auto">
-                            <span class="dish-price">@dish.PriceOfTheDish.ToString("0.00") €</span>
-
-                            <button class="add-btn js-add-to-cart"
-                                    data-dish-id="@dish.DishId"
-                                    data-dish-name="@dish.NameOfTheDish"
-                                    data-dish-price="@dish.PriceOfTheDish.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)">
-                                Добави
-                            </button>
+            <div class="dishes-grid">
+                @foreach (var dish in Model)
+                {
+                    <article class="dish-card" data-category="@dish.CategoryOfTheDish">
+                        <div class="dish-img-wrapper">
+                            <img src="@dish.ImageUrl" alt="@dish.NameOfTheDish" loading="lazy">
                         </div>
-                    </div>
+
+                        <div class="dish-info">
+                            <div class="dish-meta-row">
+                                <span class="dish-category">@dish.CategoryOfTheDish</span>
+                                <span class="dish-price">@dish.PriceOfTheDish.ToString("0.00") €</span>
+                            </div>
+
+                            <h2 class="dish-name">@dish.NameOfTheDish</h2>
+                            <p class="dish-desc">@dish.DescriptionOfTheDish</p>
+
+                            @if (dish.AllergenNames.Any())
+                            {
+                                <div class="dish-allergens" aria-label="Алергени">
+                                    @foreach (var allergen in dish.AllergenNames)
+                                    {
+                                        <span class="allergen-badge"
+                                              tabindex="0"
+                                              aria-label="@allergen"
+                                              title="@allergen"
+                                              data-tooltip="@allergen">
+                                            <img src="@Url.Content(GetAllergenIconPath(allergen))"
+                                                 alt="@GetAllergenLabel(allergen)"
+                                                 class="allergen-icon-img"
+                                                 loading="lazy" />
+                                        </span>
+                                    }
+                                </div>
+                            }
+
+                            <div class="dish-action">
+                                <button class="add-btn js-add-to-cart"
+                                        type="button"
+                                        data-dish-id="@dish.DishId"
+                                        data-dish-name="@dish.NameOfTheDish"
+                                        data-dish-price="@dish.PriceOfTheDish.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)">
+                                    Добави
+                                </button>
+
+                                @if (User.IsInRole("Customer"))
+                                {
+                                    <a asp-controller="Review"
+                                       asp-action="Add"
+                                       asp-route-dishId="@dish.DishId"
+                                       class="review-link">
+                                        Оцени
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </article>
+                }
+            </div>
+        </div>
+
+        <aside class="cart-sidebar" aria-label="Вашата поръчка">
+            <div class="cart-heading">
+                <span class="cart-kicker">Поръчка</span>
+                <h2 class="cart-title">Вашата количка</h2>
+            </div>
+
+            <div id="cart-items" class="cart-items">
+                <div class="empty-cart text-center text-muted">
+                    <p>Количката е празна</p>
                 </div>
-            }
-        </div>
-    </div>
-
-    <div class="cart-sidebar">
-        <h3 class="cart-title">Вашата поръчка</h3>
-
-        <div id="cart-items" class="cart-items">
-            <div class="empty-cart text-center text-muted mt-5">
-                <p>Количката е празна</p>
-            </div>
-        </div>
-
-        <div class="cart-footer">
-            @Html.AntiForgeryToken()
-            <div class="d-flex justify-content-between mb-3">
-                <span class="cart-total-label">Общо:</span>
-                <span id="cart-total" class="cart-total-value">0.00 €</span>
             </div>
 
-            @if (User.IsInRole("Customer"))
-            {
-                <button id="checkout-btn" class="checkout-btn" disabled>Поръчай</button>
-            }
-            else
-            {
-                <a asp-controller="User"
-                   asp-action="LogIn"
-                   class="checkout-btn text-center d-block text-decoration-none">
-                    Влез като клиент, за да поръчаш
-                </a>
-            }
-        </div>
-    </div>
-</div>
+            <div class="cart-footer">
+                @Html.AntiForgeryToken()
+                <div class="cart-total-row">
+                    <span class="cart-total-label">Общо:</span>
+                    <span id="cart-total" class="cart-total-value">0.00 €</span>
+                </div>
 
+                @if (User.IsInRole("Customer"))
+                {
+                    <button id="checkout-btn" class="checkout-btn" type="button" disabled>Поръчай</button>
+                }
+                else
+                {
+                    <a asp-controller="User"
+                       asp-action="LogIn"
+                       class="checkout-btn text-center d-block text-decoration-none">
+                        Влез като клиент, за да поръчаш
+                    </a>
+                }
+            </div>
+        </aside>
+    </div>
+</section>

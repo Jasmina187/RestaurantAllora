@@ -11,14 +11,11 @@
         resultsArea.classList.remove("results-visible");
 
         setTimeout(() => {
-            let visibleCount = 0;
-
             tables.forEach(table => {
                 const tableCap = parseInt(table.getAttribute("data-cap"), 10);
 
                 if (tableCap >= minCap && tableCap <= maxCap) {
                     table.classList.remove("hidden-table");
-                    visibleCount++;
                 } else {
                     table.classList.add("hidden-table");
                 }
@@ -31,24 +28,30 @@
         }, 300);
     }
 
-    function showReservedTableMessage(reservedTable) {
+    function showUnavailableTableMessage(table) {
         const infoBox = document.getElementById("table-reservation-info");
 
         if (!infoBox) {
             return;
         }
 
-        const tableNumber = reservedTable.dataset.tableNumber;
-        const reservationRanges = (reservedTable.dataset.reservationRanges || "")
+        const tableNumber = table.dataset.tableNumber;
+        const isPending = table.classList.contains("table-card-pending");
+        const rangesAttribute = isPending ? "pendingRanges" : "reservationRanges";
+        const ranges = (table.dataset[rangesAttribute] || "")
             .split("|")
             .map(range => range.trim())
             .filter(Boolean);
 
-        if (reservationRanges.length > 0) {
-            const rangesText = reservationRanges.join("; ");
-            infoBox.textContent = `Маса #${tableNumber} е резервирана: ${rangesText}. Изберете друг час или друга маса.`;
+        if (ranges.length > 0) {
+            const rangesText = ranges.join("; ");
+            infoBox.textContent = isPending
+                ? `Маса #${tableNumber} очаква одобрение: ${rangesText}. Изберете друг час или друга маса.`
+                : `Маса #${tableNumber} е резервирана: ${rangesText}. Изберете друг час или друга маса.`;
         } else {
-            infoBox.textContent = `Маса #${tableNumber} е маркирана като резервирана, но няма намерена активна или бъдеща одобрена резервация.`;
+            infoBox.textContent = isPending
+                ? `Маса #${tableNumber} има заявка, която очаква одобрение.`
+                : `Маса #${tableNumber} е маркирана като резервирана.`;
         }
 
         infoBox.classList.add("table-reservation-info-visible");
@@ -56,11 +59,11 @@
     }
 
     document.addEventListener("click", function (event) {
-        const reservedTable = event.target.closest(".luxury-table-card.table-card-reserved");
+        const unavailableTable = event.target.closest(".luxury-table-card.table-card-reserved, .luxury-table-card.table-card-pending");
 
-        if (reservedTable) {
+        if (unavailableTable) {
             event.preventDefault();
-            showReservedTableMessage(reservedTable);
+            showUnavailableTableMessage(unavailableTable);
             return;
         }
 
@@ -74,4 +77,15 @@
         const maxCap = parseInt(filterButton.dataset.maxCap, 10);
         filterTables(minCap, maxCap);
     });
+
+    const autoFilterSource = document.querySelector(".luxury-container");
+
+    if (autoFilterSource) {
+        const minCap = parseInt(autoFilterSource.dataset.autoMinCap, 10);
+        const maxCap = parseInt(autoFilterSource.dataset.autoMaxCap, 10);
+
+        if (!Number.isNaN(minCap) && !Number.isNaN(maxCap)) {
+            filterTables(minCap, maxCap);
+        }
+    }
 })();

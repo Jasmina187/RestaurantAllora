@@ -1,37 +1,98 @@
 @model IEnumerable<RestaurantAlloraProject.ViewModels.CustomerFavorite.CustomerFavoriteViewModel>
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Моите любими ястия</h2>
-    @if (!Model.Any())
+
+@{
+    ViewData["Title"] = "Моите любими ястия";
+    var favorites = Model.ToList();
+}
+
+<section class="favorites-page">
+    <div class="favorites-heading">
+        <div>
+            <span class="menu-eyebrow">Restaurant Allora</span>
+            <h1 class="allora-title">Моите любими ястия</h1>
+            <p class="favorites-lead">Запази вкусовете, към които винаги се връщаш.</p>
+        </div>
+
+        <a asp-controller="Dish" asp-action="Index" class="favorite-menu-link">
+            Разгледай менюто
+        </a>
+    </div>
+
+    @if (!favorites.Any())
     {
-        <div class="alert alert-info text-center">
-            Все още нямате добавени любими ястия. Разгледайте нашето меню и добавете своите фаворити!
+        <div class="favorites-empty">
+            <div class="favorites-empty-copy">
+                <span class="favorites-empty-kicker">Още няма фаворити</span>
+                <h2>Избери първото ястие, което си заслужава повторение.</h2>
+                <p>Отвори онлайн менюто и отбележи любимите си предложения.</p>
+            </div>
+            <a asp-controller="Dish" asp-action="Index" class="favorite-primary-action">
+                Към менюто
+            </a>
         </div>
     }
     else
     {
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            @foreach (var dish in Model)
+        <div class="favorites-summary">
+            <span>@favorites.Count любими</span>
+            <span>Последно добавени най-отгоре</span>
+        </div>
+
+        <div class="favorites-grid">
+            @foreach (var dish in favorites.OrderByDescending(d => d.AddedOn))
             {
-                <div class="col">
-                    <div class="card h-100 shadow-sm">
-                        <img src="@dish.ImageUrl" class="card-img-top favorite-dish-img" alt="@dish.DishName">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">@dish.DishName</h5>
-                            <h6 class="card-subtitle mb-3 text-success">@dish.Price.ToString("0.00") €</h6>
-                            <p class="card-text text-muted small mb-4">Добавено на: @dish.AddedOn.ToString("dd.MM.yyyy г.")</p>
-                            
-                            <div class="mt-auto">
-                                <form asp-controller="CustomerFavorite" asp-action="ToggleFavorite" method="post">
-                                    <input type="hidden" name="dishId" value="@dish.DishId" />
-                                    <button type="submit" class="btn btn-outline-danger w-100">
-                                        <i class="bi bi-heartbreak"></i> Премахни от любими
-                                    </button>
-                                </form>
-                            </div>
+                var imageUrl = string.IsNullOrWhiteSpace(dish.ImageUrl)
+                    ? Url.Content("~/img/allora-hero.jpg")
+                    : dish.ImageUrl;
+
+                <article class="favorite-card">
+                    <a asp-controller="Dish"
+                       asp-action="Index"
+                       class="favorite-image-link"
+                       aria-label="Виж @dish.DishName в менюто">
+                        <img src="@imageUrl"
+                             alt="@dish.DishName"
+                             class="favorite-card-img"
+                             loading="lazy" />
+                    </a>
+
+                    <div class="favorite-card-body">
+                        <div class="favorite-card-topline">
+                            <span class="favorite-pill">Любимо</span>
+                            <span class="favorite-price">@dish.Price.ToString("0.00") €</span>
+                        </div>
+
+                        <h2 class="favorite-dish-title">@dish.DishName</h2>
+                        <p class="favorite-added">Добавено на @dish.AddedOn.ToString("dd.MM.yyyy")</p>
+
+                        <div class="favorite-actions">
+                            <a asp-controller="Dish"
+                               asp-action="ClientMenu"
+                               class="favorite-primary-action">
+                                Поръчай
+                            </a>
+
+                            <a asp-controller="Review"
+                               asp-action="Add"
+                               asp-route-dishId="@dish.DishId"
+                               class="favorite-secondary-action">
+                                Оцени
+                            </a>
+
+                            <form asp-controller="CustomerFavorite"
+                                  asp-action="ToggleFavorite"
+                                  method="post"
+                                  class="favorite-remove-form">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="dishId" value="@dish.DishId" />
+                                <button type="submit" class="favorite-remove-action">
+                                    Премахни
+                                </button>
+                            </form>
                         </div>
                     </div>
-                </div>
+                </article>
             }
         </div>
     }
-</div>
+</section>

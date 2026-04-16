@@ -1,35 +1,59 @@
-﻿@using RestaurantAlloraProjectViewModels.Reservation
+@using RestaurantAlloraProjectViewModels.Reservation
 @model ReservationCreateViewModel
-<h2>Нова резервация</h2>
-<form asp-action="Create" method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-    <div class="mb-3">
-        <label asp-for="@Model.ReservationDate" class="form-label">Дата и час</label>
-        <input asp-for="ReservationDate" class="form-control" type="datetime-local"
-               value="@Model.ReservationDate.ToString("yyyy-MM-ddTHH:mm")" />
-        <span asp-validation-for="ReservationDate" class="text-danger"></span>
+@{
+    var selectedTable = Model.Tables.FirstOrDefault(table => table.Value == Model.TableId.ToString());
+    var selectedCapacity = selectedTable?.Capacity;
+}
+
+<section class="reservation-create">
+    <div class="reservation-create-header">
+        <p class="reservation-eyebrow">Allora reservations</p>
+        <h2>Нова резервация</h2>
+        <p>Изберете удобен час, брой гости и маса. Резервацията ще бъде потвърдена от нашия екип.</p>
     </div>
 
-    <div class="mb-3">
-        <label asp-for="@Model.NumberOfGuests" class="form-label">Брой гости</label>
-        <input asp-for="@Model.NumberOfGuests" class="form-control" />
-        <span asp-validation-for="NumberOfGuests" class="text-danger"></span>
-    </div>
+    <form asp-action="Create" method="post" class="reservation-create-form">
+        <div asp-validation-summary="ModelOnly" class="reservation-validation"></div>
 
-    <div class="mb-3">
-        <label asp-for="@Model.TableId" class="form-label">Маса</label>
-        <select asp-for="@Model.TableId" class="form-select js-reservation-table-select">
-            <option value="00000000-0000-0000-0000-000000000000">-- автоматично избиране на маса --</option>
-            @foreach (var table in Model.Tables)
-            {
-                <option value="@table.Value" data-capacity="@table.Capacity" selected="@(table.Value == Model.TableId.ToString())">@table.Text</option>
-            }
-        </select>
-        <div id="table-capacity-hint" class="form-text table-capacity-hint"></div>
-        <span asp-validation-for="TableId" class="text-danger"></span>
-    </div>
+        <div class="reservation-form-grid">
+            <div class="reservation-field">
+                <label asp-for="@Model.ReservationDate" class="form-label">Дата и час</label>
+                <input asp-for="ReservationDate" class="form-control" type="datetime-local"
+                       value="@Model.ReservationDate.ToString("yyyy-MM-ddTHH:mm")" />
+                <span asp-validation-for="ReservationDate" class="text-danger"></span>
+            </div>
 
-    <button type="submit" class="btn btn-primary">Запази</button>
-    <a asp-action="Index" class="btn btn-secondary">Назад</a>
-</form>
+            <div class="reservation-field">
+                <label asp-for="@Model.NumberOfGuests" class="form-label">Брой гости</label>
+                <input asp-for="@Model.NumberOfGuests" class="form-control" min="1" max="20" />
+                <span asp-validation-for="NumberOfGuests" class="text-danger"></span>
+            </div>
+
+            <div class="reservation-field reservation-field-wide">
+                <label asp-for="@Model.TableId" class="form-label">Маса</label>
+                <select asp-for="@Model.TableId" class="form-select js-reservation-table-select">
+                    <option value="00000000-0000-0000-0000-000000000000">-- автоматично избиране на маса --</option>
+                    @foreach (var table in Model.Tables)
+                    {
+                        <option value="@table.Value" data-capacity="@table.Capacity" selected="@(table.Value == Model.TableId.ToString())">@table.Text</option>
+                    }
+                </select>
+                <div id="table-capacity-hint" class="form-text table-capacity-hint"></div>
+                <span asp-validation-for="TableId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="reservation-note">
+            Всяка резервация запазва масата за 3 часа.
+        </div>
+
+        <div class="reservation-actions">
+            <button type="submit" class="btn reservation-submit">Запази</button>
+            <a asp-controller="Table"
+               asp-action="ChooseTable"
+               asp-route-capacity="@selectedCapacity"
+               class="btn reservation-back">Назад</a>
+        </div>
+    </form>
+</section>

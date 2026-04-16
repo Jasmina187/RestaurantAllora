@@ -1,4 +1,6 @@
 (function () {
+    const automaticTableValue = "00000000-0000-0000-0000-000000000000";
+
     function getTableOptions(tableSelect) {
         return Array.from(tableSelect.options).filter(option => option.dataset.capacity);
     }
@@ -38,7 +40,7 @@
                 hint.textContent = `Няма маса с достатъчен капацитет за ${guests} гости.`;
             }
 
-            tableSelect.value = "00000000-0000-0000-0000-000000000000";
+            tableSelect.value = automaticTableValue;
             return;
         }
 
@@ -55,7 +57,7 @@
         const selectedOption = tableSelect.selectedOptions[0];
 
         if (selectedOption && selectedOption.dataset.capacity && parseInt(selectedOption.dataset.capacity, 10) !== closestCapacity) {
-            tableSelect.value = "00000000-0000-0000-0000-000000000000";
+            tableSelect.value = automaticTableValue;
         }
 
         if (hint) {

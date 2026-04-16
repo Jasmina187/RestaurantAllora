@@ -241,6 +241,47 @@ namespace RestaurantAlloraProjectData.Migrations
                         });
                 });
 
+            modelBuilder.Entity("RestaurantAlloraProjectData.Entities.Category", b =>
+                {
+                    b.Property<Guid>("CategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("CategoryId");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            CategoryId = new Guid("a19f1c7a-0a27-4c91-a220-2f4c55fb0b21"),
+                            Name = "Салати"
+                        },
+                        new
+                        {
+                            CategoryId = new Guid("0a55dc5d-23b6-4c3a-8428-3f0f7f370aa6"),
+                            Name = "Основни ястия"
+                        },
+                        new
+                        {
+                            CategoryId = new Guid("b3cb4f8b-8f1c-44f7-a332-3f2d2bb24b0b"),
+                            Name = "Десерти"
+                        },
+                        new
+                        {
+                            CategoryId = new Guid("aeae6939-7449-467f-b1d6-b0cbd340fc7d"),
+                            Name = "Напитки"
+                        });
+                });
+
             modelBuilder.Entity("RestaurantAlloraProjectData.Entities.CustomerFavorite", b =>
                 {
                     b.Property<Guid>("CustomerId")
@@ -501,6 +542,35 @@ namespace RestaurantAlloraProjectData.Migrations
 
                     b.Property<Guid>("CustomerId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CustomerFullName")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasDefaultValue("");
+
+                    b.Property<string>("CustomerPhone")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)")
+                        .HasDefaultValue("");
+
+                    b.Property<string>("DeliveryAddress")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("FulfillmentType")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)")
+                        .HasDefaultValue("Вземане на място");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");

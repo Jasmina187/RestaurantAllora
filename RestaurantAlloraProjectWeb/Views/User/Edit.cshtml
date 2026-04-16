@@ -1,0 +1,42 @@
+@using RestaurantAlloraProject.ViewModels.User
+@model UserEditViewModel
+
+@{
+    ViewData["Title"] = "Редакция на потребител";
+}
+
+<div class="container mt-5">
+    <h2>Редакция на потребител</h2>
+
+    <form asp-action="Edit" method="post" class="mt-4">
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="Id" />
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="mb-3">
+            <label asp-for="UserName" class="form-label">Потребителско име</label>
+            <input asp-for="UserName" class="form-control" />
+            <span asp-validation-for="UserName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label">Имейл</label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Role" class="form-label">Роля</label>
+            <select asp-for="Role" asp-items="ViewBag.Roles" class="form-select"></select>
+            <span asp-validation-for="Role" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Запази</button>
+        <a asp-action="Manage" class="btn btn-secondary">Назад</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,108 +1,172 @@
 @using RestaurantAlloraProject.ViewModels.Dish
 @model IEnumerable<DishViewModel>
 
-<h2 class="text-center mb-4">🍽️ Меню</h2>
-
-@if (User.IsInRole("Admin"))
-{
-    <a asp-controller="Dish" asp-action="Create" class="btn btn-warning mb-3">
-        ➕ Add Dish
-    </a>
+@{
+    ViewData["Title"] = "Меню";
+    var categories = Model
+        .Select(d => d.CategoryOfTheDish)
+        .Distinct()
+        .OrderBy(c => c)
+        .ToList();
 }
 
-<div class="row mb-4">
-    <div class="col-md-6">
-        <input type="text" id="searchInput" class="form-control" placeholder="🔍 Търси ястие...">
-    </div>
-    <div class="col-md-6">
-        <select id="categoryFilter" class="form-select">
-            <option value="">Всички категории</option>
-            @foreach (var category in Model.Select(d => d.CategoryOfTheDish).Distinct())
-            {
-                <option value="@category">@category</option>
-            }
-        </select>
-    </div>
-</div>
-
-<div class="row" id="menuContainer">
-    @foreach (var dish in Model)
+@functions {
+    private static bool HasText(string value, string text)
     {
-        <div class="col-md-4 mb-4 dish-card"
-             data-name="@dish.NameOfTheDish.ToLower()"
-             data-category="@dish.CategoryOfTheDish">
+        return value.Contains(text, StringComparison.OrdinalIgnoreCase);
+    }
 
-            <div class="card h-100 shadow-sm menu-card">
-                @if (!string.IsNullOrWhiteSpace(dish.ImageUrl))
+    private string GetAllergenIconPath(string allergenName)
+    {
+        if (HasText(allergenName, "глутен")) return "~/img/allergens/gluten.svg";
+        if (HasText(allergenName, "Ракообразни")) return "~/img/allergens/crustaceans.svg";
+        if (HasText(allergenName, "Яйца")) return "~/img/allergens/eggs.svg";
+        if (HasText(allergenName, "Риба")) return "~/img/allergens/fish.svg";
+        if (HasText(allergenName, "Фъстъци")) return "~/img/allergens/peanuts.svg";
+        if (HasText(allergenName, "Соя")) return "~/img/allergens/soy.svg";
+        if (HasText(allergenName, "Мляко")) return "~/img/allergens/milk.svg";
+        if (HasText(allergenName, "Ядки")) return "~/img/allergens/nuts.svg";
+        if (HasText(allergenName, "Целина")) return "~/img/allergens/celery.svg";
+        if (HasText(allergenName, "Синап")) return "~/img/allergens/mustard.svg";
+        if (HasText(allergenName, "Сусам")) return "~/img/allergens/sesame.svg";
+        if (HasText(allergenName, "Лупина")) return "~/img/allergens/lupin.svg";
+        if (HasText(allergenName, "Серен")) return "~/img/allergens/sulfites.svg";
+        if (HasText(allergenName, "Мекотели")) return "~/img/allergens/molluscs.svg";
+
+        return "~/img/allergens/generic.svg";
+    }
+
+    private string GetAllergenLabel(string allergenName)
+    {
+        var separatorIndex = allergenName.IndexOf(':');
+        return separatorIndex > 0 ? allergenName[..separatorIndex] : allergenName;
+    }
+}
+
+<section class="dish-index-page">
+    <div class="menu-heading dish-index-heading">
+        <span class="menu-eyebrow">Restaurant Allora</span>
+        <h1 class="allora-title">Меню</h1>
+    </div>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-controller="Dish" asp-action="Create" class="btn btn-warning mb-3">
+            Добави ястие
+        </a>
+    }
+
+    <div class="menu-index-toolbar">
+        <div>
+            <label for="searchInput" class="form-label visually-hidden">Търси ястие</label>
+            <input type="text" id="searchInput" class="form-control menu-index-control" placeholder="Търси ястие...">
+        </div>
+        <div>
+            <label for="categoryFilter" class="form-label visually-hidden">Категория</label>
+            <select id="categoryFilter" class="form-select menu-index-control">
+                <option value="">Всички категории</option>
+                @foreach (var category in categories)
                 {
-                    <img src="@dish.ImageUrl"
-                         class="card-img-top dish-index-img" />
+                    <option value="@category">@category</option>
                 }
+            </select>
+        </div>
+    </div>
 
-                <div class="card-body d-flex flex-column">
-                    <h5>
-                        @dish.NameOfTheDish
-                        <span class="badge bg-secondary">@dish.CategoryOfTheDish</span>
-                    </h5>
+    <div class="row g-4 menu-index-grid" id="menuContainer">
+        @foreach (var dish in Model)
+        {
+            <div class="col-md-6 col-xl-4 dish-card"
+                 data-name="@dish.NameOfTheDish.ToLower()"
+                 data-category="@dish.CategoryOfTheDish">
 
-                    <p class="text-muted small">@dish.DescriptionOfTheDish</p>
-
-                    <p class="fw-bold text-success">
-                        💰 @dish.PriceOfTheDish.ToString("0.00") €
-                    </p>
-
-                    @foreach (var allergen in dish.AllergenNames)
+                <article class="menu-index-card">
+                    @if (!string.IsNullOrWhiteSpace(dish.ImageUrl))
                     {
-                        <p class="small text-danger">
-                            @allergen
-                        </p>
+                        <div class="menu-index-img-wrap">
+                            <img src="@dish.ImageUrl"
+                                 class="menu-index-img"
+                                 alt="@dish.NameOfTheDish"
+                                 loading="lazy" />
+                        </div>
                     }
 
-                    <div class="mt-auto">
-                        @if (User.IsInRole("Customer"))
+                    <div class="menu-index-body">
+                        <div class="dish-meta-row">
+                            <span class="dish-category">@dish.CategoryOfTheDish</span>
+                            <span class="dish-price">@dish.PriceOfTheDish.ToString("0.00") €</span>
+                        </div>
+
+                        <h2 class="dish-name">@dish.NameOfTheDish</h2>
+                        <p class="dish-desc">@dish.DescriptionOfTheDish</p>
+
+                        @if (dish.AllergenNames.Any())
                         {
-                            <form asp-controller="CustomerFavorite"
-                                  asp-action="ToggleFavorite"
-                                  method="post">
-                                @Html.AntiForgeryToken()
-
-                                <input type="hidden" name="dishId" value="@dish.DishId" />
-
-                                <button type="submit" class="btn btn-outline-danger w-100">
-                                    ❤️ Любимо
-                                </button>
-                            </form>
+                            <div class="dish-allergens" aria-label="Алергени">
+                                @foreach (var allergen in dish.AllergenNames)
+                                {
+                                    <span class="allergen-badge"
+                                          tabindex="0"
+                                          aria-label="@allergen"
+                                          title="@allergen"
+                                          data-tooltip="@allergen">
+                                        <img src="@Url.Content(GetAllergenIconPath(allergen))"
+                                             alt="@GetAllergenLabel(allergen)"
+                                             class="allergen-icon-img"
+                                             loading="lazy" />
+                                    </span>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="dish-allergens dish-allergens-empty" aria-hidden="true"></div>
                         }
 
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <div class="mt-2 d-flex gap-2">
+                        <div class="menu-index-actions">
+                            @if (User.IsInRole("Customer"))
+                            {
+                                <form asp-controller="CustomerFavorite"
+                                      asp-action="ToggleFavorite"
+                                      method="post"
+                                      class="menu-index-action-form">
+                                    @Html.AntiForgeryToken()
+
+                                    <input type="hidden" name="dishId" value="@dish.DishId" />
+
+                                    <button type="submit" class="review-link menu-index-action-btn">
+                                        Любимо
+                                    </button>
+                                </form>
+                            }
+
+                            @if (User.IsInRole("Admin"))
+                            {
                                 <a asp-controller="Dish"
                                    asp-action="Edit"
                                    asp-route-id="@dish.DishId"
-                                   class="btn btn-sm btn-outline-warning w-50">
-                                    Edit
+                                   class="review-link menu-index-action-btn">
+                                    Редактирай
                                 </a>
 
                                 <form asp-controller="Dish"
                                       asp-action="Delete"
                                       asp-route-id="@dish.DishId"
                                       method="post"
-                                      class="w-50">
+                                      class="menu-index-action-form">
                                     @Html.AntiForgeryToken()
 
                                     <button type="submit"
-                                            class="btn btn-sm btn-outline-danger w-100"
-                                            data-confirm="Delete this dish?">
-                                        Delete
+                                            class="add-btn menu-index-action-btn"
+                                            data-confirm="Да изтрием ли това ястие?">
+                                        Изтрий
                                     </button>
                                 </form>
-                            </div>
-                        }
+                            }
+                        </div>
                     </div>
-                </div>
+                </article>
             </div>
-        </div>
-    }
-</div>
-
+        }
+    </div>
+</section>

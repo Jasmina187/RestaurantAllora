@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <path d="M29 8h6v18l14 23c2 4-1 7-5 7H20c-4 0-7-3-5-7l14-23V8Z" fill="#f2f0e6" stroke="#777b80" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M22 44h20" stroke="#6ca6c9" stroke-width="5" stroke-linecap="round"/>
+  <text x="32" y="41" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#777b80">SO2</text>
+</svg>

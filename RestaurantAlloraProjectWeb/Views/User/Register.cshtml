@@ -1,39 +1,44 @@
-﻿@using RestaurantAlloraProject.ViewModels.User
-@model RegisterViewModel​
-<h1 class="text-center">Register</h1>​
-<div class="row">​
-    <div class="col-md-4 offset-md-4">​
-        <form asp-action="Register" id="registerForm" method="post">​
-            <hr />​
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>​
-            <div class="text-center mb-3">​
-                <label asp-for="@Model.UserName">Username</label>​
-                <input class="form-control " autocomplete="username" aria-required="true" asp-for="@Model.UserName"/>
-                <span asp-validation-for="@Model.UserName" class="text-danger"></span>
-            </div>​
-            <div class="text-center mb-3">​
-                <label asp-for="@Model.EmailAddress">Email</label>​
-                <input class="form-control " autocomplete="username" aria-required="true" asp-for="@Model.EmailAddress"/>​
-                <span asp-validation-for="@Model.EmailAddress" class="text-danger"></span>​
+@using RestaurantAlloraProject.ViewModels.User
+@model RegisterViewModel
+
+<h1 class="text-center">Register</h1>
+<div class="row">
+    <div class="col-md-4 offset-md-4">
+        <form asp-action="Register" id="registerForm" method="post">
+            <hr />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="text-center mb-3">
+                <label asp-for="UserName">Username</label>
+                <input class="form-control" autocomplete="username" aria-required="true" asp-for="UserName" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
             </div>
-             	<div class="text-center mb-3">​
-                <label asp-for="@Model.Password">Password</label>​
-                <input class="form-control" type="password" autocomplete="new-password" aria-required="true" asp-for="@Model.Password" />​
-                <span asp-validation-for="@Model.Password" class="text-danger"></span>​
-            </div>​
-            <div class="text-center mb-3">​
-                <label asp-for="@Model.ConfirmPassword">Confirm Password</label>​
-                <input class="form-control" type="password" autocomplete="new-password" aria-required="true" asp-for="@Model.ConfirmPassword" />​
-                <span asp-validation-for="@Model.ConfirmPassword" class="text-danger"></span>​
-            </div>​
-            <div class="text-center mb-3">​
-                <label asp-for="@Model.Role">Role</label>​
-                <select asp-for="@Model.Role" asp-items="ViewBag.Roles" class="form-select"></select>
-                <span asp-validation-for="@Model.Role" class="text-danger"></span>​
-            </div>​
-            <div class="text-center">​
-                <button id="registerSubmit" type="submit" class="btn btn-primary">Register</button>​
-            </div>​
-        </form>​
-    </div>​
+            <div class="text-center mb-3">
+                <label asp-for="EmailAddress">Email</label>
+                <input class="form-control" autocomplete="email" aria-required="true" asp-for="EmailAddress" />
+                <span asp-validation-for="EmailAddress" class="text-danger"></span>
+            </div>
+            <div class="text-center mb-3">
+                <label asp-for="Password">Password</label>
+                <input class="form-control" type="password" autocomplete="new-password" aria-required="true" asp-for="Password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="text-center mb-3">
+                <label asp-for="ConfirmPassword">Confirm Password</label>
+                <input class="form-control" type="password" autocomplete="new-password" aria-required="true" asp-for="ConfirmPassword" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="show-register-passwords" data-toggle-password="#Password,#ConfirmPassword" />
+                <label class="form-check-label" for="show-register-passwords">Покажи паролите</label>
+            </div>
+            <div class="text-center mb-3">
+                <label asp-for="Role">Role</label>
+                <select asp-for="Role" asp-items="ViewBag.Roles" class="form-select"></select>
+                <span asp-validation-for="Role" class="text-danger"></span>
+            </div>
+            <div class="text-center">
+                <button id="registerSubmit" type="submit" class="btn btn-primary">Register</button>
+            </div>
+        </form>
+    </div>
 </div>

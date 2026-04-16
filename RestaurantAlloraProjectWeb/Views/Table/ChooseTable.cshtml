@@ -3,9 +3,12 @@
 
 @{
     Layout = "_Layout";
+    int? selectedCapacity = ViewBag.SelectedCapacity as int?;
+    int? autoMinCapacity = selectedCapacity.HasValue ? selectedCapacity.Value >= 8 ? 8 : selectedCapacity.Value : null;
+    int? autoMaxCapacity = selectedCapacity.HasValue ? selectedCapacity.Value >= 8 ? 10 : selectedCapacity.Value : null;
 }
 
-<div class="luxury-container">
+<div class="luxury-container" data-auto-min-cap="@autoMinCapacity" data-auto-max-cap="@autoMaxCapacity">
     <div class="header-content text-center">
         <h1 class="allora-title">Allora Experience</h1>
         <p class="allora-subtitle">Изберете перфектната обстановка според броя на Вашите гости</p>
@@ -63,22 +66,26 @@
         <h2 id="filter-title" class="text-center mb-4"></h2>
         <div class="table-status-legend">
             <span><i class="legend-dot legend-dot-available"></i>Свободна</span>
+            <span><i class="legend-dot legend-dot-pending"></i>Очаква одобрение</span>
             <span><i class="legend-dot legend-dot-reserved"></i>Резервирана</span>
         </div>
         <div id="table-reservation-info" class="table-reservation-info" aria-live="polite"></div>
         <div class="tables-flex-grid">
             @foreach (var table in Model)
             {
-                var isAvailable = !table.ActiveReservationStarts.Any();
-                var tableStatus = isAvailable ? "Свободна" : "Резервирана";
-                var statusClass = isAvailable ? "table-card-available" : "table-card-reserved";
+                var hasApprovedReservation = table.ActiveReservationStarts.Any();
+                var hasPendingReservation = table.PendingReservationStarts.Any();
+                var tableStatus = hasApprovedReservation ? "Резервирана" : hasPendingReservation ? "Очаква одобрение" : "Свободна";
+                var statusClass = hasApprovedReservation ? "table-card-reserved" : hasPendingReservation ? "table-card-pending" : "table-card-available";
                 var reservationRanges = string.Join("|", table.ActiveReservationStarts.Select(start => $"{start:dd.MM.yyyy} от {start:HH:mm} до {start.AddHours(3):HH:mm}"));
+                var pendingRanges = string.Join("|", table.PendingReservationStarts.Select(start => $"{start:dd.MM.yyyy} от {start:HH:mm} до {start.AddHours(3):HH:mm}"));
 
                 <a asp-controller="Reservation" asp-action="Create" asp-route-tableId="@table.TableId"
                    class="luxury-table-card @statusClass"
                    data-cap="@table.CapacityOfTheTable"
                    data-table-number="@table.TableNumber"
-                   data-reservation-ranges="@reservationRanges">
+                   data-reservation-ranges="@reservationRanges"
+                   data-pending-ranges="@pendingRanges">
                     <div class="table-inner">
                         <span class="t-num">#@table.TableNumber</span>
                         <span class="t-cap">@table.CapacityOfTheTable места</span>
