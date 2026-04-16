@@ -25,5 +25,7 @@ namespace RestaurantAlloraProjectViewModels.Table
         public DateTime? NextReservationEnd => NextReservationStart?.AddHours(3);
 
         public List<DateTime> ActiveReservationStarts { get; set; } = new List<DateTime>();
+
+        public List<DateTime> PendingReservationStarts { get; set; } = new List<DateTime>();
     }
 }
