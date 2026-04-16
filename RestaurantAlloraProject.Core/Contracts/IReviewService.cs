@@ -10,6 +10,8 @@ namespace RestaurantAlloraProject.Core.Contracts
     public interface IReviewService
     {
         Task AddReviewAsync(ReviewViewModel model);
+        Task<IEnumerable<ReviewViewModel>> GetAllReviewsAsync();
+        Task<ReviewListViewModel> GetAllReviewsPageAsync(int page, int pageSize);
         Task<IEnumerable<ReviewViewModel>> GetDishReviewsAsync(Guid dishId);
     }
 }

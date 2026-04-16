@@ -10,6 +10,7 @@ namespace RestaurantAlloraProject.Core.Contracts
     public interface IReservationService
     {
         Task<List<ReservationIndexViewModel>> GetUserReservationsAsync(Guid userId);
+        Task<ReservationListViewModel> GetUserReservationsPageAsync(Guid userId, int page, int pageSize);
         Task<List<ReservationIndexViewModel>> GetPendingReservationsAsync();
         Task<ReservationManagementViewModel> GetReservationsForManagementAsync(ReservationFilterViewModel filter);
         Task CreateReservationAsync(ReservationCreateViewModel vm, Guid userId);
