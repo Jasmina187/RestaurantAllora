@@ -116,6 +116,7 @@
                                     <a asp-controller="Review"
                                        asp-action="Add"
                                        asp-route-dishId="@dish.DishId"
+                                       asp-route-returnUrl="@Url.Action("ClientMenu", "Dish")"
                                        class="review-link">
                                         Оцени
                                     </a>

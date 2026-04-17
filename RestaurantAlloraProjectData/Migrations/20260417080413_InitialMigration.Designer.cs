@@ -12,7 +12,7 @@ using RestaurantAlloraProjectData;
 namespace RestaurantAlloraProjectData.Migrations
 {
     [DbContext(typeof(RestaurantAlloraProjectContext))]
-    [Migration("20260415050530_InitialMigration")]
+    [Migration("20260417080413_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -205,7 +205,7 @@ namespace RestaurantAlloraProjectData.Migrations
                         new
                         {
                             AllergenId = new Guid("a846b85f-53b1-4b2a-b096-825824c3b7e2"),
-                            AllergenName = "Мляко и млечни продукти"
+                            AllergenName = "Мляко и млечни продукти (включително лактоза)"
                         },
                         new
                         {
@@ -235,12 +235,53 @@ namespace RestaurantAlloraProjectData.Migrations
                         new
                         {
                             AllergenId = new Guid("64d4fbb0-ffe7-4526-9d18-300608276013"),
-                            AllergenName = "Серен диоксид и сулфиди"
+                            AllergenName = "Серен диоксид и сулфити с концентрация над 10 mg/kg или 10 mg/l"
                         },
                         new
                         {
                             AllergenId = new Guid("6b990dac-6b4f-49f4-a715-ccaa67246c3e"),
                             AllergenName = "Мекотели и продукти от тях"
+                        });
+                });
+
+            modelBuilder.Entity("RestaurantAlloraProjectData.Entities.Category", b =>
+                {
+                    b.Property<Guid>("CategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("CategoryId");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            CategoryId = new Guid("a19f1c7a-0a27-4c91-a220-2f4c55fb0b21"),
+                            Name = "Салати"
+                        },
+                        new
+                        {
+                            CategoryId = new Guid("0a55dc5d-23b6-4c3a-8428-3f0f7f370aa6"),
+                            Name = "Основни ястия"
+                        },
+                        new
+                        {
+                            CategoryId = new Guid("b3cb4f8b-8f1c-44f7-a332-3f2d2bb24b0b"),
+                            Name = "Десерти"
+                        },
+                        new
+                        {
+                            CategoryId = new Guid("aeae6939-7449-467f-b1d6-b0cbd340fc7d"),
+                            Name = "Напитки"
                         });
                 });
 
@@ -278,6 +319,7 @@ namespace RestaurantAlloraProjectData.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Quantity")
@@ -310,6 +352,9 @@ namespace RestaurantAlloraProjectData.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("CategoryOfTheDish")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -330,9 +375,12 @@ namespace RestaurantAlloraProjectData.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<decimal>("PriceOfTheDish")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("DishId");
+
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Dishes");
 
@@ -340,6 +388,7 @@ namespace RestaurantAlloraProjectData.Migrations
                         new
                         {
                             DishId = new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec"),
+                            CategoryId = new Guid("a19f1c7a-0a27-4c91-a220-2f4c55fb0b21"),
                             CategoryOfTheDish = "Салати",
                             DescriptionOfTheDish = "Мариновани скариди, авокадо, шарена киноа, микс салати със спанак, червен лук, чери домати, японски дресинг с мисо паста и див лук.",
                             ImageUrl = "/img/geisha.png",
@@ -349,6 +398,7 @@ namespace RestaurantAlloraProjectData.Migrations
                         new
                         {
                             DishId = new Guid("5b48ad92-c4f7-4b93-a015-789f26f40d58"),
+                            CategoryId = new Guid("a19f1c7a-0a27-4c91-a220-2f4c55fb0b21"),
                             CategoryOfTheDish = "Салати",
                             DescriptionOfTheDish = "Козе сирене, микс салати, свежи соеви кълнове, чери домати, ябълка, карамелизирани орехи, стафиди, сушени боровинки и нар.",
                             ImageUrl = "/img/instanbul.png",
@@ -358,6 +408,7 @@ namespace RestaurantAlloraProjectData.Migrations
                         new
                         {
                             DishId = new Guid("44ce4f8a-6e15-4947-bd6b-e20bdb14d842"),
+                            CategoryId = new Guid("a19f1c7a-0a27-4c91-a220-2f4c55fb0b21"),
                             CategoryOfTheDish = "Салати",
                             DescriptionOfTheDish = "Салата Романа, микс салати, чери домати, краставици, репички, пресен червен пипер, лук, магданоз, босилек, свеж зеленчуков дресинг, хрупкав хляб, нар и дресинг нар.",
                             ImageUrl = "/img/fatush.png",
@@ -367,6 +418,7 @@ namespace RestaurantAlloraProjectData.Migrations
                         new
                         {
                             DishId = new Guid("05267740-181b-43e4-96dd-e5b9c250ac75"),
+                            CategoryId = new Guid("a19f1c7a-0a27-4c91-a220-2f4c55fb0b21"),
                             CategoryOfTheDish = "Салати",
                             DescriptionOfTheDish = "Черна леща Белуга, шарена киноа, нахут, краставици, чери домати, печен маринован пипер, маслини, магданоз, червен лук, дресинг Винегрет, мисо-лайм хумус и сумак.",
                             ImageUrl = "/img/fatush.png",
@@ -376,6 +428,7 @@ namespace RestaurantAlloraProjectData.Migrations
                         new
                         {
                             DishId = new Guid("6482fc36-4bfc-4cda-874b-2300a5f3cc89"),
+                            CategoryId = new Guid("0a55dc5d-23b6-4c3a-8428-3f0f7f370aa6"),
                             CategoryOfTheDish = "Основни ястия",
                             DescriptionOfTheDish = "Пуешки стек на BBQ със специална марината, запечени тиквички, гъби, моркови и карфиол с билкова марината.",
                             ImageUrl = "/img/stek.png",
@@ -385,6 +438,7 @@ namespace RestaurantAlloraProjectData.Migrations
                         new
                         {
                             DishId = new Guid("12489f7b-9d30-4a28-aba0-c9bd5cc7dd57"),
+                            CategoryId = new Guid("0a55dc5d-23b6-4c3a-8428-3f0f7f370aa6"),
                             CategoryOfTheDish = "Основни ястия",
                             DescriptionOfTheDish = "Кюфтета от кълцано телешко Блек Ангъс, пържени картофи и микс салати с чери домати и дресинг винегрет.",
                             ImageUrl = "/img/meatballs.png",
@@ -394,6 +448,7 @@ namespace RestaurantAlloraProjectData.Migrations
                         new
                         {
                             DishId = new Guid("a450b794-5144-4f72-a436-bb29fbbb00ef"),
+                            CategoryId = new Guid("0a55dc5d-23b6-4c3a-8428-3f0f7f370aa6"),
                             CategoryOfTheDish = "Основни ястия",
                             DescriptionOfTheDish = "Филе бяла риба и спагети в Алфредо сос със спанак и азиатски подправки, пармезан, пресен пипер и див лук.",
                             ImageUrl = "/img/fish.png",
@@ -403,6 +458,7 @@ namespace RestaurantAlloraProjectData.Migrations
                         new
                         {
                             DishId = new Guid("3cfc8ca4-f70c-47d8-9cc1-dee9c6de5c1b"),
+                            CategoryId = new Guid("0a55dc5d-23b6-4c3a-8428-3f0f7f370aa6"),
                             CategoryOfTheDish = "Основни ястия",
                             DescriptionOfTheDish = "Традиционни китайски нудли с мариновано пилешко месо от бут, яйце, зеле, моркови, пресен зелен и червен пипер, специален сос и зелен лук.",
                             ImageUrl = "/img/noodles.png",
@@ -412,6 +468,7 @@ namespace RestaurantAlloraProjectData.Migrations
                         new
                         {
                             DishId = new Guid("f4201dbf-1adb-4949-b235-d137db7698f7"),
+                            CategoryId = new Guid("0a55dc5d-23b6-4c3a-8428-3f0f7f370aa6"),
                             CategoryOfTheDish = "Основни ястия",
                             DescriptionOfTheDish = "Пилешки късчета с леко пикантен азиатски сос и подправки, яйце, пресен босилек и магданоз върху жасминов ориз.",
                             ImageUrl = "/img/chicken.png",
@@ -421,6 +478,7 @@ namespace RestaurantAlloraProjectData.Migrations
                         new
                         {
                             DishId = new Guid("a02bbc5e-4df1-4e8e-a923-33b65336614c"),
+                            CategoryId = new Guid("b3cb4f8b-8f1c-44f7-a332-3f2d2bb24b0b"),
                             CategoryOfTheDish = "Десерти",
                             DescriptionOfTheDish = "Чийзкейк с хрупкав блат, маскарпоне крем и пистачио глазура.",
                             ImageUrl = "/img/pistachio.png",
@@ -483,6 +541,176 @@ namespace RestaurantAlloraProjectData.Migrations
                         {
                             DishId = new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec"),
                             AllergenId = new Guid("64d4fbb0-ffe7-4526-9d18-300608276013")
+                        },
+                        new
+                        {
+                            DishId = new Guid("5b48ad92-c4f7-4b93-a015-789f26f40d58"),
+                            AllergenId = new Guid("503510df-d3a4-4266-a182-3b3db962de57")
+                        },
+                        new
+                        {
+                            DishId = new Guid("5b48ad92-c4f7-4b93-a015-789f26f40d58"),
+                            AllergenId = new Guid("a846b85f-53b1-4b2a-b096-825824c3b7e2")
+                        },
+                        new
+                        {
+                            DishId = new Guid("5b48ad92-c4f7-4b93-a015-789f26f40d58"),
+                            AllergenId = new Guid("247f192a-3e44-480a-bde9-98089f8b398b")
+                        },
+                        new
+                        {
+                            DishId = new Guid("44ce4f8a-6e15-4947-bd6b-e20bdb14d842"),
+                            AllergenId = new Guid("dc08b4ec-5095-4811-a672-192301357e16")
+                        },
+                        new
+                        {
+                            DishId = new Guid("05267740-181b-43e4-96dd-e5b9c250ac75"),
+                            AllergenId = new Guid("503510df-d3a4-4266-a182-3b3db962de57")
+                        },
+                        new
+                        {
+                            DishId = new Guid("05267740-181b-43e4-96dd-e5b9c250ac75"),
+                            AllergenId = new Guid("7f4554e9-9835-479e-bb37-b97ed9c58d6a")
+                        },
+                        new
+                        {
+                            DishId = new Guid("6482fc36-4bfc-4cda-874b-2300a5f3cc89"),
+                            AllergenId = new Guid("dc08b4ec-5095-4811-a672-192301357e16")
+                        },
+                        new
+                        {
+                            DishId = new Guid("6482fc36-4bfc-4cda-874b-2300a5f3cc89"),
+                            AllergenId = new Guid("503510df-d3a4-4266-a182-3b3db962de57")
+                        },
+                        new
+                        {
+                            DishId = new Guid("6482fc36-4bfc-4cda-874b-2300a5f3cc89"),
+                            AllergenId = new Guid("3a8c6114-15c6-4f6c-9de1-21126a38706f")
+                        },
+                        new
+                        {
+                            DishId = new Guid("12489f7b-9d30-4a28-aba0-c9bd5cc7dd57"),
+                            AllergenId = new Guid("503510df-d3a4-4266-a182-3b3db962de57")
+                        },
+                        new
+                        {
+                            DishId = new Guid("12489f7b-9d30-4a28-aba0-c9bd5cc7dd57"),
+                            AllergenId = new Guid("a846b85f-53b1-4b2a-b096-825824c3b7e2")
+                        },
+                        new
+                        {
+                            DishId = new Guid("12489f7b-9d30-4a28-aba0-c9bd5cc7dd57"),
+                            AllergenId = new Guid("7d1e6d36-e29a-40ca-970a-3c016cfb7a99")
+                        },
+                        new
+                        {
+                            DishId = new Guid("a450b794-5144-4f72-a436-bb29fbbb00ef"),
+                            AllergenId = new Guid("dc08b4ec-5095-4811-a672-192301357e16")
+                        },
+                        new
+                        {
+                            DishId = new Guid("a450b794-5144-4f72-a436-bb29fbbb00ef"),
+                            AllergenId = new Guid("c4399ef7-4776-4b45-92fb-35ae3dd3f977")
+                        },
+                        new
+                        {
+                            DishId = new Guid("a450b794-5144-4f72-a436-bb29fbbb00ef"),
+                            AllergenId = new Guid("bcccc627-fc03-40cc-bfb4-9047d4626528")
+                        },
+                        new
+                        {
+                            DishId = new Guid("a450b794-5144-4f72-a436-bb29fbbb00ef"),
+                            AllergenId = new Guid("a846b85f-53b1-4b2a-b096-825824c3b7e2")
+                        },
+                        new
+                        {
+                            DishId = new Guid("3cfc8ca4-f70c-47d8-9cc1-dee9c6de5c1b"),
+                            AllergenId = new Guid("dc08b4ec-5095-4811-a672-192301357e16")
+                        },
+                        new
+                        {
+                            DishId = new Guid("3cfc8ca4-f70c-47d8-9cc1-dee9c6de5c1b"),
+                            AllergenId = new Guid("c4399ef7-4776-4b45-92fb-35ae3dd3f977")
+                        },
+                        new
+                        {
+                            DishId = new Guid("3cfc8ca4-f70c-47d8-9cc1-dee9c6de5c1b"),
+                            AllergenId = new Guid("503510df-d3a4-4266-a182-3b3db962de57")
+                        },
+                        new
+                        {
+                            DishId = new Guid("3cfc8ca4-f70c-47d8-9cc1-dee9c6de5c1b"),
+                            AllergenId = new Guid("a846b85f-53b1-4b2a-b096-825824c3b7e2")
+                        },
+                        new
+                        {
+                            DishId = new Guid("3cfc8ca4-f70c-47d8-9cc1-dee9c6de5c1b"),
+                            AllergenId = new Guid("3a8c6114-15c6-4f6c-9de1-21126a38706f")
+                        },
+                        new
+                        {
+                            DishId = new Guid("3cfc8ca4-f70c-47d8-9cc1-dee9c6de5c1b"),
+                            AllergenId = new Guid("6b990dac-6b4f-49f4-a715-ccaa67246c3e")
+                        },
+                        new
+                        {
+                            DishId = new Guid("f4201dbf-1adb-4949-b235-d137db7698f7"),
+                            AllergenId = new Guid("dc08b4ec-5095-4811-a672-192301357e16")
+                        },
+                        new
+                        {
+                            DishId = new Guid("f4201dbf-1adb-4949-b235-d137db7698f7"),
+                            AllergenId = new Guid("c4399ef7-4776-4b45-92fb-35ae3dd3f977")
+                        },
+                        new
+                        {
+                            DishId = new Guid("f4201dbf-1adb-4949-b235-d137db7698f7"),
+                            AllergenId = new Guid("503510df-d3a4-4266-a182-3b3db962de57")
+                        },
+                        new
+                        {
+                            DishId = new Guid("f4201dbf-1adb-4949-b235-d137db7698f7"),
+                            AllergenId = new Guid("a846b85f-53b1-4b2a-b096-825824c3b7e2")
+                        },
+                        new
+                        {
+                            DishId = new Guid("f4201dbf-1adb-4949-b235-d137db7698f7"),
+                            AllergenId = new Guid("3a8c6114-15c6-4f6c-9de1-21126a38706f")
+                        },
+                        new
+                        {
+                            DishId = new Guid("f4201dbf-1adb-4949-b235-d137db7698f7"),
+                            AllergenId = new Guid("7f4554e9-9835-479e-bb37-b97ed9c58d6a")
+                        },
+                        new
+                        {
+                            DishId = new Guid("f4201dbf-1adb-4949-b235-d137db7698f7"),
+                            AllergenId = new Guid("64d4fbb0-ffe7-4526-9d18-300608276013")
+                        },
+                        new
+                        {
+                            DishId = new Guid("f4201dbf-1adb-4949-b235-d137db7698f7"),
+                            AllergenId = new Guid("6b990dac-6b4f-49f4-a715-ccaa67246c3e")
+                        },
+                        new
+                        {
+                            DishId = new Guid("a02bbc5e-4df1-4e8e-a923-33b65336614c"),
+                            AllergenId = new Guid("dc08b4ec-5095-4811-a672-192301357e16")
+                        },
+                        new
+                        {
+                            DishId = new Guid("a02bbc5e-4df1-4e8e-a923-33b65336614c"),
+                            AllergenId = new Guid("c4399ef7-4776-4b45-92fb-35ae3dd3f977")
+                        },
+                        new
+                        {
+                            DishId = new Guid("a02bbc5e-4df1-4e8e-a923-33b65336614c"),
+                            AllergenId = new Guid("a846b85f-53b1-4b2a-b096-825824c3b7e2")
+                        },
+                        new
+                        {
+                            DishId = new Guid("a02bbc5e-4df1-4e8e-a923-33b65336614c"),
+                            AllergenId = new Guid("247f192a-3e44-480a-bde9-98089f8b398b")
                         });
                 });
 
@@ -502,8 +730,37 @@ namespace RestaurantAlloraProjectData.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("CustomerFullName")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasDefaultValue("");
+
                     b.Property<Guid>("CustomerId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CustomerPhone")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)")
+                        .HasDefaultValue("");
+
+                    b.Property<string>("DeliveryAddress")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("FulfillmentType")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)")
+                        .HasDefaultValue("Вземане на място");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
@@ -515,6 +772,7 @@ namespace RestaurantAlloraProjectData.Migrations
                         .HasDefaultValue("Обработва се");
 
                     b.Property<decimal>("TotalAmount")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("OrderId");
@@ -1505,6 +1763,17 @@ namespace RestaurantAlloraProjectData.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RestaurantAlloraProjectData.Entities.Dish", b =>
+                {
+                    b.HasOne("RestaurantAlloraProjectData.Entities.Category", "Category")
+                        .WithMany("Dishes")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
             modelBuilder.Entity("RestaurantAlloraProjectData.Entities.DishAllergen", b =>
                 {
                     b.HasOne("RestaurantAlloraProjectData.Entities.Allergen", "Allergen")
@@ -1594,6 +1863,11 @@ namespace RestaurantAlloraProjectData.Migrations
             modelBuilder.Entity("RestaurantAlloraProjectData.Entities.Allergen", b =>
                 {
                     b.Navigation("DishAllergens");
+                });
+
+            modelBuilder.Entity("RestaurantAlloraProjectData.Entities.Category", b =>
+                {
+                    b.Navigation("Dishes");
                 });
 
             modelBuilder.Entity("RestaurantAlloraProjectData.Entities.CustomerProfile", b =>

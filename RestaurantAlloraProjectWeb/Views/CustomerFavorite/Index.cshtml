@@ -1,3 +1,4 @@
+@using System.Globalization
 @model IEnumerable<RestaurantAlloraProject.ViewModels.CustomerFavorite.CustomerFavoriteViewModel>
 
 @{
@@ -24,7 +25,7 @@
             <div class="favorites-empty-copy">
                 <span class="favorites-empty-kicker">Още няма фаворити</span>
                 <h2>Избери първото ястие, което си заслужава повторение.</h2>
-                <p>Отвори онлайн менюто и отбележи любимите си предложения.</p>
+                <p>Отвори менюто и отбележи любимите си предложения.</p>
             </div>
             <a asp-controller="Dish" asp-action="Index" class="favorite-primary-action">
                 Към менюто
@@ -35,7 +36,6 @@
     {
         <div class="favorites-summary">
             <span>@favorites.Count любими</span>
-            <span>Последно добавени най-отгоре</span>
         </div>
 
         <div class="favorites-grid">
@@ -66,15 +66,19 @@
                         <p class="favorite-added">Добавено на @dish.AddedOn.ToString("dd.MM.yyyy")</p>
 
                         <div class="favorite-actions">
-                            <a asp-controller="Dish"
-                               asp-action="ClientMenu"
-                               class="favorite-primary-action">
+                            <button type="button"
+                                    class="favorite-primary-action favorite-order-action js-add-to-cart"
+                                    data-dish-id="@dish.DishId"
+                                    data-dish-name="@dish.DishName"
+                                    data-dish-price="@dish.Price.ToString("0.00", CultureInfo.InvariantCulture)"
+                                    data-redirect-url="@Url.Action("ClientMenu", "Dish")">
                                 Поръчай
-                            </a>
+                            </button>
 
                             <a asp-controller="Review"
                                asp-action="Add"
                                asp-route-dishId="@dish.DishId"
+                               asp-route-returnUrl="@Url.Action("Index", "CustomerFavorite")"
                                class="favorite-secondary-action">
                                 Оцени
                             </a>

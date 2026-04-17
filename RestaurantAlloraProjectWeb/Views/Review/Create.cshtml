@@ -2,6 +2,7 @@
 @model ReviewViewModel
 @{
     ViewData["Title"] = "Създай ревю";
+    var returnUrl = ViewData["ReturnUrl"] as string ?? Url.Action("ClientMenu", "Dish");
 }
 
 <h2>Създай ново ревю</h2>
@@ -15,6 +16,7 @@
 
             <input type="hidden" asp-for="DishId" />
             <input type="hidden" asp-for="CustomerId" />
+            <input type="hidden" name="returnUrl" value="@returnUrl" />
 
             <div class="form-group mb-3">
                 <label asp-for="Rating" class="control-label">Оценка (1-5)</label>
@@ -30,7 +32,7 @@
 
             <div class="form-group">
                 <button type="submit" class="btn btn-primary">Създай</button>
-                <a asp-controller="Dish" asp-action="ClientMenu" class="btn btn-secondary">Назад към менюто</a>
+                <a href="@returnUrl" class="btn btn-secondary">Назад</a>
             </div>
         </form>
     </div>

@@ -73,11 +73,10 @@ namespace RestaurantAlloraProject.Core.Services
                 throw new ArgumentException("Вече има категория с това име.");
             }
 
-            var oldName = category.Name;
             category.Name = newName;
 
             var dishesInCategory = await _context.Dishes
-                .Where(d => d.CategoryOfTheDish == oldName)
+                .Where(d => d.CategoryId == category.CategoryId)
                 .ToListAsync();
 
             foreach (var dish in dishesInCategory)
@@ -98,7 +97,7 @@ namespace RestaurantAlloraProject.Core.Services
             }
 
             var isUsed = await _context.Dishes
-                .AnyAsync(d => d.CategoryOfTheDish == category.Name);
+                .AnyAsync(d => d.CategoryId == category.CategoryId);
 
             if (isUsed)
             {

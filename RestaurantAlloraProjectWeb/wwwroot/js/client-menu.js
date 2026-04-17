@@ -1,5 +1,31 @@
 (function () {
-    let cart = [];
+    const cartStorageKey = "restaurantAllora.cart";
+    let cart = loadCart();
+
+    function loadCart() {
+        try {
+            const storedCart = JSON.parse(localStorage.getItem(cartStorageKey) || "[]");
+
+            if (!Array.isArray(storedCart)) {
+                return [];
+            }
+
+            return storedCart
+                .map(item => ({
+                    id: item.id,
+                    name: item.name,
+                    price: parseFloat(item.price),
+                    quantity: parseInt(item.quantity, 10)
+                }))
+                .filter(item => item.id && item.name && !Number.isNaN(item.price) && item.quantity > 0);
+        } catch {
+            return [];
+        }
+    }
+
+    function saveCart() {
+        localStorage.setItem(cartStorageKey, JSON.stringify(cart));
+    }
 
     function formatPrice(price) {
         return parseFloat(price).toFixed(2) + " €";
@@ -19,6 +45,7 @@
             });
         }
 
+        saveCart();
         updateCartUI();
     }
 
@@ -35,6 +62,7 @@
             cart = cart.filter(cartItem => cartItem.id !== id);
         }
 
+        saveCart();
         updateCartUI();
     }
 
@@ -131,6 +159,7 @@
 
         button.disabled = true;
         button.innerText = "Към финализиране...";
+        localStorage.removeItem(cartStorageKey);
         document.body.appendChild(form);
         form.submit();
     }
@@ -139,6 +168,11 @@
         const addButton = event.target.closest(".js-add-to-cart");
         if (addButton) {
             addToCart(addButton.dataset.dishId, addButton.dataset.dishName, addButton.dataset.dishPrice);
+
+            if (addButton.dataset.redirectUrl) {
+                window.location.href = addButton.dataset.redirectUrl;
+            }
+
             return;
         }
 
@@ -161,4 +195,6 @@
             goToCheckout(checkoutButton);
         });
     }
+
+    updateCartUI();
 })();

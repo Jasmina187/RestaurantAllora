@@ -137,6 +137,28 @@ h3,
     width: 90%;
     max-width: 650px;
     height: auto;
+    cursor: pointer;
+    filter: drop-shadow(0 20px 45px rgba(0, 0, 0, 0.35));
+    transform-origin: center;
+    transition: transform 0.35s ease, filter 0.35s ease;
+    animation: heroReveal 0.85s ease both;
+}
+
+.hero-logo:hover {
+    filter: drop-shadow(0 28px 60px rgba(197, 160, 89, 0.24));
+    transform: translateY(-8px) scale(1.03);
+}
+
+@keyframes heroReveal {
+    from {
+        opacity: 0;
+        transform: translateY(24px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 .welcome-text {
@@ -194,14 +216,27 @@ h3,
 .favorite-menu-link,
 .favorite-secondary-action {
     border: 1px solid #c5a059;
-    color: #f1d79a;
-    background: transparent;
+    color: #111;
+    background: #d4b260;
 }
 
 .favorite-primary-action {
     border: 1px solid #c5a059;
-    background: #c5a059;
+    background: #d4b260;
     color: #111;
+}
+
+.favorite-menu-link:hover,
+.favorite-primary-action:hover,
+.favorite-secondary-action:hover {
+    border-color: #f0d58b;
+    background: #f0d58b;
+    color: #111;
+}
+
+.favorite-order-action {
+    width: 100%;
+    cursor: pointer;
 }
 
 .favorite-remove-action {
@@ -364,6 +399,30 @@ h3,
 }
 
 /* Dish create/edit */
+.dish-form-title {
+    margin-bottom: 18px;
+    color: var(--gold-accent);
+}
+
+.dish-form-card {
+    max-width: 780px;
+    border: 1px solid #2e353c;
+    border-radius: 8px;
+    background: #111417;
+    padding: 24px;
+}
+
+.dish-form-card .form-label {
+    color: #f3f0e8;
+    font-weight: 700;
+}
+
+.dish-form-card .form-control,
+.dish-form-card .form-select {
+    background: #ffffff;
+    color: #111417;
+}
+
 .choices__item {
     border-radius: 0.375rem;
     padding: 0.25rem 0.5rem;
@@ -789,6 +848,7 @@ h3,
     border-radius: 15px;
     background-color: #fcf9f2;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    color: #1f2428;
     padding: 40px;
 }
 
@@ -798,6 +858,22 @@ h3,
     color: #d32f2f;
     padding-bottom: 15px;
     font-weight: 700;
+}
+
+.order-container h4,
+.order-container .form-label,
+.order-container .order-item-name,
+.order-container .item-card,
+.order-container .checkout-method {
+    color: #1f2428;
+}
+
+.order-container .border-bottom {
+    border-color: #d8d2c4 !important;
+}
+
+.order-container .text-muted {
+    color: #6f7780 !important;
 }
 
 .item-card {
@@ -989,9 +1065,86 @@ h3,
     font-size: 1rem;
 }
 
-.order-page h2,
+.order-page h2 {
+    color: var(--gold-accent) !important;
+}
+
+.order-page > .d-flex p,
+.order-page .text-muted {
+    color: #b9bdc2 !important;
+}
+
+.order-page .btn-outline-secondary {
+    border-color: #d4b260;
+    background: #111417;
+    color: #f1d79a;
+    font-weight: 700;
+}
+
+.order-page .btn-outline-secondary:hover,
+.order-page .btn-outline-secondary:focus-visible {
+    border-color: #f0d58b;
+    background: #f0d58b;
+    color: #111;
+}
+
 .order-header {
     color: #111 !important;
+}
+
+.order-page .order-history-title {
+    color: var(--gold-accent) !important;
+}
+
+.order-page-header {
+    gap: 16px;
+}
+
+.order-new-action,
+.order-reorder-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-weight: 800;
+    line-height: 1.1;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease, transform 0.16s ease;
+}
+
+.order-new-action {
+    min-height: 46px;
+    border-color: #d4b260;
+    background: #d4b260;
+    color: #111;
+    padding: 0.75rem 1.3rem;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.22);
+}
+
+.order-new-action:hover,
+.order-new-action:focus-visible {
+    border-color: #f0d58b;
+    background: #f0d58b;
+    color: #111;
+    transform: translateY(-1px);
+}
+
+.order-reorder-action {
+    min-height: 36px;
+    border-color: #2f8f5b;
+    background: #102019;
+    color: #8fe2ae;
+    padding: 0.45rem 0.8rem;
+}
+
+.order-reorder-action:hover,
+.order-reorder-action:focus-visible {
+    border-color: #7fbf9a;
+    background: #7fbf9a;
+    color: #07100b;
 }
 
 .order-page .badge {
@@ -1544,5 +1697,16 @@ h3,
 
     .reservation-actions {
         flex-direction: column;
+    }
+}
+
+@media (max-width: 680px) {
+    .order-page-header {
+        align-items: stretch !important;
+        flex-direction: column;
+    }
+
+    .order-new-action {
+        width: 100%;
     }
 }

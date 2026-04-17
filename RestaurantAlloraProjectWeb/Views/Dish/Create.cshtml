@@ -1,7 +1,11 @@
 ﻿@using RestaurantAlloraProject.ViewModels.Dish
 @model DishCreateViewModel
-<h2 class="text-black">Create dish:</h2>
-<form asp-action="Create" method="post" asp-controller="Dish" enctype="multipart/form-data">
+@{
+    ViewData["Title"] = "Създай ястие";
+}
+
+<h2 class="dish-form-title">Създай ястие</h2>
+<form asp-action="Create" method="post" asp-controller="Dish" enctype="multipart/form-data" class="dish-form-card">
 
     <div class="mb-3">
         <label asp-for="@Model.NameOfTheDish" class="form-label">Name</label>

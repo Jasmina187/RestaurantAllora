@@ -20,6 +20,9 @@ namespace RestaurantAlloraProjectData.Entities
         [Required]
         public decimal PriceOfTheDish { get; set; }
 
+        public Guid CategoryId { get; set; }
+        public Category Category { get; set; } = null!;
+
         [Required, MaxLength(100)]
         public string CategoryOfTheDish { get; set; } = null!;
         [Required]

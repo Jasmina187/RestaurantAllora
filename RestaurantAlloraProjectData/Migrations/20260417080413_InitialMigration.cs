@@ -67,19 +67,15 @@ namespace RestaurantAlloraProjectData.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Dishes",
+                name: "Categories",
                 columns: table => new
                 {
-                    DishId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    NameOfTheDish = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    DescriptionOfTheDish = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    PriceOfTheDish = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CategoryOfTheDish = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Dishes", x => x.DishId);
+                    table.PrimaryKey("PK_Categories", x => x.CategoryId);
                 });
 
             migrationBuilder.CreateTable(
@@ -237,52 +233,26 @@ namespace RestaurantAlloraProjectData.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DishAllergens",
+                name: "Dishes",
                 columns: table => new
                 {
                     DishId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AllergenId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    NameOfTheDish = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    DescriptionOfTheDish = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    PriceOfTheDish = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CategoryOfTheDish = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DishAllergens", x => new { x.DishId, x.AllergenId });
+                    table.PrimaryKey("PK_Dishes", x => x.DishId);
                     table.ForeignKey(
-                        name: "FK_DishAllergens_Allergens_AllergenId",
-                        column: x => x.AllergenId,
-                        principalTable: "Allergens",
-                        principalColumn: "AllergenId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_DishAllergens_Dishes_DishId",
-                        column: x => x.DishId,
-                        principalTable: "Dishes",
-                        principalColumn: "DishId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CustomerFavorites",
-                columns: table => new
-                {
-                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DishId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AddedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CustomerFavorites", x => new { x.CustomerId, x.DishId });
-                    table.ForeignKey(
-                        name: "FK_CustomerFavorites_CustomerProfile_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "CustomerProfile",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CustomerFavorites_Dishes_DishId",
-                        column: x => x.DishId,
-                        principalTable: "Dishes",
-                        principalColumn: "DishId",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_Dishes_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "CategoryId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -291,8 +261,13 @@ namespace RestaurantAlloraProjectData.Migrations
                 {
                     OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "Обработва се"),
+                    FulfillmentType = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false, defaultValue: "Вземане на място"),
+                    CustomerFullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false, defaultValue: ""),
+                    CustomerPhone = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false, defaultValue: ""),
+                    DeliveryAddress = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
+                    Notes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -304,34 +279,6 @@ namespace RestaurantAlloraProjectData.Migrations
                         principalTable: "CustomerProfile",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Reviews",
-                columns: table => new
-                {
-                    ReviewId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DishId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Rating = table.Column<int>(type: "int", nullable: false),
-                    Comment = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Reviews", x => x.ReviewId);
-                    table.ForeignKey(
-                        name: "FK_Reviews_CustomerProfile_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "CustomerProfile",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Reviews_Dishes_DishId",
-                        column: x => x.DishId,
-                        principalTable: "Dishes",
-                        principalColumn: "DishId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -370,6 +317,83 @@ namespace RestaurantAlloraProjectData.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CustomerFavorites",
+                columns: table => new
+                {
+                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DishId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AddedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerFavorites", x => new { x.CustomerId, x.DishId });
+                    table.ForeignKey(
+                        name: "FK_CustomerFavorites_CustomerProfile_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "CustomerProfile",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CustomerFavorites_Dishes_DishId",
+                        column: x => x.DishId,
+                        principalTable: "Dishes",
+                        principalColumn: "DishId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DishAllergens",
+                columns: table => new
+                {
+                    DishId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AllergenId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DishAllergens", x => new { x.DishId, x.AllergenId });
+                    table.ForeignKey(
+                        name: "FK_DishAllergens_Allergens_AllergenId",
+                        column: x => x.AllergenId,
+                        principalTable: "Allergens",
+                        principalColumn: "AllergenId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DishAllergens_Dishes_DishId",
+                        column: x => x.DishId,
+                        principalTable: "Dishes",
+                        principalColumn: "DishId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reviews",
+                columns: table => new
+                {
+                    ReviewId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DishId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Rating = table.Column<int>(type: "int", nullable: false),
+                    Comment = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reviews", x => x.ReviewId);
+                    table.ForeignKey(
+                        name: "FK_Reviews_CustomerProfile_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "CustomerProfile",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Reviews_Dishes_DishId",
+                        column: x => x.DishId,
+                        principalTable: "Dishes",
+                        principalColumn: "DishId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CustomerOrderItems",
                 columns: table => new
                 {
@@ -377,7 +401,7 @@ namespace RestaurantAlloraProjectData.Migrations
                     OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DishId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
@@ -412,12 +436,12 @@ namespace RestaurantAlloraProjectData.Migrations
                     { new Guid("3a8c6114-15c6-4f6c-9de1-21126a38706f"), "Целина и продукти от нея" },
                     { new Guid("42ccb79f-216b-4aab-9655-944d4f7b9823"), "Ракообразни и продукти от тях" },
                     { new Guid("503510df-d3a4-4266-a182-3b3db962de57"), "Соя и соеви продукти" },
-                    { new Guid("64d4fbb0-ffe7-4526-9d18-300608276013"), "Серен диоксид и сулфиди" },
+                    { new Guid("64d4fbb0-ffe7-4526-9d18-300608276013"), "Серен диоксид и сулфити с концентрация над 10 mg/kg или 10 mg/l" },
                     { new Guid("6ab84643-d4db-4789-bf18-f43afe7e4a38"), "Лупина и продукти от нея" },
                     { new Guid("6b990dac-6b4f-49f4-a715-ccaa67246c3e"), "Мекотели и продукти от тях" },
                     { new Guid("7d1e6d36-e29a-40ca-970a-3c016cfb7a99"), "Синап и продукти от него" },
                     { new Guid("7f4554e9-9835-479e-bb37-b97ed9c58d6a"), "Сусамово семе и продукти от него" },
-                    { new Guid("a846b85f-53b1-4b2a-b096-825824c3b7e2"), "Мляко и млечни продукти" },
+                    { new Guid("a846b85f-53b1-4b2a-b096-825824c3b7e2"), "Мляко и млечни продукти (включително лактоза)" },
                     { new Guid("bcccc627-fc03-40cc-bfb4-9047d4626528"), "Риба и рибни продукти" },
                     { new Guid("c4399ef7-4776-4b45-92fb-35ae3dd3f977"), "Яйца и продукти от тях" },
                     { new Guid("dc08b4ec-5095-4811-a672-192301357e16"), "Зърнени култури, съдържащи глутен: пшеница, ръж, ечемик, овес, спелта, камут, както и продукти от тях" },
@@ -425,20 +449,14 @@ namespace RestaurantAlloraProjectData.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Dishes",
-                columns: new[] { "DishId", "CategoryOfTheDish", "DescriptionOfTheDish", "ImageUrl", "NameOfTheDish", "PriceOfTheDish" },
+                table: "Categories",
+                columns: new[] { "CategoryId", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("05267740-181b-43e4-96dd-e5b9c250ac75"), "Салати", "Черна леща Белуга, шарена киноа, нахут, краставици, чери домати, печен маринован пипер, маслини, магданоз, червен лук, дресинг Винегрет, мисо-лайм хумус и сумак.", "/img/fatush.png", "САЛАТА ЕНЕРДЖИ", 7.49m },
-                    { new Guid("12489f7b-9d30-4a28-aba0-c9bd5cc7dd57"), "Основни ястия", "Кюфтета от кълцано телешко Блек Ангъс, пържени картофи и микс салати с чери домати и дресинг винегрет.", "/img/meatballs.png", "ТЕЛЕШКИ КЮФТЕТА БЛЕК АНГЪС", 9.20m },
-                    { new Guid("3cfc8ca4-f70c-47d8-9cc1-dee9c6de5c1b"), "Основни ястия", "Традиционни китайски нудли с мариновано пилешко месо от бут, яйце, зеле, моркови, пресен зелен и червен пипер, специален сос и зелен лук.", "/img/noodles.png", "ЯЙЧНИ НУДЛИ С ПИЛЕ И ЗЕЛЕНЧУЦИ", 8.69m },
-                    { new Guid("44ce4f8a-6e15-4947-bd6b-e20bdb14d842"), "Салати", "Салата Романа, микс салати, чери домати, краставици, репички, пресен червен пипер, лук, магданоз, босилек, свеж зеленчуков дресинг, хрупкав хляб, нар и дресинг нар.", "/img/fatush.png", "ФАТУШ", 7.49m },
-                    { new Guid("5b48ad92-c4f7-4b93-a015-789f26f40d58"), "Салати", "Козе сирене, микс салати, свежи соеви кълнове, чери домати, ябълка, карамелизирани орехи, стафиди, сушени боровинки и нар.", "/img/instanbul.png", "ИСТАНБУЛ", 8.69m },
-                    { new Guid("6482fc36-4bfc-4cda-874b-2300a5f3cc89"), "Основни ястия", "Пуешки стек на BBQ със специална марината, запечени тиквички, гъби, моркови и карфиол с билкова марината.", "/img/stek.png", "ПУЕШКИ СТЕК НА BBQ", 9.97m },
-                    { new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec"), "Салати", "Мариновани скариди, авокадо, шарена киноа, микс салати със спанак, червен лук, чери домати, японски дресинг с мисо паста и див лук.", "/img/geisha.png", "САЛАТА ГЕЙША", 17.30m },
-                    { new Guid("a02bbc5e-4df1-4e8e-a923-33b65336614c"), "Десерти", "Чийзкейк с хрупкав блат, маскарпоне крем и пистачио глазура.", "/img/pistachio.png", "ПИСТАЧИО ЧИЙЗКЕЙК", 5.62m },
-                    { new Guid("a450b794-5144-4f72-a436-bb29fbbb00ef"), "Основни ястия", "Филе бяла риба и спагети в Алфредо сос със спанак и азиатски подправки, пармезан, пресен пипер и див лук.", "/img/fish.png", "ФИЛЕ БЯЛА РИБА ИТАМЕШИ", 9.71m },
-                    { new Guid("f4201dbf-1adb-4949-b235-d137db7698f7"), "Основни ястия", "Пилешки късчета с леко пикантен азиатски сос и подправки, яйце, пресен босилек и магданоз върху жасминов ориз.", "/img/chicken.png", "ПИЛЕ ПАД КАПРАО", 9.20m }
+                    { new Guid("0a55dc5d-23b6-4c3a-8428-3f0f7f370aa6"), "Основни ястия" },
+                    { new Guid("a19f1c7a-0a27-4c91-a220-2f4c55fb0b21"), "Салати" },
+                    { new Guid("aeae6939-7449-467f-b1d6-b0cbd340fc7d"), "Напитки" },
+                    { new Guid("b3cb4f8b-8f1c-44f7-a332-3f2d2bb24b0b"), "Десерти" }
                 });
 
             migrationBuilder.InsertData(
@@ -549,10 +567,45 @@ namespace RestaurantAlloraProjectData.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Dishes",
+                columns: new[] { "DishId", "CategoryId", "CategoryOfTheDish", "DescriptionOfTheDish", "ImageUrl", "NameOfTheDish", "PriceOfTheDish" },
+                values: new object[,]
+                {
+                    { new Guid("05267740-181b-43e4-96dd-e5b9c250ac75"), new Guid("a19f1c7a-0a27-4c91-a220-2f4c55fb0b21"), "Салати", "Черна леща Белуга, шарена киноа, нахут, краставици, чери домати, печен маринован пипер, маслини, магданоз, червен лук, дресинг Винегрет, мисо-лайм хумус и сумак.", "/img/fatush.png", "САЛАТА ЕНЕРДЖИ", 7.49m },
+                    { new Guid("12489f7b-9d30-4a28-aba0-c9bd5cc7dd57"), new Guid("0a55dc5d-23b6-4c3a-8428-3f0f7f370aa6"), "Основни ястия", "Кюфтета от кълцано телешко Блек Ангъс, пържени картофи и микс салати с чери домати и дресинг винегрет.", "/img/meatballs.png", "ТЕЛЕШКИ КЮФТЕТА БЛЕК АНГЪС", 9.20m },
+                    { new Guid("3cfc8ca4-f70c-47d8-9cc1-dee9c6de5c1b"), new Guid("0a55dc5d-23b6-4c3a-8428-3f0f7f370aa6"), "Основни ястия", "Традиционни китайски нудли с мариновано пилешко месо от бут, яйце, зеле, моркови, пресен зелен и червен пипер, специален сос и зелен лук.", "/img/noodles.png", "ЯЙЧНИ НУДЛИ С ПИЛЕ И ЗЕЛЕНЧУЦИ", 8.69m },
+                    { new Guid("44ce4f8a-6e15-4947-bd6b-e20bdb14d842"), new Guid("a19f1c7a-0a27-4c91-a220-2f4c55fb0b21"), "Салати", "Салата Романа, микс салати, чери домати, краставици, репички, пресен червен пипер, лук, магданоз, босилек, свеж зеленчуков дресинг, хрупкав хляб, нар и дресинг нар.", "/img/fatush.png", "ФАТУШ", 7.49m },
+                    { new Guid("5b48ad92-c4f7-4b93-a015-789f26f40d58"), new Guid("a19f1c7a-0a27-4c91-a220-2f4c55fb0b21"), "Салати", "Козе сирене, микс салати, свежи соеви кълнове, чери домати, ябълка, карамелизирани орехи, стафиди, сушени боровинки и нар.", "/img/instanbul.png", "ИСТАНБУЛ", 8.69m },
+                    { new Guid("6482fc36-4bfc-4cda-874b-2300a5f3cc89"), new Guid("0a55dc5d-23b6-4c3a-8428-3f0f7f370aa6"), "Основни ястия", "Пуешки стек на BBQ със специална марината, запечени тиквички, гъби, моркови и карфиол с билкова марината.", "/img/stek.png", "ПУЕШКИ СТЕК НА BBQ", 9.97m },
+                    { new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec"), new Guid("a19f1c7a-0a27-4c91-a220-2f4c55fb0b21"), "Салати", "Мариновани скариди, авокадо, шарена киноа, микс салати със спанак, червен лук, чери домати, японски дресинг с мисо паста и див лук.", "/img/geisha.png", "САЛАТА ГЕЙША", 17.30m },
+                    { new Guid("a02bbc5e-4df1-4e8e-a923-33b65336614c"), new Guid("b3cb4f8b-8f1c-44f7-a332-3f2d2bb24b0b"), "Десерти", "Чийзкейк с хрупкав блат, маскарпоне крем и пистачио глазура.", "/img/pistachio.png", "ПИСТАЧИО ЧИЙЗКЕЙК", 5.62m },
+                    { new Guid("a450b794-5144-4f72-a436-bb29fbbb00ef"), new Guid("0a55dc5d-23b6-4c3a-8428-3f0f7f370aa6"), "Основни ястия", "Филе бяла риба и спагети в Алфредо сос със спанак и азиатски подправки, пармезан, пресен пипер и див лук.", "/img/fish.png", "ФИЛЕ БЯЛА РИБА ИТАМЕШИ", 9.71m },
+                    { new Guid("f4201dbf-1adb-4949-b235-d137db7698f7"), new Guid("0a55dc5d-23b6-4c3a-8428-3f0f7f370aa6"), "Основни ястия", "Пилешки късчета с леко пикантен азиатски сос и подправки, яйце, пресен босилек и магданоз върху жасминов ориз.", "/img/chicken.png", "ПИЛЕ ПАД КАПРАО", 9.20m }
+                });
+
+            migrationBuilder.InsertData(
                 table: "DishAllergens",
                 columns: new[] { "AllergenId", "DishId" },
                 values: new object[,]
                 {
+                    { new Guid("503510df-d3a4-4266-a182-3b3db962de57"), new Guid("05267740-181b-43e4-96dd-e5b9c250ac75") },
+                    { new Guid("7f4554e9-9835-479e-bb37-b97ed9c58d6a"), new Guid("05267740-181b-43e4-96dd-e5b9c250ac75") },
+                    { new Guid("503510df-d3a4-4266-a182-3b3db962de57"), new Guid("12489f7b-9d30-4a28-aba0-c9bd5cc7dd57") },
+                    { new Guid("7d1e6d36-e29a-40ca-970a-3c016cfb7a99"), new Guid("12489f7b-9d30-4a28-aba0-c9bd5cc7dd57") },
+                    { new Guid("a846b85f-53b1-4b2a-b096-825824c3b7e2"), new Guid("12489f7b-9d30-4a28-aba0-c9bd5cc7dd57") },
+                    { new Guid("3a8c6114-15c6-4f6c-9de1-21126a38706f"), new Guid("3cfc8ca4-f70c-47d8-9cc1-dee9c6de5c1b") },
+                    { new Guid("503510df-d3a4-4266-a182-3b3db962de57"), new Guid("3cfc8ca4-f70c-47d8-9cc1-dee9c6de5c1b") },
+                    { new Guid("6b990dac-6b4f-49f4-a715-ccaa67246c3e"), new Guid("3cfc8ca4-f70c-47d8-9cc1-dee9c6de5c1b") },
+                    { new Guid("a846b85f-53b1-4b2a-b096-825824c3b7e2"), new Guid("3cfc8ca4-f70c-47d8-9cc1-dee9c6de5c1b") },
+                    { new Guid("c4399ef7-4776-4b45-92fb-35ae3dd3f977"), new Guid("3cfc8ca4-f70c-47d8-9cc1-dee9c6de5c1b") },
+                    { new Guid("dc08b4ec-5095-4811-a672-192301357e16"), new Guid("3cfc8ca4-f70c-47d8-9cc1-dee9c6de5c1b") },
+                    { new Guid("dc08b4ec-5095-4811-a672-192301357e16"), new Guid("44ce4f8a-6e15-4947-bd6b-e20bdb14d842") },
+                    { new Guid("247f192a-3e44-480a-bde9-98089f8b398b"), new Guid("5b48ad92-c4f7-4b93-a015-789f26f40d58") },
+                    { new Guid("503510df-d3a4-4266-a182-3b3db962de57"), new Guid("5b48ad92-c4f7-4b93-a015-789f26f40d58") },
+                    { new Guid("a846b85f-53b1-4b2a-b096-825824c3b7e2"), new Guid("5b48ad92-c4f7-4b93-a015-789f26f40d58") },
+                    { new Guid("3a8c6114-15c6-4f6c-9de1-21126a38706f"), new Guid("6482fc36-4bfc-4cda-874b-2300a5f3cc89") },
+                    { new Guid("503510df-d3a4-4266-a182-3b3db962de57"), new Guid("6482fc36-4bfc-4cda-874b-2300a5f3cc89") },
+                    { new Guid("dc08b4ec-5095-4811-a672-192301357e16"), new Guid("6482fc36-4bfc-4cda-874b-2300a5f3cc89") },
                     { new Guid("42ccb79f-216b-4aab-9655-944d4f7b9823"), new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec") },
                     { new Guid("503510df-d3a4-4266-a182-3b3db962de57"), new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec") },
                     { new Guid("64d4fbb0-ffe7-4526-9d18-300608276013"), new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec") },
@@ -560,7 +613,23 @@ namespace RestaurantAlloraProjectData.Migrations
                     { new Guid("7f4554e9-9835-479e-bb37-b97ed9c58d6a"), new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec") },
                     { new Guid("bcccc627-fc03-40cc-bfb4-9047d4626528"), new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec") },
                     { new Guid("c4399ef7-4776-4b45-92fb-35ae3dd3f977"), new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec") },
-                    { new Guid("dc08b4ec-5095-4811-a672-192301357e16"), new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec") }
+                    { new Guid("dc08b4ec-5095-4811-a672-192301357e16"), new Guid("71979776-b2cb-4b9f-84b4-6165b80871ec") },
+                    { new Guid("247f192a-3e44-480a-bde9-98089f8b398b"), new Guid("a02bbc5e-4df1-4e8e-a923-33b65336614c") },
+                    { new Guid("a846b85f-53b1-4b2a-b096-825824c3b7e2"), new Guid("a02bbc5e-4df1-4e8e-a923-33b65336614c") },
+                    { new Guid("c4399ef7-4776-4b45-92fb-35ae3dd3f977"), new Guid("a02bbc5e-4df1-4e8e-a923-33b65336614c") },
+                    { new Guid("dc08b4ec-5095-4811-a672-192301357e16"), new Guid("a02bbc5e-4df1-4e8e-a923-33b65336614c") },
+                    { new Guid("a846b85f-53b1-4b2a-b096-825824c3b7e2"), new Guid("a450b794-5144-4f72-a436-bb29fbbb00ef") },
+                    { new Guid("bcccc627-fc03-40cc-bfb4-9047d4626528"), new Guid("a450b794-5144-4f72-a436-bb29fbbb00ef") },
+                    { new Guid("c4399ef7-4776-4b45-92fb-35ae3dd3f977"), new Guid("a450b794-5144-4f72-a436-bb29fbbb00ef") },
+                    { new Guid("dc08b4ec-5095-4811-a672-192301357e16"), new Guid("a450b794-5144-4f72-a436-bb29fbbb00ef") },
+                    { new Guid("3a8c6114-15c6-4f6c-9de1-21126a38706f"), new Guid("f4201dbf-1adb-4949-b235-d137db7698f7") },
+                    { new Guid("503510df-d3a4-4266-a182-3b3db962de57"), new Guid("f4201dbf-1adb-4949-b235-d137db7698f7") },
+                    { new Guid("64d4fbb0-ffe7-4526-9d18-300608276013"), new Guid("f4201dbf-1adb-4949-b235-d137db7698f7") },
+                    { new Guid("6b990dac-6b4f-49f4-a715-ccaa67246c3e"), new Guid("f4201dbf-1adb-4949-b235-d137db7698f7") },
+                    { new Guid("7f4554e9-9835-479e-bb37-b97ed9c58d6a"), new Guid("f4201dbf-1adb-4949-b235-d137db7698f7") },
+                    { new Guid("a846b85f-53b1-4b2a-b096-825824c3b7e2"), new Guid("f4201dbf-1adb-4949-b235-d137db7698f7") },
+                    { new Guid("c4399ef7-4776-4b45-92fb-35ae3dd3f977"), new Guid("f4201dbf-1adb-4949-b235-d137db7698f7") },
+                    { new Guid("dc08b4ec-5095-4811-a672-192301357e16"), new Guid("f4201dbf-1adb-4949-b235-d137db7698f7") }
                 });
 
             migrationBuilder.CreateIndex(
@@ -603,6 +672,12 @@ namespace RestaurantAlloraProjectData.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Categories_Name",
+                table: "Categories",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CustomerFavorites_DishId",
                 table: "CustomerFavorites",
                 column: "DishId");
@@ -626,6 +701,11 @@ namespace RestaurantAlloraProjectData.Migrations
                 name: "IX_DishAllergens_AllergenId",
                 table: "DishAllergens",
                 column: "AllergenId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Dishes_CategoryId",
+                table: "Dishes",
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_CustomerId",
@@ -718,6 +798,9 @@ namespace RestaurantAlloraProjectData.Migrations
 
             migrationBuilder.DropTable(
                 name: "CustomerProfile");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

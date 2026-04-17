@@ -159,6 +159,58 @@ namespace RestaurantAlloraProjectWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Reorder(Guid id)
+        {
+            if (User.IsInRole("Admin") || User.IsInRole("Employee"))
+            {
+                return RedirectToAction(nameof(Manage));
+            }
+
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (!Guid.TryParse(userIdString, out var userId))
+            {
+                return RedirectToAction("LogIn", "User");
+            }
+
+            var previousOrder = await _orderService.GetCustomerOrderDetailsAsync(id, userId);
+
+            if (previousOrder == null)
+            {
+                return NotFound();
+            }
+
+            var reorderModel = new OrderViewModel
+            {
+                CustomerId = userId,
+                FulfillmentType = previousOrder.FulfillmentType,
+                CustomerFullName = previousOrder.CustomerFullName,
+                CustomerPhone = previousOrder.CustomerPhone,
+                DeliveryAddress = previousOrder.DeliveryAddress,
+                Notes = previousOrder.Notes,
+                CustomerOrderItems = previousOrder.CustomerOrderItems
+                    .Select(item => new CustomerOrderItemViewModel
+                    {
+                        DishId = item.DishId,
+                        Quantity = item.Quantity
+                    })
+                    .ToList()
+            };
+
+            try
+            {
+                reorderModel = await _orderService.PrepareCheckoutAsync(reorderModel);
+                return View("Create", reorderModel);
+            }
+            catch (ArgumentException ex)
+            {
+                TempData["OrderError"] = ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Employee")]
         public async Task<IActionResult> UpdateStatus(Guid id, string status)
         {

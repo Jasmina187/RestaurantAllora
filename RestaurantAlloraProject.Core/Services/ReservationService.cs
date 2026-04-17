@@ -26,10 +26,21 @@ namespace RestaurantAlloraProject.Core.Services
 
         public async Task<List<ReservationIndexViewModel>> GetUserReservationsAsync(Guid userId)
         {
-            return await BuildReservationQuery()
+            return await _context.Reservations
+                .AsNoTracking()
+                .Include(r => r.Table)
                 .Where(r => r.CustomerId == userId)
                 .OrderByDescending(r => r.ReservationDate)
-                .Select(r => ToReservationIndexViewModel(r))
+                .Select(r => new ReservationIndexViewModel
+                {
+                    ReservationId = r.ReservationId,
+                    TableNumber = r.Table.TableNumber,
+                    CapacityOfTheTable = r.Table.CapacityOfTheTable,
+                    Status = r.Status,
+                    ReservationDate = r.ReservationDate,
+                    NumberOfGuests = r.NumberOfGuests,
+                    StatusOfTheTable = r.Table.StatusOfTheTable
+                })
                 .ToListAsync();
         }
 
@@ -38,7 +49,9 @@ namespace RestaurantAlloraProject.Core.Services
             page = Math.Max(1, page);
             pageSize = Math.Max(1, pageSize);
 
-            var query = BuildReservationQuery()
+            var query = _context.Reservations
+                .AsNoTracking()
+                .Include(r => r.Table)
                 .Where(r => r.CustomerId == userId);
 
             var totalReservations = await query.CountAsync();
@@ -53,7 +66,16 @@ namespace RestaurantAlloraProject.Core.Services
                 .OrderByDescending(r => r.ReservationDate)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
-                .Select(r => ToReservationIndexViewModel(r))
+                .Select(r => new ReservationIndexViewModel
+                {
+                    ReservationId = r.ReservationId,
+                    TableNumber = r.Table.TableNumber,
+                    CapacityOfTheTable = r.Table.CapacityOfTheTable,
+                    Status = r.Status,
+                    ReservationDate = r.ReservationDate,
+                    NumberOfGuests = r.NumberOfGuests,
+                    StatusOfTheTable = r.Table.StatusOfTheTable
+                })
                 .ToListAsync();
 
             return new ReservationListViewModel

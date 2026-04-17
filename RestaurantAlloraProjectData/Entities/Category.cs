@@ -10,5 +10,7 @@ namespace RestaurantAlloraProjectData.Entities
         [Required]
         [MaxLength(100)]
         public string Name { get; set; } = null!;
+
+        public ICollection<Dish> Dishes { get; set; } = new List<Dish>();
     }
 }

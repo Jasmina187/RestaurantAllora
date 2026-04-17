@@ -53,7 +53,7 @@ namespace RestaurantAlloraProjectData.Configurations
                     new Allergen
                     {
                        AllergenId = Guid.Parse("a846b85f-53b1-4b2a-b096-825824c3b7e2"),
-                       AllergenName = "Мляко и млечни продукти"
+                       AllergenName = "Мляко и млечни продукти (включително лактоза)"
                     },
                     new Allergen
                     {
@@ -83,7 +83,7 @@ namespace RestaurantAlloraProjectData.Configurations
                     new Allergen
                     {
                        AllergenId = Guid.Parse("64d4fbb0-ffe7-4526-9d18-300608276013"),
-                       AllergenName = "Серен диоксид и сулфиди"
+                       AllergenName = "Серен диоксид и сулфити с концентрация над 10 mg/kg или 10 mg/l"
                     },
                     new Allergen
                     {

@@ -9,7 +9,7 @@ namespace RestaurantAlloraProjectWeb.Controllers
 {
     public class UserController : Controller
     {
-        private static readonly string[] ManageableRoles = { "Admin", "Employee", "Customer" };
+        private static readonly string[] ManageableRoles = { "Employee", "Customer" };
 
         private readonly UserManager<User> userManager;
         private readonly SignInManager<User> signInManager;
@@ -221,7 +221,10 @@ namespace RestaurantAlloraProjectWeb.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Manage()
         {
+            var currentUserId = userManager.GetUserId(User);
+
             var users = userManager.Users
+                .Where(u => currentUserId == null || u.Id.ToString() != currentUserId)
                 .OrderBy(u => u.UserName)
                 .ToList();
 
@@ -247,6 +250,12 @@ namespace RestaurantAlloraProjectWeb.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(Guid id)
         {
+            if (id.ToString() == userManager.GetUserId(User))
+            {
+                TempData["UserError"] = "Собственият профил не се управлява от този списък.";
+                return RedirectToAction(nameof(Manage));
+            }
+
             var user = await userManager.FindByIdAsync(id.ToString());
 
             if (user == null)
@@ -273,6 +282,12 @@ namespace RestaurantAlloraProjectWeb.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(UserEditViewModel model)
         {
+            if (model.Id.ToString() == userManager.GetUserId(User))
+            {
+                TempData["UserError"] = "Собственият профил не се управлява от този списък.";
+                return RedirectToAction(nameof(Manage));
+            }
+
             if (!ManageableRoles.Contains(model.Role))
             {
                 ModelState.AddModelError(nameof(model.Role), "Невалидна роля.");
