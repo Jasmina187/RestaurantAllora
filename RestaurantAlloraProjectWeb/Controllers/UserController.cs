@@ -125,8 +125,15 @@ namespace RestaurantAlloraProjectWeb.Controllers
                 }
             }
 
-            ModelState.AddModelError("", "Invalid Login");
+            ModelState.AddModelError("", "Невалидно потребителско име или парола.");
             return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult AccessDenied(string? returnUrl = null)
+        {
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
         }
 
         [HttpGet]

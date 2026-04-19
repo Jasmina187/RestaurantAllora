@@ -1,6 +1,7 @@
 (function () {
     const cartStorageKey = "restaurantAllora.cart";
     let cart = loadCart();
+    let selectedCategory = "all";
 
     function loadCart() {
         try {
@@ -115,17 +116,40 @@
         totalElem.innerText = formatPrice(total);
     }
 
-    function filterMenu(category, button) {
-        document.querySelectorAll(".pill-btn").forEach(btn => btn.classList.remove("active"));
-        button.classList.add("active");
+    function getSelectedAllergen() {
+        const allergenSelect = document.getElementById("clientAllergenFilter");
+        return allergenSelect ? allergenSelect.value : "";
+    }
+
+    function applyMenuFilters() {
+        const allergen = getSelectedAllergen();
+        const emptyState = document.getElementById("clientMenuFilterEmpty");
+        let visibleCards = 0;
 
         document.querySelectorAll(".dish-card").forEach(card => {
-            if (category === "all" || card.getAttribute("data-category") === category) {
+            const cardAllergens = (card.dataset.allergens || "").split("|").filter(Boolean);
+            const matchCategory = selectedCategory === "all" || card.getAttribute("data-category") === selectedCategory;
+            const matchAllergen = !allergen ||
+                (allergen === "no-allergens" ? cardAllergens.length === 0 : !cardAllergens.includes(allergen));
+
+            if (matchCategory && matchAllergen) {
                 card.style.display = "flex";
+                visibleCards++;
             } else {
                 card.style.display = "none";
             }
         });
+
+        if (emptyState) {
+            emptyState.classList.toggle("d-none", visibleCards !== 0);
+        }
+    }
+
+    function filterMenu(category, button) {
+        selectedCategory = category;
+        document.querySelectorAll(".pill-btn").forEach(btn => btn.classList.remove("active"));
+        button.classList.add("active");
+        applyMenuFilters();
     }
 
     function addHiddenInput(form, name, value) {
@@ -188,6 +212,12 @@
         }
     });
 
+    document.addEventListener("change", function (event) {
+        if (event.target && event.target.id === "clientAllergenFilter") {
+            applyMenuFilters();
+        }
+    });
+
     const checkoutButton = document.getElementById("checkout-btn");
 
     if (checkoutButton) {
@@ -197,4 +227,5 @@
     }
 
     updateCartUI();
+    applyMenuFilters();
 })();

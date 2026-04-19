@@ -2,39 +2,41 @@
 @model ReviewViewModel
 @{
     ViewData["Title"] = "Създай ревю";
+    ViewData["BodyClass"] = "review-create-page";
     var returnUrl = ViewData["ReturnUrl"] as string ?? Url.Action("ClientMenu", "Dish");
 }
 
-<h2>Създай ново ревю</h2>
-<hr />
+<section class="review-create-shell">
+    <form asp-action="Add" method="post" class="review-create-card">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Add" method="post">
-            @Html.AntiForgeryToken()
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="DishId" />
+        <input type="hidden" asp-for="CustomerId" />
+        <input type="hidden" name="returnUrl" value="@returnUrl" />
 
-            <input type="hidden" asp-for="DishId" />
-            <input type="hidden" asp-for="CustomerId" />
-            <input type="hidden" name="returnUrl" value="@returnUrl" />
+        <div class="review-create-heading">
+            <span class="menu-eyebrow">Ресторант Allora</span>
+            <h1>Остави ревю</h1>
+            <p>Кажи ни как ти се стори ястието. Кратко, честно и полезно за следващия гост.</p>
+        </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="Rating" class="control-label">Оценка (1-5)</label>
-                <input asp-for="Rating" class="form-control" type="number" min="1" max="5" />
-                <span asp-validation-for="Rating" class="text-danger"></span>
-            </div>
+        <div class="review-field">
+            <label asp-for="Rating" class="form-label">Оценка от 1 до 5</label>
+            <input asp-for="Rating" class="form-control" type="number" min="1" max="5" inputmode="numeric" />
+            <span asp-validation-for="Rating" class="text-danger"></span>
+        </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="Comment" class="control-label">Коментар</label>
-                <textarea asp-for="Comment" class="form-control" rows="3"></textarea>
-                <span asp-validation-for="Comment" class="text-danger"></span>
-            </div>
+        <div class="review-field">
+            <label asp-for="Comment" class="form-label">Коментар</label>
+            <textarea asp-for="Comment" class="form-control" rows="5" placeholder="Какво ти хареса най-много?"></textarea>
+            <span asp-validation-for="Comment" class="text-danger"></span>
+        </div>
 
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">Създай</button>
-                <a href="@returnUrl" class="btn btn-secondary">Назад</a>
-            </div>
-        </form>
-    </div>
-</div>
+        <div class="review-create-actions">
+            <button type="submit" class="review-submit-action">Създай ревю</button>
+            <a href="@returnUrl" class="review-back-action">Назад</a>
+        </div>
+    </form>
+</section>
 

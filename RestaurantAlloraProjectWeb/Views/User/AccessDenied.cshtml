@@ -1,0 +1,16 @@
+@{
+    ViewData["Title"] = "Нямате достъп";
+}
+
+<section class="status-page">
+    <span class="menu-eyebrow">Ресторант Allora</span>
+    <h1>Нямате достъп до тази страница.</h1>
+    <p>
+        Тази част е запазена за друг тип профил. Върнете се към началото или изберете страница,
+        която е достъпна за вашия акаунт.
+    </p>
+    <div class="status-actions">
+        <a asp-controller="Home" asp-action="Index" class="status-action">Към началото</a>
+        <a asp-controller="Dish" asp-action="Index" class="status-action status-action-secondary">Към менюто</a>
+    </div>
+</section>

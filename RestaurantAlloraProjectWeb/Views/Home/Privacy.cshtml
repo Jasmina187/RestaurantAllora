@@ -1,6 +1,13 @@
-﻿@{
-    ViewData["Title"] = "Privacy Policy";
+@{
+    ViewData["Title"] = "Поверителност";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<section class="status-page">
+    <span class="menu-eyebrow">Ресторант Allora</span>
+    <h1>@ViewData["Title"]</h1>
+    <p>
+        Използваме данните ви само за регистрация, резервации, поръчки и връзка с вас.
+        Не споделяме лична информация с трети страни извън нужните технически услуги за работата на сайта.
+    </p>
+    <a asp-controller="Home" asp-action="Index" class="status-action">Към началото</a>
+</section>

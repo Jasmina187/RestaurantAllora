@@ -2,12 +2,61 @@
     ViewData["Title"] = "Начало";
     ViewData["BodyClass"] = "home-page";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var isCustomer = User.Identity?.IsAuthenticated == true && User.IsInRole("Customer");
+    var isStaff = User.Identity?.IsAuthenticated == true && (User.IsInRole("Admin") || User.IsInRole("Employee"));
+    var reservationController = isCustomer ? "Table" : isStaff ? "Reservation" : "User";
+    var reservationAction = isCustomer ? "ChooseTable" : isStaff ? "Pending" : "LogIn";
+    var reservationLabel = isCustomer ? "Резервирай маса" : isStaff ? "Чакащи резервации" : "Вход за резервация";
+    var favoritesController = isCustomer ? "CustomerFavorite" : isStaff ? "Dish" : "User";
+    var favoritesAction = isCustomer ? "Index" : isStaff ? "Index" : "LogIn";
+    var favoritesLabel = isCustomer ? "Моите любими" : isStaff ? "Управление на менюто" : "Вход за любими";
 }
 
 <div class="hero-wrapper">
-    <div class="hero-content text-center">
-        <img src="~/img/allora-hero.jpg" alt="Restaurant Allora" class="hero-logo mb-4">
+    <div class="hero-content">
+        <div class="hero-copy">
+            <span class="menu-eyebrow">Ресторант Allora</span>
+            <h1 class="welcome-text">Вечерята започва с настроение.</h1>
+            <p class="hero-lead">
+                Изберете маса, разгледайте менюто и поръчайте любимите ястия с лекота.
+            </p>
 
-        <h1 class="welcome-text">Добре дошли в Allora</h1>
+            <div class="hero-actions">
+                <a asp-controller="Dish" asp-action="Index" class="hero-primary-action">Виж менюто</a>
+                <a asp-controller="@reservationController" asp-action="@reservationAction" class="hero-secondary-action">@reservationLabel</a>
+            </div>
+        </div>
     </div>
 </div>
+
+<section class="home-highlights" aria-label="Allora услуги">
+    <article class="highlight-panel">
+        <img src="~/img/stek.png" alt="Основно ястие от Allora" loading="lazy">
+        <div>
+            <span class="menu-eyebrow">chef selection</span>
+            <h2>Сезонни вкусове за спокойна вечер.</h2>
+            <p>Подбрани ястия, ясни алергени и бърз достъп до любими комбинации.</p>
+            <a asp-controller="Dish" asp-action="ClientMenu" class="text-link">Поръчай онлайн</a>
+        </div>
+    </article>
+
+    <article class="highlight-panel">
+        <img src="~/img/noodles.png" alt="Паста и нудли от менюто" loading="lazy">
+        <div>
+            <span class="menu-eyebrow">for the table</span>
+            <h2>Маса според компанията.</h2>
+            <p>Изберете романтична вечеря, семейна среща или по-голям празник.</p>
+            <a asp-controller="@reservationController" asp-action="@reservationAction" class="text-link">@reservationLabel</a>
+        </div>
+    </article>
+
+    <article class="highlight-panel">
+        <img src="~/img/pistachio.png" alt="Десерт с шамфъстък" loading="lazy">
+        <div>
+            <span class="menu-eyebrow">sweet finish</span>
+            <h2>Любимите ястия остават близо.</h2>
+            <p>Запазвайте фаворити и поръчвайте отново без излишни стъпки.</p>
+            <a asp-controller="@favoritesController" asp-action="@favoritesAction" class="text-link">@favoritesLabel</a>
+        </div>
+    </article>
+</section>

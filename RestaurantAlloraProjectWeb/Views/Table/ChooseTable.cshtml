@@ -3,6 +3,7 @@
 
 @{
     Layout = "_Layout";
+    ViewData["BodyClass"] = "table-choice-page";
     int? selectedCapacity = ViewBag.SelectedCapacity as int?;
     int? autoMinCapacity = selectedCapacity.HasValue ? selectedCapacity.Value >= 8 ? 8 : selectedCapacity.Value : null;
     int? autoMaxCapacity = selectedCapacity.HasValue ? selectedCapacity.Value >= 8 ? 10 : selectedCapacity.Value : null;
@@ -16,49 +17,49 @@
 
     <div class="category-grid">
 
-        <div class="category-item js-table-filter" data-min-cap="2" data-max-cap="2">
+        <button class="category-item js-table-filter" data-min-cap="2" data-max-cap="2" type="button" aria-label="Покажи маси за двама">
             <div class="img-wrapper">
-                <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=800" alt="Romantic">
+                <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=800" alt="Романтична вечеря">
                 <div class="overlay">
                     <span class="cap-number">2</span>
                     <h3>Романтика</h3>
                     <p>Маса за двама</p>
                 </div>
             </div>
-        </div>
+        </button>
 
-        <div class="category-item js-table-filter" data-min-cap="4" data-max-cap="4">
+        <button class="category-item js-table-filter" data-min-cap="4" data-max-cap="4" type="button" aria-label="Покажи маси за четирима">
             <div class="img-wrapper">
-                <img src="https://images.pexels.com/photos/1581554/pexels-photo-1581554.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Friends">
+                <img src="https://images.pexels.com/photos/1581554/pexels-photo-1581554.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Вечеря с приятели">
                 <div class="overlay">
                     <span class="cap-number">4</span>
                     <h3>Приятели</h3>
                     <p>Маса за четирима</p>
                 </div>
             </div>
-        </div>
+        </button>
 
-        <div class="category-item js-table-filter" data-min-cap="6" data-max-cap="6">
+        <button class="category-item js-table-filter" data-min-cap="6" data-max-cap="6" type="button" aria-label="Покажи маси за шестима">
             <div class="img-wrapper">
-                <img src="https://images.pexels.com/photos/1537635/pexels-photo-1537635.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Family">
+                <img src="https://images.pexels.com/photos/1537635/pexels-photo-1537635.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Семейна вечеря">
                 <div class="overlay">
                     <span class="cap-number">6</span>
                     <h3>Семейство</h3>
                     <p>Маса за шестима</p>
                 </div>
             </div>
-        </div>
+        </button>
 
-        <div class="category-item js-table-filter" data-min-cap="8" data-max-cap="10">
+        <button class="category-item js-table-filter" data-min-cap="8" data-max-cap="10" type="button" aria-label="Покажи маси за голяма компания">
             <div class="img-wrapper">
-                <img src="https://images.pexels.com/photos/3184183/pexels-photo-3184183.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Party">
+                <img src="https://images.pexels.com/photos/3184183/pexels-photo-3184183.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Празнична вечеря">
                 <div class="overlay">
                     <span class="cap-number">8+</span>
                     <h3>Празненство</h3>
                     <p>От 8 до 10 места</p>
                 </div>
             </div>
-        </div>
+        </button>
 
     </div>
 

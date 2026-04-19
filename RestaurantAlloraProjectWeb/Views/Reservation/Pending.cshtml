@@ -103,7 +103,11 @@
                                             <form asp-action="Approve" method="post">
                                                 @Html.AntiForgeryToken()
                                                 <input type="hidden" name="id" value="@reservation.ReservationId" />
-                                                <button type="submit" class="btn btn-sm btn-success">Одобри</button>
+                                                <button type="submit"
+                                                        class="btn btn-sm btn-success"
+                                                        data-confirm="Да одобрим ли тази резервация?">
+                                                    Одобри
+                                                </button>
                                             </form>
                                         }
 
@@ -112,7 +116,11 @@
                                             <form asp-action="Reject" method="post">
                                                 @Html.AntiForgeryToken()
                                                 <input type="hidden" name="id" value="@reservation.ReservationId" />
-                                                <button type="submit" class="btn btn-sm btn-danger">Откажи</button>
+                                                <button type="submit"
+                                                        class="btn btn-sm btn-danger"
+                                                        data-confirm="Да откажем ли тази резервация?">
+                                                    Откажи
+                                                </button>
                                             </form>
                                         }
                                     </div>

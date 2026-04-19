@@ -27,7 +27,7 @@ namespace RestaurantAlloraProjectViewModels.Dish
         [Display(Name = "Снимка")]
         public IFormFile? Picture { get; set; }
 
-        [Display(Name = "Image URL")]
+        [Display(Name = "URL на снимка")]
         public string? ImageUrl { get; set; }
 
         public List<Guid> SelectedAllergenIds { get; set; } = new();

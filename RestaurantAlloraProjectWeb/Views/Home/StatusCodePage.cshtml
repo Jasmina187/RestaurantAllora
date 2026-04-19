@@ -1,0 +1,18 @@
+@{
+    var code = ViewData["StatusCode"] as int? ?? Context.Response.StatusCode;
+    ViewData["Title"] = code == 404 ? "Страницата не е намерена" : "Възникна проблем";
+}
+
+<section class="status-page">
+    <span class="menu-eyebrow">Ресторант Allora</span>
+    <h1>@(code == 404 ? "Тази страница не е намерена." : "Възникна проблем.")</h1>
+    <p>
+        @(code == 404
+            ? "Адресът може да е променен или страницата вече да не съществува."
+            : "Заявката не можа да бъде обработена. Опитайте отново след малко.")
+    </p>
+    <div class="status-actions">
+        <a asp-controller="Home" asp-action="Index" class="status-action">Към началото</a>
+        <a asp-controller="Dish" asp-action="Index" class="status-action status-action-secondary">Към менюто</a>
+    </div>
+</section>

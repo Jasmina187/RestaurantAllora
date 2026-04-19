@@ -9,6 +9,17 @@
         .Distinct()
         .OrderBy(c => c)
         .ToList();
+
+    var allergenFilters = Model
+        .SelectMany(d => d.AllergenNames)
+        .Select(a =>
+        {
+            var separatorIndex = a.IndexOf(':');
+            return separatorIndex > 0 ? a[..separatorIndex] : a;
+        })
+        .Distinct(StringComparer.OrdinalIgnoreCase)
+        .OrderBy(a => a)
+        .ToList();
 }
 
 @functions {
@@ -48,7 +59,7 @@
     <div class="menu-layout">
         <div class="menu-main">
             <div class="menu-heading">
-                <span class="menu-eyebrow">Restaurant Allora</span>
+                <span class="menu-eyebrow">Ресторант Allora</span>
                 <h1 class="allora-title">Онлайн поръчка</h1>
                 <p class="menu-lead">Свежи салати, основни ястия и десерти за масата или за вкъщи.</p>
             </div>
@@ -66,10 +77,28 @@
                 }
             </div>
 
+            <div class="menu-safety-filter">
+                <label for="clientAllergenFilter">Филтър за алергени</label>
+                <select id="clientAllergenFilter" class="form-select menu-index-control">
+                    <option value="">Всички ястия</option>
+                    <option value="no-allergens">Само без отбелязани алергени</option>
+                    @foreach (var allergen in allergenFilters)
+                    {
+                        <option value="@allergen.ToLowerInvariant()">Без @allergen</option>
+                    }
+                </select>
+            </div>
+
+            <p class="menu-filter-empty d-none" id="clientMenuFilterEmpty">Няма ястия по избраните филтри.</p>
+
             <div class="dishes-grid">
                 @foreach (var dish in Model)
                 {
-                    <article class="dish-card" data-category="@dish.CategoryOfTheDish">
+                    var allergenData = string.Join("|", dish.AllergenNames.Select(GetAllergenLabel).Select(a => a.ToLowerInvariant()));
+
+                    <article class="dish-card"
+                             data-category="@dish.CategoryOfTheDish"
+                             data-allergens="@allergenData">
                         <div class="dish-img-wrapper">
                             <img src="@dish.ImageUrl" alt="@dish.NameOfTheDish" loading="lazy">
                         </div>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bg">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,26 +9,37 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/RestaurantAlloraProjectWeb.styles.css" asp-append-version="true" />
 
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
 </head>
 <body class="@ViewData["BodyClass"]">
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">RestaurantAllora</a>
+    <header class="site-header">
+        <nav class="navbar navbar-expand-lg allora-navbar">
+            <div class="container-fluid allora-nav-inner">
+                <a class="navbar-brand allora-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <span class="brand-mark">A</span>
+                    <span class="brand-copy">
+                        <span class="brand-name">Allora</span>
+                        <span class="brand-note">ресторант</span>
+                    </span>
+                </a>
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler allora-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Превключи навигацията">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="navbar-collapse collapse allora-nav-collapse">
+                    <ul class="navbar-nav allora-main-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Contacts">
+                                Контакти
+                            </a>
+                        </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Dish" asp-action="Index">
-                                Меню
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Faq">
+                                Въпроси
                             </a>
                         </li>
 
@@ -37,31 +48,31 @@
                             @if (User.IsInRole("Customer"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Dish" asp-action="ClientMenu">
+                                    <a class="nav-link nav-link-highlight" asp-area="" asp-controller="Dish" asp-action="ClientMenu">
                                         Онлайн поръчка
                                     </a>
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="Table" asp-action="ChooseTable">
+                                    <a class="nav-link" asp-controller="Table" asp-action="ChooseTable">
                                         Избери маса
                                     </a>
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="Reservation" asp-action="Index">
+                                    <a class="nav-link" asp-controller="Reservation" asp-action="Index">
                                         Моите резервации
                                     </a>
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="CustomerFavorite" asp-action="Index">
+                                    <a class="nav-link" asp-controller="CustomerFavorite" asp-action="Index">
                                         Любими ястия
                                     </a>
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="Index">
+                                    <a class="nav-link" asp-area="" asp-controller="Order" asp-action="Index">
                                         Моите поръчки
                                     </a>
                                 </li>
@@ -70,19 +81,25 @@
                             @if (User.IsInRole("Admin") || User.IsInRole("Employee"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="Table" asp-action="Index">
+                                    <a class="nav-link nav-link-highlight" asp-controller="Dashboard" asp-action="Index">
+                                        Табло
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Table" asp-action="Index">
                                         Управление на маси
                                     </a>
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="Reservation" asp-action="Pending">
+                                    <a class="nav-link" asp-controller="Reservation" asp-action="Pending">
                                         Чакащи резервации
                                     </a>
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="Order" asp-action="Manage">
+                                    <a class="nav-link" asp-controller="Order" asp-action="Manage">
                                         Поръчки
                                     </a>
                                 </li>
@@ -91,47 +108,119 @@
                             @if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Review" asp-action="Index">
+                                    <a class="nav-link" asp-area="" asp-controller="Review" asp-action="Index">
                                         Ревюта
                                     </a>
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="Category" asp-action="Index">
+                                    <a class="nav-link" asp-controller="Category" asp-action="Index">
                                         Категории
                                     </a>
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="User" asp-action="Manage">
+                                    <a class="nav-link" asp-controller="User" asp-action="Manage">
                                         Потребители
                                     </a>
                                 </li>
                             }
                         }
-
                     </ul>
-                </div>
 
-                <partial name="_LoginPartial" />
+                    <partial name="_LoginPartial" />
+                </div>
             </div>
         </nav>
     </header>
 
-    <div class="container">
-        <main role="main" class="pb-3">
+    <div class="container site-content">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="allora-footer mt-auto py-3">
-        <div class="container text-center">
-            <span class="text-muted">
-                &copy; 2026 - <span class="footer-brand">Allora</span> -
-                <a asp-area="" asp-controller="Home" asp-action="Privacy" class="footer-link">Privacy</a>
-            </span>
+    <footer class="allora-footer mt-auto">
+        <div class="container footer-grid">
+            <div>
+                <span class="footer-brand">Allora</span>
+                <p class="footer-copy">Вечеря, резервации и поръчки с повече настроение.</p>
+            </div>
+            <div class="footer-links">
+                <a asp-area="" asp-controller="Home" asp-action="Contacts" class="footer-link">Контакти</a>
+                <a asp-area="" asp-controller="Home" asp-action="Faq" class="footer-link">Въпроси</a>
+                <a asp-area="" asp-controller="Home" asp-action="Privacy" class="footer-link">Поверителност</a>
+            </div>
         </div>
     </footer>
+
+    @{
+        var toastKeys = new[]
+        {
+            "Success",
+            "CategorySuccess",
+            "CategoryError",
+            "OrderSuccess",
+            "OrderError",
+            "OrderStatusSuccess",
+            "OrderStatusError",
+            "ReservationSuccess",
+            "ReservationError",
+            "UserSuccess",
+            "UserError",
+            "ReviewSuccess",
+            "ReviewError",
+            "FavoriteSuccess",
+            "FavoriteError"
+        };
+
+        var toastMessages = new List<(string Text, bool IsError)>();
+
+        foreach (var key in toastKeys)
+        {
+            if (TempData[key] is string message && !string.IsNullOrWhiteSpace(message))
+            {
+                toastMessages.Add((message, key.Contains("Error")));
+            }
+        }
+    }
+
+    @if (toastMessages.Count > 0)
+    {
+        <div class="toast-container position-fixed top-0 end-0 p-3 allora-toast-stack">
+            @foreach (var toast in toastMessages)
+            {
+                <div class="toast allora-toast @(toast.IsError ? "allora-toast-error" : "allora-toast-success")" role="status" aria-live="polite" aria-atomic="true">
+                    <div class="toast-body">
+                        <span class="allora-toast-dot"></span>
+                        <span>@toast.Text</span>
+                        <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="toast" aria-label="Затвори"></button>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <div class="modal fade allora-confirm-modal" id="alloraConfirmModal" tabindex="-1" aria-labelledby="alloraConfirmTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div>
+                        <p class="modal-kicker">Allora</p>
+                        <h2 class="modal-title" id="alloraConfirmTitle">Потвърждение</h2>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Затвори"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="alloraConfirmMessage">Сигурни ли сте?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn allora-confirm-cancel" data-bs-dismiss="modal">Отказ</button>
+                    <button type="button" class="btn allora-confirm-accept" id="alloraConfirmAccept">Потвърди</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

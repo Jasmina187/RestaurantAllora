@@ -1,14 +1,9 @@
 @using RestaurantAlloraProjectViewModels.Reservation
 @model ReservationCreateViewModel
 
-@{
-    var selectedTable = Model.Tables.FirstOrDefault(table => table.Value == Model.TableId.ToString());
-    var selectedCapacity = selectedTable?.Capacity;
-}
-
 <section class="reservation-create">
     <div class="reservation-create-header">
-        <p class="reservation-eyebrow">Allora reservations</p>
+        <p class="reservation-eyebrow">Резервации Allora</p>
         <h2>Нова резервация</h2>
         <p>Изберете удобен час, брой гости и маса. Резервацията ще бъде потвърдена от нашия екип.</p>
     </div>
@@ -50,9 +45,8 @@
 
         <div class="reservation-actions">
             <button type="submit" class="btn reservation-submit">Запази</button>
-            <a asp-controller="Table"
-               asp-action="ChooseTable"
-               asp-route-capacity="@selectedCapacity"
+            <a asp-controller="Reservation"
+               asp-action="Index"
                class="btn reservation-back">Назад</a>
         </div>
     </form>

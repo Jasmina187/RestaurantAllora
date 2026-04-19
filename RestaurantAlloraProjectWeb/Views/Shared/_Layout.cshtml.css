@@ -3,24 +3,18 @@ for details on configuring this project to bundle and minify static web assets. 
 
 a.navbar-brand {
   white-space: normal;
-  text-align: center;
-  word-break: break-all;
 }
 
 a {
-  color: #0077cc;
+  color: inherit;
 }
 
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
-}
-
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+.btn-primary,
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+  background-color: var(--gold-accent);
+  border-color: var(--gold-accent);
+  color: #10100c;
 }
 
 .border-top {
@@ -40,9 +34,6 @@ button.accept-policy {
 }
 
 .footer {
-  position: absolute;
-  bottom: 0;
   width: 100%;
-  white-space: nowrap;
-  line-height: 60px;
+  white-space: normal;
 }

@@ -1,29 +1,33 @@
 @using RestaurantAlloraProject.ViewModels.User
 @model RegisterViewModel
 
-<h1 class="text-center">Register</h1>
+@{
+    ViewData["BodyClass"] = "auth-page";
+}
+
+<h1 class="text-center">Регистрация</h1>
 <div class="row">
     <div class="col-md-4 offset-md-4">
         <form asp-action="Register" id="registerForm" method="post">
             <hr />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="text-center mb-3">
-                <label asp-for="UserName">Username</label>
+                <label asp-for="UserName">Потребителско име</label>
                 <input class="form-control" autocomplete="username" aria-required="true" asp-for="UserName" />
                 <span asp-validation-for="UserName" class="text-danger"></span>
             </div>
             <div class="text-center mb-3">
-                <label asp-for="EmailAddress">Email</label>
+                <label asp-for="EmailAddress">Имейл</label>
                 <input class="form-control" autocomplete="email" aria-required="true" asp-for="EmailAddress" />
                 <span asp-validation-for="EmailAddress" class="text-danger"></span>
             </div>
             <div class="text-center mb-3">
-                <label asp-for="Password">Password</label>
+                <label asp-for="Password">Парола</label>
                 <input class="form-control" type="password" autocomplete="new-password" aria-required="true" asp-for="Password" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="text-center mb-3">
-                <label asp-for="ConfirmPassword">Confirm Password</label>
+                <label asp-for="ConfirmPassword">Потвърди паролата</label>
                 <input class="form-control" type="password" autocomplete="new-password" aria-required="true" asp-for="ConfirmPassword" />
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
@@ -32,12 +36,12 @@
                 <label class="form-check-label" for="show-register-passwords">Покажи паролите</label>
             </div>
             <div class="text-center mb-3">
-                <label asp-for="Role">Role</label>
+                <label asp-for="Role">Роля</label>
                 <select asp-for="Role" asp-items="ViewBag.Roles" class="form-select"></select>
                 <span asp-validation-for="Role" class="text-danger"></span>
             </div>
             <div class="text-center">
-                <button id="registerSubmit" type="submit" class="btn btn-primary">Register</button>
+                <button id="registerSubmit" type="submit" class="btn btn-primary">Регистрация</button>
             </div>
         </form>
     </div>

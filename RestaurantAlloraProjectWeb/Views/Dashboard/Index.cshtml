@@ -1,0 +1,145 @@
+@using RestaurantAlloraProjectViewModels.Dashboard
+@model AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Админ табло";
+}
+
+<section class="dashboard-page">
+    <div class="dashboard-hero">
+        <span class="menu-eyebrow">Управление Allora</span>
+        <h1 class="allora-title">Работно табло</h1>
+        <p>Бърз поглед към поръчки, резервации и най-търсените ястия.</p>
+    </div>
+
+    <div class="dashboard-metrics">
+        @foreach (var metric in Model.Metrics)
+        {
+            <article class="dashboard-metric dashboard-metric-@metric.Accent">
+                <span>@metric.Label</span>
+                <strong>@metric.Value</strong>
+                <p>@metric.Hint</p>
+            </article>
+        }
+    </div>
+
+    <div class="dashboard-grid">
+        <article class="dashboard-panel dashboard-panel-wide">
+            <div class="dashboard-panel-heading">
+                <h2>Последни поръчки</h2>
+                <a asp-controller="Order" asp-action="Manage">Всички поръчки</a>
+            </div>
+
+            @if (!Model.RecentOrders.Any())
+            {
+                <p class="dashboard-empty">Все още няма поръчки.</p>
+            }
+            else
+            {
+                <div class="dashboard-table-wrap">
+                    <table class="table dashboard-table">
+                        <thead>
+                            <tr>
+                                <th>№</th>
+                                <th>Клиент</th>
+                                <th>Дата</th>
+                                <th>Статус</th>
+                                <th>Сума</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model.RecentOrders)
+                            {
+                                <tr>
+                                    <td>@order.ShortId</td>
+                                    <td>@order.CustomerName</td>
+                                    <td>@order.OrderDate.ToString("dd.MM HH:mm")</td>
+                                    <td><span class="dashboard-badge">@order.Status</span></td>
+                                    <td>@order.TotalAmount.ToString("0.00") €</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </article>
+
+        <article class="dashboard-panel">
+            <div class="dashboard-panel-heading">
+                <h2>Статуси на поръчки</h2>
+            </div>
+
+            @if (!Model.OrderStatuses.Any())
+            {
+                <p class="dashboard-empty">Няма данни.</p>
+            }
+            else
+            {
+                <div class="dashboard-status-list">
+                    @foreach (var status in Model.OrderStatuses)
+                    {
+                        <div>
+                            <span>@status.Status</span>
+                            <strong>@status.Count</strong>
+                        </div>
+                    }
+                </div>
+            }
+        </article>
+
+        <article class="dashboard-panel">
+            <div class="dashboard-panel-heading">
+                <h2>Предстоящи резервации</h2>
+                <a asp-controller="Reservation" asp-action="Pending">Управление</a>
+            </div>
+
+            @if (!Model.UpcomingReservations.Any())
+            {
+                <p class="dashboard-empty">Няма предстоящи резервации.</p>
+            }
+            else
+            {
+                <div class="dashboard-list">
+                    @foreach (var reservation in Model.UpcomingReservations)
+                    {
+                        <div class="dashboard-list-item">
+                            <div>
+                                <strong>@reservation.CustomerName</strong>
+                                <span>@reservation.ReservationDate.ToString("dd.MM.yyyy HH:mm")</span>
+                            </div>
+                            <p>Маса @reservation.TableNumber, @reservation.NumberOfGuests гости</p>
+                            <span class="dashboard-badge">@reservation.Status</span>
+                        </div>
+                    }
+                </div>
+            }
+        </article>
+
+        <article class="dashboard-panel">
+            <div class="dashboard-panel-heading">
+                <h2>Най-поръчвани ястия</h2>
+                <a asp-controller="Dish" asp-action="Index">Меню</a>
+            </div>
+
+            @if (!Model.PopularDishes.Any())
+            {
+                <p class="dashboard-empty">Няма натрупани продажби.</p>
+            }
+            else
+            {
+                <div class="dashboard-list">
+                    @foreach (var dish in Model.PopularDishes)
+                    {
+                        <div class="dashboard-list-item dashboard-list-item-inline">
+                            <div>
+                                <strong>@dish.DishName</strong>
+                                <span>@dish.Quantity порции</span>
+                            </div>
+                            <p>@dish.Revenue.ToString("0.00") €</p>
+                        </div>
+                    }
+                </div>
+            }
+        </article>
+    </div>
+</section>

@@ -10,6 +10,7 @@ using RestaurantAlloraProjectData;
 using RestaurantAlloraProjectData.Entities;
 using RestaurantAlloraProjectViewModels.Dish;
 using RestaurantAlloraProjectWeb.Contracts;
+using RestaurantAlloraProjectWeb.Helpers;
 using System.Threading.Tasks;
 
 namespace RestaurantAlloraProjectWeb.Controllers
@@ -39,7 +40,7 @@ namespace RestaurantAlloraProjectWeb.Controllers
         public async Task<IActionResult> Index()
         {
             var dishes = await _dishService.GetAllAsync();
-            return View(dishes);
+            return View(MenuDataSeeder.BalanceMenuDishes(dishes));
         }
 
         [AllowAnonymous]
@@ -47,7 +48,7 @@ namespace RestaurantAlloraProjectWeb.Controllers
         public async Task<IActionResult> ClientMenu()
         {
             var dishes = await _dishService.GetAllAsync();
-            return View(dishes);
+            return View(MenuDataSeeder.BalanceMenuDishes(dishes));
         }
 
         [HttpGet]
@@ -77,9 +78,9 @@ namespace RestaurantAlloraProjectWeb.Controllers
                     nameof(DishCreateViewModel.Picture));
             }
 
-            if (string.IsNullOrWhiteSpace(vm.ImageUrl) && (vm.Picture == null || vm.Picture.Length == 0))
+            if (ModelState.IsValid && string.IsNullOrWhiteSpace(vm.ImageUrl))
             {
-                ModelState.AddModelError(nameof(DishCreateViewModel.ImageUrl), "Качи снимка или въведи URL.");
+                ModelState.AddModelError(nameof(DishCreateViewModel.Picture), "Качи снимка за ястието.");
             }
 
             if (!ModelState.IsValid)
@@ -125,9 +126,9 @@ namespace RestaurantAlloraProjectWeb.Controllers
                     nameof(DishEditViewModel.Picture));
             }
 
-            if (string.IsNullOrWhiteSpace(vm.ImageUrl) && (vm.Picture == null || vm.Picture.Length == 0))
+            if (ModelState.IsValid && string.IsNullOrWhiteSpace(vm.ImageUrl))
             {
-                ModelState.AddModelError(nameof(DishEditViewModel.ImageUrl), "Качи снимка или въведи URL.");
+                ModelState.AddModelError(nameof(DishEditViewModel.Picture), "Качи снимка за ястието.");
             }
 
             if (!ModelState.IsValid)

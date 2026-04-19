@@ -33,6 +33,63 @@ public class ReviewServiceTests
     }
 
     [Fact]
+    public async Task GetAllReviewsAsync_ReturnsReviewsWithDishNamesOrderedByDate()
+    {
+        await using var context = TestDataFactory.CreateContext();
+        var category = TestDataFactory.CreateCategory();
+        var dish = TestDataFactory.CreateDish(category, "Чийзкейк");
+        context.Categories.Add(category);
+        context.Dishes.Add(dish);
+        context.Reviews.AddRange(
+            new Review { ReviewId = Guid.NewGuid(), CustomerId = Guid.NewGuid(), DishId = dish.DishId, Dish = dish, Rating = 3, CreatedOn = DateTime.UtcNow.AddDays(-1) },
+            new Review { ReviewId = Guid.NewGuid(), CustomerId = Guid.NewGuid(), DishId = dish.DishId, Dish = dish, Rating = 5, CreatedOn = DateTime.UtcNow });
+        await context.SaveChangesAsync();
+        var service = new ReviewService(context);
+
+        var reviews = (await service.GetAllReviewsAsync()).ToList();
+
+        Assert.Equal(5, reviews[0].Rating);
+        Assert.All(reviews, r => Assert.Equal("Чийзкейк", r.DishName));
+    }
+
+    [Fact]
+    public async Task GetAllReviewsPageAsync_ClampsPageAndReturnsMetadata()
+    {
+        await using var context = TestDataFactory.CreateContext();
+        var category = TestDataFactory.CreateCategory();
+        var dish = TestDataFactory.CreateDish(category, "Чийзкейк");
+        context.Categories.Add(category);
+        context.Dishes.Add(dish);
+        context.Reviews.AddRange(
+            new Review { ReviewId = Guid.NewGuid(), CustomerId = Guid.NewGuid(), DishId = dish.DishId, Dish = dish, Rating = 3 },
+            new Review { ReviewId = Guid.NewGuid(), CustomerId = Guid.NewGuid(), DishId = dish.DishId, Dish = dish, Rating = 5 });
+        await context.SaveChangesAsync();
+        var service = new ReviewService(context);
+
+        var page = await service.GetAllReviewsPageAsync(page: 10, pageSize: 1);
+
+        Assert.Equal(2, page.TotalReviews);
+        Assert.Equal(2, page.CurrentPage);
+        Assert.Single(page.Reviews);
+    }
+
+    [Fact]
+    public async Task GetDishReviewsAsync_ReturnsOnlyDishReviews()
+    {
+        await using var context = TestDataFactory.CreateContext();
+        var dishId = Guid.NewGuid();
+        context.Reviews.AddRange(
+            new Review { ReviewId = Guid.NewGuid(), CustomerId = Guid.NewGuid(), DishId = dishId, Rating = 5 },
+            new Review { ReviewId = Guid.NewGuid(), CustomerId = Guid.NewGuid(), DishId = Guid.NewGuid(), Rating = 1 });
+        await context.SaveChangesAsync();
+        var service = new ReviewService(context);
+
+        var review = Assert.Single(await service.GetDishReviewsAsync(dishId));
+
+        Assert.Equal(5, review.Rating);
+    }
+
+    [Fact]
     public async Task AddReviewAsync_UpdatesExistingReviewForSameDishAndCustomer()
     {
         await using var context = TestDataFactory.CreateContext();

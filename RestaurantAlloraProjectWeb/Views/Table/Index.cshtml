@@ -36,10 +36,8 @@ else
                     @if (User.IsInRole("Employee") || User.IsInRole("Admin"))
                     {
                         <td class="d-flex gap-2">
-                            <a asp-action="Edit" asp-route-id="@t.TableId" class="btn btn-sm btn-primary">Edit</a>
-
                             <form asp-action="Delete" asp-route-id="@t.TableId" method="post" class="inline-form">
-                                <button type="submit" class="btn btn-sm btn-danger" data-confirm="Сигурни ли сте?">Delete</button>
+                                <button type="submit" class="btn btn-sm btn-danger" data-confirm="Сигурни ли сте?">Изтрий</button>
                             </form>
                         </td>
                     }

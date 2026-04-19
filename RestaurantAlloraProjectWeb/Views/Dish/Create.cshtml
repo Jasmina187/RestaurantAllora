@@ -8,13 +8,13 @@
 <form asp-action="Create" method="post" asp-controller="Dish" enctype="multipart/form-data" class="dish-form-card">
 
     <div class="mb-3">
-        <label asp-for="@Model.NameOfTheDish" class="form-label">Name</label>
+        <label asp-for="@Model.NameOfTheDish" class="form-label">Име</label>
         <input asp-for="@Model.NameOfTheDish" class="form-control" />
         <span asp-validation-for="NameOfTheDish" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="@Model.DescriptionOfTheDish" class="form-label">Description</label>
+        <label asp-for="@Model.DescriptionOfTheDish" class="form-label">Описание</label>
         <textarea asp-for="@Model.DescriptionOfTheDish" class="form-control"></textarea>
         <span asp-validation-for="DescriptionOfTheDish" class="text-danger"></span>
     </div>
@@ -26,22 +26,17 @@
     </div>
 
     <div class="mb-3">
-        <label asp-for="@Model.CategoryOfTheDish" class="form-label">Category</label>
+        <label asp-for="@Model.CategoryOfTheDish" class="form-label">Категория</label>
         <select asp-for="@Model.CategoryOfTheDish" asp-items="ViewBag.Categories" class="form-select"></select>
     </div>
     <div class="mb-3">
-        <label asp-for="@Model.Picture" class="form-label">Upload image</label>
+        <label asp-for="@Model.Picture" class="form-label">Качи снимка</label>
         <input asp-for="@Model.Picture" type="file" accept="image/gif,image/jpeg,image/png,image/webp" class="form-control" />
         <span asp-validation-for="Picture" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="@Model.ImageUrl" class="form-label">Image URL</label>
-        <input asp-for="@Model.ImageUrl" class="form-control" placeholder="Optional if you upload an image" />
-        <span asp-validation-for="ImageUrl" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label class="form-label">Allergens</label> 
+        <label class="form-label">Алергени</label> 
         <select asp-for="SelectedAllergenIds"
                 asp-items="ViewBag.Allergens"
                 id="allergensSelect"
@@ -50,7 +45,7 @@
         </select>
     </div>
 
-    <button type="submit" class="btn btn-primary">Submit</button>
-    <a asp-controller="Dish" asp-action="Index" class="btn btn-secondary">Back</a>
+    <button type="submit" class="btn btn-primary">Запази</button>
+    <a asp-controller="Dish" asp-action="Index" class="btn btn-secondary">Назад</a>
 </form>
 

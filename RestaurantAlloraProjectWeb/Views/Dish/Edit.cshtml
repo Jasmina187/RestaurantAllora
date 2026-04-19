@@ -1,21 +1,22 @@
 ﻿@using RestaurantAlloraProjectViewModels.Dish
 @model DishEditViewModel
 
-<h2 class="text-black">Edit dish:</h2>
+<h2 class="dish-form-title">Редакция на ястие</h2>
 
-<form asp-action="Edit" method="post" asp-controller="Dish" enctype="multipart/form-data">
+<form asp-action="Edit" method="post" asp-controller="Dish" enctype="multipart/form-data" class="dish-form-card">
     @Html.AntiForgeryToken()
 
     <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="ImageUrl" />
 
     <div class="mb-3">
-        <label asp-for="NameOfTheDish" class="form-label">Name</label>
+        <label asp-for="NameOfTheDish" class="form-label">Име</label>
         <input asp-for="NameOfTheDish" class="form-control" />
         <span asp-validation-for="NameOfTheDish" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="DescriptionOfTheDish" class="form-label">Description</label>
+        <label asp-for="DescriptionOfTheDish" class="form-label">Описание</label>
         <textarea asp-for="DescriptionOfTheDish" class="form-control"></textarea>
         <span asp-validation-for="DescriptionOfTheDish" class="text-danger"></span>
     </div>
@@ -27,7 +28,7 @@
     </div>
 
     <div class="mb-3">
-        <label asp-for="CategoryOfTheDish" class="form-label">Category</label>
+        <label asp-for="CategoryOfTheDish" class="form-label">Категория</label>
         <select asp-for="CategoryOfTheDish" asp-items="ViewBag.Categories" class="form-select"></select>
         <span asp-validation-for="CategoryOfTheDish" class="text-danger"></span>
     </div>
@@ -40,19 +41,13 @@
     }
 
     <div class="mb-3">
-        <label asp-for="Picture" class="form-label">Upload new image</label>
+        <label asp-for="Picture" class="form-label">Качи нова снимка</label>
         <input asp-for="Picture" type="file" accept="image/gif,image/jpeg,image/png,image/webp" class="form-control" />
         <span asp-validation-for="Picture" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="ImageUrl" class="form-label">Image URL</label>
-        <input asp-for="ImageUrl" class="form-control" />
-        <span asp-validation-for="ImageUrl" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Allergens</label>
+        <label class="form-label">Алергени</label>
         <select asp-for="SelectedAllergenIds"
                 asp-items="ViewBag.Allergens"
                 id="allergensSelect"
@@ -62,7 +57,7 @@
         <span asp-validation-for="SelectedAllergenIds" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">Save</button>
-    <a asp-controller="Dish" asp-action="Index" class="btn btn-secondary">Back</a>
+    <button type="submit" class="btn btn-primary">Запази</button>
+    <a asp-controller="Dish" asp-action="Index" class="btn btn-secondary">Назад</a>
 </form>
 

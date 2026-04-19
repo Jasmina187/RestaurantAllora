@@ -1,4 +1,4 @@
-    using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using RestaurantAlloraProjectWeb.Models;
 using System.Diagnostics;
 
@@ -19,6 +19,25 @@ namespace RestaurantAlloraProjectWeb.Controllers
         {
             return View();
         }
+
+        public IActionResult Contacts()
+        {
+            return View();
+        }
+
+        public IActionResult Faq()
+        {
+            return View();
+        }
+
+        public IActionResult StatusCodePage(int code)
+        {
+            Response.StatusCode = code;
+            ViewData["StatusCode"] = code;
+
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

@@ -6,6 +6,7 @@ namespace RestaurantAlloraProject.ViewModels.User
     {
         [Required(ErrorMessage = "Имейл адресът е задължителен.")]
         [EmailAddress(ErrorMessage = "Моля въведете валиден имейл адрес.")]
+        [Display(Name = "Имейл")]
         public string EmailAddress { get; set; } = string.Empty;
     }
 }

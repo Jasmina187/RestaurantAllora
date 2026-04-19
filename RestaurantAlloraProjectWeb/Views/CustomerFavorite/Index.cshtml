@@ -9,14 +9,17 @@
 <section class="favorites-page">
     <div class="favorites-heading">
         <div>
-            <span class="menu-eyebrow">Restaurant Allora</span>
+            <span class="menu-eyebrow">Ресторант Allora</span>
             <h1 class="allora-title">Моите любими ястия</h1>
             <p class="favorites-lead">Запази вкусовете, към които винаги се връщаш.</p>
         </div>
 
-        <a asp-controller="Dish" asp-action="Index" class="favorite-menu-link">
-            Разгледай менюто
-        </a>
+        @if (favorites.Any())
+        {
+            <a asp-controller="Dish" asp-action="Index" class="favorite-menu-link">
+                Разгледай менюто
+            </a>
+        }
     </div>
 
     @if (!favorites.Any())

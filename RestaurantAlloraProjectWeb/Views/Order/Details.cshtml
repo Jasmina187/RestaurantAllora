@@ -13,6 +13,9 @@
         "Готова" => "bg-primary",
         _ => "bg-info text-dark"
     };
+    var statusSteps = new[] { "Обработва се", "Приета", "Приготвя се", "Готова", "Доставена" };
+    var currentStatusIndex = Array.IndexOf(statusSteps, Model.Status);
+    var isCanceled = Model.Status == "Отказана";
 }
 
 <div class="container mt-5 order-page">
@@ -43,6 +46,35 @@
         </div>
 
         <div class="card-body p-4">
+            @if (isCanceled)
+            {
+                <div class="order-status-alert">
+                    <span></span>
+                    <div>
+                        <strong>Поръчката е отказана</strong>
+                        <p>Тази поръчка няма да бъде финализирана.</p>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="order-status-flow" aria-label="Статус на поръчката">
+                    @for (var index = 0; index < statusSteps.Length; index++)
+                    {
+                        var stepClass = currentStatusIndex > index
+                            ? "is-done"
+                            : currentStatusIndex == index
+                                ? "is-current"
+                                : string.Empty;
+
+                        <div class="order-status-step @stepClass">
+                            <span>@(index + 1)</span>
+                            <strong>@statusSteps[index]</strong>
+                        </div>
+                    }
+                </div>
+            }
+
             @if (isStaff)
             {
                 <div class="border rounded-3 p-3 mb-4 bg-light">

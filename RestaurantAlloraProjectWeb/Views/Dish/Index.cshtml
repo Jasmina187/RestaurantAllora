@@ -8,6 +8,17 @@
         .Distinct()
         .OrderBy(c => c)
         .ToList();
+
+    var allergenFilters = Model
+        .SelectMany(d => d.AllergenNames)
+        .Select(a =>
+        {
+            var separatorIndex = a.IndexOf(':');
+            return separatorIndex > 0 ? a[..separatorIndex] : a;
+        })
+        .Distinct(StringComparer.OrdinalIgnoreCase)
+        .OrderBy(a => a)
+        .ToList();
 }
 
 @functions {
@@ -45,7 +56,7 @@
 
 <section class="dish-index-page">
     <div class="menu-heading dish-index-heading">
-        <span class="menu-eyebrow">Restaurant Allora</span>
+        <span class="menu-eyebrow">Ресторант Allora</span>
         <h1 class="allora-title">Меню</h1>
     </div>
 
@@ -71,14 +82,30 @@
                 }
             </select>
         </div>
+        <div>
+            <label for="allergenFilter" class="form-label visually-hidden">Алергени</label>
+            <select id="allergenFilter" class="form-select menu-index-control">
+                <option value="">Всички алергени</option>
+                <option value="no-allergens">Само без отбелязани алергени</option>
+                @foreach (var allergen in allergenFilters)
+                {
+                    <option value="@allergen.ToLowerInvariant()">Без @allergen</option>
+                }
+            </select>
+        </div>
     </div>
+
+    <p class="menu-filter-empty d-none" id="menuFilterEmpty">Няма ястия по избраните филтри.</p>
 
     <div class="row g-4 menu-index-grid" id="menuContainer">
         @foreach (var dish in Model)
         {
+            var allergenData = string.Join("|", dish.AllergenNames.Select(GetAllergenLabel).Select(a => a.ToLowerInvariant()));
+
             <div class="col-md-6 col-xl-4 dish-card"
                  data-name="@dish.NameOfTheDish.ToLower()"
-                 data-category="@dish.CategoryOfTheDish">
+                 data-category="@dish.CategoryOfTheDish"
+                 data-allergens="@allergenData">
 
                 <article class="menu-index-card">
                     @if (!string.IsNullOrWhiteSpace(dish.ImageUrl))
