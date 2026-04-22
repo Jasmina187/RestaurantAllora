@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Lupin</title>
+  <circle cx="32" cy="32" r="30" fill="#f7f0ff"/>
+  <path d="M32 54V15" stroke="#5f3b8b" stroke-width="4" stroke-linecap="round"/>
+  <path d="M32 14c-8 5-10 11 0 16 10-5 8-11 0-16Zm-1 15c-10 2-13 8-5 15 10-1 12-8 5-15Zm2 0c10 2 13 8 5 15-10-1-12-8-5-15Z" fill="#b488df" stroke="#5f3b8b" stroke-width="2" stroke-linejoin="round"/>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Tree nuts</title>
+  <circle cx="32" cy="32" r="30" fill="#fff3e5"/>
+  <path d="M18 40c0-13 9-25 19-27 10 12 11 28 2 35-8 7-21 2-21-8Z" fill="#9b622f" stroke="#563015" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M28 23c4 5 5 14 1 22" stroke="#e0ae6b" stroke-width="3" stroke-linecap="round"/>
+  <path d="M38 13c5 4 8 9 9 14" stroke="#563015" stroke-width="3" stroke-linecap="round"/>
+</svg>

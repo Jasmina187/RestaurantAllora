@@ -27,12 +27,24 @@
         <div class="favorites-empty">
             <div class="favorites-empty-copy">
                 <span class="favorites-empty-kicker">Още няма фаворити</span>
-                <h2>Избери първото ястие, което си заслужава повторение.</h2>
-                <p>Отвори менюто и отбележи любимите си предложения.</p>
+                <h2>Запази ястията, към които искаш да се връщаш.</h2>
+                <p>Разгледай менюто и отбележи любимите си предложения. Те ще се появят тук за по-бърза следваща поръчка.</p>
+                <div class="favorites-empty-actions">
+                    <a asp-controller="Dish" asp-action="Index" class="favorite-primary-action">
+                        Разгледай менюто
+                    </a>
+                    <a asp-controller="Dish" asp-action="ClientMenu" class="favorite-secondary-action">
+                        Онлайн поръчка
+                    </a>
+                </div>
             </div>
-            <a asp-controller="Dish" asp-action="Index" class="favorite-primary-action">
-                Към менюто
-            </a>
+            <div class="favorites-empty-preview" aria-hidden="true">
+                <img src="~/img/allora-hero.jpg" alt="" class="favorites-empty-image" loading="lazy" />
+                <div class="favorites-empty-note">
+                    <span>Любимо</span>
+                    <strong>Първото ти ястие чака в менюто</strong>
+                </div>
+            </div>
         </div>
     }
     else

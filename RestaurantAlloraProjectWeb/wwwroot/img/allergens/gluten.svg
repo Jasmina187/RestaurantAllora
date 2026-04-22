@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Gluten</title>
+  <circle cx="32" cy="32" r="30" fill="#fff8e1"/>
+  <path d="M32 52V14" stroke="#6f4b18" stroke-width="4" stroke-linecap="round"/>
+  <path d="M30 20c-9 0-13 5-13 11 8 1 13-3 13-11Zm4 0c9 0 13 5 13 11-8 1-13-3-13-11ZM30 34c-8 0-12 4-12 10 7 1 12-3 12-10Zm4 0c8 0 12 4 12 10-7 1-12-3-12-10Z" fill="#d4a84d"/>
+</svg>

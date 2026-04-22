@@ -365,14 +365,19 @@ h3,
 }
 
 .favorites-empty {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 340px);
     align-items: center;
-    justify-content: space-between;
     gap: 24px;
     border: 1px solid #2e353c;
     border-radius: 8px;
     background: #151a1f;
+    overflow: hidden;
     padding: 28px;
+}
+
+.favorites-empty-copy {
+    max-width: 660px;
 }
 
 .favorites-empty-kicker {
@@ -385,13 +390,65 @@ h3,
     margin: 8px 0;
     color: #f3f0e8;
     font-family: 'Montserrat', sans-serif;
-    font-size: 1.35rem;
+    font-size: clamp(1.45rem, 2.4vw, 2.15rem);
     letter-spacing: 0;
+    line-height: 1.18;
 }
 
 .favorites-empty p {
     margin: 0;
     color: #aeb5bd;
+}
+
+.favorites-empty-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.favorites-empty-preview {
+    position: relative;
+    min-height: 260px;
+    overflow: hidden;
+    border: 1px solid rgba(244, 240, 230, 0.14);
+    border-radius: 8px;
+    background: #0b0c09;
+}
+
+.favorites-empty-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 260px;
+    object-fit: cover;
+    filter: saturate(1.05) contrast(1.03);
+}
+
+.favorites-empty-note {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    left: 14px;
+    display: grid;
+    gap: 4px;
+    border: 1px solid rgba(244, 240, 230, 0.18);
+    border-radius: 8px;
+    background: rgba(11, 12, 9, 0.82);
+    padding: 12px;
+}
+
+.favorites-empty-note span {
+    color: var(--olive-accent);
+    font-size: 0.72rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.favorites-empty-note strong {
+    color: #fff8eb;
+    font-size: 0.95rem;
+    line-height: 1.25;
 }
 
 @media (max-width: 1050px) {
@@ -404,7 +461,15 @@ h3,
     .favorites-heading,
     .favorites-empty {
         align-items: stretch;
-        flex-direction: column;
+    }
+
+    .favorites-empty {
+        grid-template-columns: 1fr;
+    }
+
+    .favorites-empty-preview,
+    .favorites-empty-image {
+        min-height: 210px;
     }
 
     .favorites-grid {

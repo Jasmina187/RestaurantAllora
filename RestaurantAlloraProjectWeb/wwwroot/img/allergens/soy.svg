@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Soy</title>
+  <circle cx="32" cy="32" r="30" fill="#f1ffe9"/>
+  <path d="M19 45c3-17 12-25 26-29" stroke="#4d8127" stroke-width="4" stroke-linecap="round"/>
+  <path d="M24 36c-10-2-13-8-10-15 10 1 14 6 10 15Zm8-8c-5-9-2-15 5-18 6 8 5 14-5 18Zm5 9c7-7 14-7 19-1-6 8-13 9-19 1Z" fill="#8fcf63" stroke="#4d8127" stroke-width="2" stroke-linejoin="round"/>
+</svg>
