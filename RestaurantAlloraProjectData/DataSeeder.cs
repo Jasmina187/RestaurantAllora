@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using RestaurantAlloraProjectData.Configurations;
 using RestaurantAlloraProjectData.Entities;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,36 @@ namespace RestaurantAlloraProjectData
 {
     public static class DataSeeder
     {
+        public static async Task SeedAllergensAsync(IServiceProvider serviceProvider)
+        {
+            var dbContext = serviceProvider.GetRequiredService<RestaurantAlloraProjectContext>();
+            var seedAllergens = AllergenConfiguration.Allergens();
+            var existingAllergens = await dbContext.Allergens.ToDictionaryAsync(a => a.AllergenId);
+            var hasChanges = false;
+
+            foreach (var seedAllergen in seedAllergens)
+            {
+                if (existingAllergens.TryGetValue(seedAllergen.AllergenId, out var existingAllergen))
+                {
+                    if (existingAllergen.AllergenName != seedAllergen.AllergenName)
+                    {
+                        existingAllergen.AllergenName = seedAllergen.AllergenName;
+                        hasChanges = true;
+                    }
+
+                    continue;
+                }
+
+                dbContext.Allergens.Add(seedAllergen);
+                hasChanges = true;
+            }
+
+            if (hasChanges)
+            {
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
         public static async Task SeedRolesAsync(IServiceProvider serviceProvider)
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();

@@ -13,10 +13,12 @@ namespace RestaurantAlloraProjectData.Configurations
     {
         public void Configure(EntityTypeBuilder<Allergen> builder)
         {
-
-            builder.HasData(Allergens());
+            builder.Property(a => a.AllergenName)
+                .IsRequired()
+                .HasMaxLength(300);
         }
-        public List<Allergen> Allergens()
+
+        public static List<Allergen> Allergens()
         {
             List<Allergen> allergens = new List<Allergen>()
                 {

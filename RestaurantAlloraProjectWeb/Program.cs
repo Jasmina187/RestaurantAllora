@@ -62,6 +62,7 @@ using (var scope = app.Services.CreateScope())
     await DataSeeder.SeedRolesAsync(scope.ServiceProvider);
     await DataSeeder.SeedAdminAsync(scope.ServiceProvider);
     await DataSeeder.SeedDemoUsersAsync(scope.ServiceProvider);
+    await DataSeeder.SeedAllergensAsync(scope.ServiceProvider);
     await MenuDataSeeder.SeedHappyMenuAsync(scope.ServiceProvider);
 }
 ;
