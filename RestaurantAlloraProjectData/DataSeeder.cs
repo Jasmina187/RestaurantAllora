@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using RestaurantAlloraProjectData.Entities;
 using System;
@@ -66,6 +67,84 @@ namespace RestaurantAlloraProjectData
                     );
                 }
             }
+        }
+
+        public static async Task SeedDemoUsersAsync(IServiceProvider serviceProvider)
+        {
+            await SeedUserAsync(
+                serviceProvider,
+                userName: "denis",
+                email: "denis@allora.bg",
+                firstName: "Denis",
+                role: "Employee",
+                password: "Denis1*");
+
+            await SeedUserAsync(
+                serviceProvider,
+                userName: "stoyan",
+                email: "stoyan@allora.bg",
+                firstName: "Stoyan",
+                role: "Customer",
+                password: "Stoyan1*");
+        }
+
+        private static async Task SeedUserAsync(
+            IServiceProvider serviceProvider,
+            string userName,
+            string email,
+            string firstName,
+            string role,
+            string password)
+        {
+            var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+            var dbContext = serviceProvider.GetRequiredService<RestaurantAlloraProjectContext>();
+
+            var user = await userManager.FindByNameAsync(userName);
+
+            if (user == null)
+            {
+                user = new User
+                {
+                    UserName = userName,
+                    Email = email,
+                    FirstName = firstName,
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    EmailConfirmed = true
+                };
+
+                var createResult = await userManager.CreateAsync(user, password);
+
+                if (!createResult.Succeeded)
+                {
+                    throw new Exception(
+                        $"{role} user creation failed: {string.Join(", ", createResult.Errors.Select(e => e.Description))}"
+                    );
+                }
+            }
+
+            if (!await userManager.IsInRoleAsync(user, role))
+            {
+                var roleResult = await userManager.AddToRoleAsync(user, role);
+
+                if (!roleResult.Succeeded)
+                {
+                    throw new Exception(
+                        $"Adding {role} role failed: {string.Join(", ", roleResult.Errors.Select(e => e.Description))}"
+                    );
+                }
+            }
+
+            if (role == "Customer" && !await dbContext.Set<CustomerProfile>().AnyAsync(cp => cp.UserId == user.Id))
+            {
+                dbContext.Set<CustomerProfile>().Add(new CustomerProfile { UserId = user.Id });
+            }
+
+            if (role == "Employee" && !await dbContext.Set<EmployeeProfile>().AnyAsync(ep => ep.UserId == user.Id))
+            {
+                dbContext.Set<EmployeeProfile>().Add(new EmployeeProfile { UserId = user.Id });
+            }
+
+            await dbContext.SaveChangesAsync();
         }
     }
 }

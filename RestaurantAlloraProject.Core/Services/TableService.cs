@@ -13,6 +13,11 @@ namespace RestaurantAlloraProject.Core.Services
 {
     public class TableService : ITableService
     {
+        private const int MinTableNumber = 1;
+        private const int MaxTableNumber = 500;
+        private const int MinTableCapacity = 1;
+        private const int MaxTableCapacity = 10;
+
         private static readonly string[] ApprovedReservationStatuses = { "Одобрена", "РћРґРѕР±СЂРµРЅР°" };
         private static readonly string[] PendingReservationStatuses = { "Очаква одобрение", "РћС‡Р°РєРІР° РѕРґРѕР±СЂРµРЅРёРµ" };
 
@@ -92,6 +97,8 @@ namespace RestaurantAlloraProject.Core.Services
         }
         public async Task CreateAsync(TableViewModel vm)
         {
+            ValidateTable(vm);
+
             bool tableExists = await _context.Tables.AnyAsync(t => t.TableNumber == vm.TableNumber);
             if (tableExists)
             {
@@ -109,6 +116,7 @@ namespace RestaurantAlloraProject.Core.Services
         }
         public async Task UpdateAsync(TableViewModel vm)
         {
+            ValidateTable(vm);
             
             bool tableExists = await _context.Tables.AnyAsync(t => t.TableNumber == vm.TableNumber && t.TableId != vm.TableId);
             if (tableExists)
@@ -132,6 +140,19 @@ namespace RestaurantAlloraProject.Core.Services
             {
                 _context.Tables.Remove(table);
                 await _context.SaveChangesAsync();
+            }
+        }
+
+        private static void ValidateTable(TableViewModel vm)
+        {
+            if (vm.TableNumber < MinTableNumber || vm.TableNumber > MaxTableNumber)
+            {
+                throw new ArgumentException($"Номерът на масата трябва да бъде между {MinTableNumber} и {MaxTableNumber}.");
+            }
+
+            if (vm.CapacityOfTheTable < MinTableCapacity || vm.CapacityOfTheTable > MaxTableCapacity)
+            {
+                throw new ArgumentException($"Капацитетът на масата трябва да бъде между {MinTableCapacity} и {MaxTableCapacity} човека.");
             }
         }
     }

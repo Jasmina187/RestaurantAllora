@@ -6,11 +6,11 @@
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="mb-3">
         <label asp-for="TableNumber" class="form-label">Номер</label>
-        <input asp-for="TableNumber" class="form-control" />
+        <input asp-for="TableNumber" class="form-control" type="number" min="1" max="500" />
     </div>
     <div class="mb-3">
         <label asp-for="CapacityOfTheTable" class="form-label">Капацитет</label>
-        <input asp-for="CapacityOfTheTable" class="form-control" />
+        <input asp-for="CapacityOfTheTable" class="form-control" type="number" min="1" max="10" />
     </div>
     <div class="mb-3">
         <label asp-for="StatusOfTheTable" class="form-label">Статус</label>

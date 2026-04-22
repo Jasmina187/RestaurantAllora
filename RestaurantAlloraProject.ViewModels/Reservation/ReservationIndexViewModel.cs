@@ -12,7 +12,7 @@ namespace RestaurantAlloraProjectViewModels.Reservation
         public int TableNumber { get; set; }
 
         [Required(ErrorMessage = "Капацитетът на масата е задължителен.")]
-        [Range(1, 20, ErrorMessage = "Капацитетът на масата трябва да бъде между 1 и 20 човека.")]
+        [Range(1, ReservationCreateViewModel.MaxGuestCount, ErrorMessage = "Капацитетът на масата трябва да бъде между 1 и 10 човека.")]
         public int CapacityOfTheTable { get; set; }
 
         public string Status { get; set; } = "Очаква одобрение";
@@ -22,7 +22,7 @@ namespace RestaurantAlloraProjectViewModels.Reservation
         public DateTime ReservationDate { get; set; }
 
         [Required(ErrorMessage = "Броят гости е задължителен.")]
-        [Range(1, 20, ErrorMessage = "Броят гости трябва да бъде между 1 и 20.")]
+        [Range(1, ReservationCreateViewModel.MaxGuestCount, ErrorMessage = "Броят гости трябва да бъде между 1 и 10.")]
         public int NumberOfGuests { get; set; }
 
         public string StatusOfTheTable { get; set; } = "Свободна";

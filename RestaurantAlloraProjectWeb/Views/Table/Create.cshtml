@@ -5,13 +5,13 @@
 
     <div class="mb-3">
         <label asp-for="@Model.TableNumber" class="form-label">Номер</label>
-        <input asp-for="@Model.TableNumber" class="form-control" />
+        <input asp-for="@Model.TableNumber" class="form-control" type="number" min="1" max="500" />
         <span asp-validation-for="TableNumber" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="@Model.CapacityOfTheTable" class="form-label">Капацитет</label>
-        <input asp-for="@Model.CapacityOfTheTable" class="form-control" />
+        <input asp-for="@Model.CapacityOfTheTable" class="form-control" type="number" min="1" max="10" />
         <span asp-validation-for="CapacityOfTheTable" class="text-danger"></span>
     </div>
 

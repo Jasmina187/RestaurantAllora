@@ -329,6 +329,11 @@ namespace RestaurantAlloraProject.Core.Services
                 throw new ArgumentException("Моля, въведи валиден брой гости.");
             }
 
+            if (vm.NumberOfGuests > ReservationCreateViewModel.MaxGuestCount)
+            {
+                throw new ArgumentException($"Броят гости трябва да бъде между 1 и {ReservationCreateViewModel.MaxGuestCount}.");
+            }
+
             if (vm.ReservationDate < DateTime.Now)
             {
                 throw new ArgumentException("Не може да резервирате за минало време.");

@@ -20,7 +20,7 @@
     var reservationTimes = Enumerable.Range(0, 27)
         .Select(slot => TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(slot * 30)))
         .ToList();
-    var maxGuestCount = Model.Tables.Any() ? Model.Tables.Max(t => t.Capacity) : 20;
+    var maxGuestCount = Model.Tables.Any() ? Model.Tables.Max(t => t.Capacity) : ReservationCreateViewModel.MaxGuestCount;
 }
 
 <section class="reservation-create">

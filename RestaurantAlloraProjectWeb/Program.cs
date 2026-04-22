@@ -61,6 +61,7 @@ using (var scope = app.Services.CreateScope())
     await dbContext.Database.MigrateAsync();
     await DataSeeder.SeedRolesAsync(scope.ServiceProvider);
     await DataSeeder.SeedAdminAsync(scope.ServiceProvider);
+    await DataSeeder.SeedDemoUsersAsync(scope.ServiceProvider);
     await MenuDataSeeder.SeedHappyMenuAsync(scope.ServiceProvider);
 }
 ;

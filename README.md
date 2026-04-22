@@ -35,19 +35,6 @@ dotnet run --project .\RestaurantAlloraProjectWeb\RestaurantAlloraProjectWeb.csp
 
 При старт приложението изпълнява миграциите и seed-ва роли, администраторски профил и начално меню.
 
-## Важни файлове за изображения
-
-Статичните снимки и иконите за алергени са в:
-
-```text
-RestaurantAlloraProjectWeb/wwwroot/img/
-RestaurantAlloraProjectWeb/wwwroot/img/allergens/
-```
-
-Тези файлове трябва да бъдат commit-нати в Git. Ако липсват на друг компютър, няма да се показват иконите за алергени и снимките на началната страница.
-
-Снимките на ястията се пазят в базата като URL в колоната `Dishes.ImageUrl`. Cloudinary пази самите изображения, но списъкът с ястия и техните URL-и идва от SQL базата.
-
 ## Seed по подразбиране
 
 Проектът създава роли `Admin`, `Employee` и `Customer`, както и администраторски профил:
@@ -55,6 +42,11 @@ RestaurantAlloraProjectWeb/wwwroot/img/allergens/
 - Потребителско име: `admin`
 - Имейл: `admin@gmail.com`
 - Парола: `Admin1*`
+
+Demo акаунти за защита и тестване:
+
+- Employee: `denis` / `denis@allora.bg` / `Denis1*`
+- Customer: `stoyan` / `stoyan@allora.bg` / `Stoyan1*`
 
 Seed-ът за менюто добавя категории, ястия, описания, алергени и Cloudinary fetch URL-и. Ако друг лаптоп използва нова празна база, ще вижда само данните от seed-а, а не ръчно добавените ястия от твоята локална база.
 

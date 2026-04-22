@@ -158,7 +158,7 @@
         }
 
         guestsInput.min = guestsInput.dataset.defaultMin || "1";
-        guestsInput.max = guestsInput.dataset.defaultMax || "20";
+        guestsInput.max = guestsInput.dataset.defaultMax || "10";
         guestsInput.setCustomValidity("");
 
         return null;
