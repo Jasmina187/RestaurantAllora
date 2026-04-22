@@ -39,7 +39,7 @@
                 </div>
             </div>
             <div class="favorites-empty-preview" aria-hidden="true">
-                <img src="~/img/allora-hero.jpg" alt="" class="favorites-empty-image" loading="lazy" />
+                <img src="~/img/stek.png" alt="" class="favorites-empty-image" loading="lazy" asp-append-version="true" />
                 <div class="favorites-empty-note">
                     <span>Любимо</span>
                     <strong>Първото ти ястие чака в менюто</strong>
@@ -57,7 +57,7 @@
             @foreach (var dish in favorites.OrderByDescending(d => d.AddedOn))
             {
                 var imageUrl = string.IsNullOrWhiteSpace(dish.ImageUrl)
-                    ? Url.Content("~/img/allora-hero.jpg")
+                    ? Url.Content("~/img/stek.png")
                     : dish.ImageUrl;
 
                 <article class="favorite-card">

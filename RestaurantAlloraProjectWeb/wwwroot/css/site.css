@@ -2046,7 +2046,7 @@ textarea:focus-visible,
     height: auto;
     overflow: hidden;
     background:
-        linear-gradient(90deg, rgba(8, 9, 6, 0.98) 0%, rgba(8, 9, 6, 0.86) 44%, rgba(8, 9, 6, 0.48) 100%),
+        linear-gradient(180deg, rgba(8, 9, 6, 0.82), rgba(8, 9, 6, 0.9)),
         url("../img/allora-hero.jpg") center / cover no-repeat;
 }
 
@@ -2521,7 +2521,7 @@ textarea:focus-visible,
     min-height: auto;
     background:
         linear-gradient(180deg, rgba(9, 10, 8, 0.94), rgba(14, 14, 10, 0.98)),
-        url("../img/allora-hero.jpg") center / cover fixed;
+        url("../img/stek.png") center / cover fixed;
 }
 
 .table-choice-page {
@@ -2811,7 +2811,7 @@ textarea:focus-visible,
     grid-column: span 2;
     background:
         linear-gradient(145deg, rgba(24, 24, 20, 0.9), rgba(9, 10, 8, 0.94)),
-        url("../img/allora-hero.jpg") center / cover;
+        url("../img/stek.png") center / cover;
 }
 
 .info-kicker {
@@ -3119,7 +3119,7 @@ textarea:focus-visible,
     border-radius: var(--radius);
     background:
         linear-gradient(145deg, rgba(32, 32, 24, 0.96), rgba(9, 10, 8, 0.98)),
-        url("../img/allora-hero.jpg") center / cover;
+        url("../img/stek.png") center / cover;
     box-shadow: 0 32px 84px rgba(0, 0, 0, 0.44);
     padding: 2.4rem;
 }
