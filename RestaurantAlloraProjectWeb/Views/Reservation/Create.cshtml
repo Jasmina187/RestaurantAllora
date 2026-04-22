@@ -1,5 +1,27 @@
+@using System.Linq
 @using RestaurantAlloraProjectViewModels.Reservation
 @model ReservationCreateViewModel
+
+@{
+    var minReservationDateTime = DateTime.Now.AddMinutes(1);
+    var maxReservationDateTime = DateTime.Today
+        .AddDays(ReservationCreateViewModel.MaxAdvanceReservationDays)
+        .AddHours(21);
+    var firstReservationDate = minReservationDateTime.TimeOfDay > TimeSpan.FromHours(21)
+        ? minReservationDateTime.Date.AddDays(1)
+        : minReservationDateTime.Date;
+    var selectedReservationDate = NormalizeReservationDate(Model.ReservationDate, minReservationDateTime, maxReservationDateTime);
+    var selectedDateValue = selectedReservationDate.ToString("yyyy-MM-dd");
+    var selectedTimeValue = selectedReservationDate.ToString("HH:mm");
+    var reservationDateCount = (maxReservationDateTime.Date - firstReservationDate).Days + 1;
+    var reservationDates = Enumerable.Range(0, reservationDateCount)
+        .Select(offset => firstReservationDate.AddDays(offset))
+        .ToList();
+    var reservationTimes = Enumerable.Range(0, 27)
+        .Select(slot => TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(slot * 30)))
+        .ToList();
+    var maxGuestCount = Model.Tables.Any() ? Model.Tables.Max(t => t.Capacity) : 20;
+}
 
 <section class="reservation-create">
     <div class="reservation-create-header">
@@ -12,16 +34,51 @@
         <div asp-validation-summary="ModelOnly" class="reservation-validation"></div>
 
         <div class="reservation-form-grid">
-            <div class="reservation-field">
+            <div class="reservation-field reservation-field-wide">
                 <label asp-for="@Model.ReservationDate" class="form-label">Дата и час</label>
-                <input asp-for="ReservationDate" class="form-control" type="datetime-local"
-                       value="@Model.ReservationDate.ToString("yyyy-MM-ddTHH:mm")" />
+                <input asp-for="ReservationDate"
+                       type="hidden"
+                       value="@selectedReservationDate.ToString("yyyy-MM-ddTHH:mm")"
+                       data-min-datetime="@minReservationDateTime.ToString("yyyy-MM-ddTHH:mm")"
+                       data-max-datetime="@maxReservationDateTime.ToString("yyyy-MM-ddTHH:mm")" />
+                <div class="reservation-date-fields">
+                    <div class="reservation-date-time-field">
+                        <label for="ReservationDateOnly" class="form-label">Дата</label>
+                        <select id="ReservationDateOnly" class="form-select js-reservation-date-only">
+                            @foreach (var date in reservationDates)
+                            {
+                                var dateValue = date.ToString("yyyy-MM-dd");
+                                var dateText = date.ToString("dd.MM.yyyy");
+                                if (date.Date == DateTime.Today)
+                                {
+                                    dateText += " (днес)";
+                                }
+                                else if (date.Date == DateTime.Today.AddDays(1))
+                                {
+                                    dateText += " (утре)";
+                                }
+
+                                <option value="@dateValue" selected="@(dateValue == selectedDateValue)">@dateText</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="reservation-date-time-field">
+                        <label for="ReservationTimeOnly" class="form-label">Час</label>
+                        <select id="ReservationTimeOnly" class="form-select js-reservation-time-only">
+                            @foreach (var time in reservationTimes)
+                            {
+                                var timeValue = time.ToString(@"hh\:mm");
+                                <option value="@timeValue" selected="@(timeValue == selectedTimeValue)">@timeValue</option>
+                            }
+                        </select>
+                    </div>
+                </div>
                 <span asp-validation-for="ReservationDate" class="text-danger"></span>
             </div>
 
             <div class="reservation-field">
                 <label asp-for="@Model.NumberOfGuests" class="form-label">Брой гости</label>
-                <input asp-for="@Model.NumberOfGuests" class="form-control" min="1" max="20" />
+                <input asp-for="@Model.NumberOfGuests" class="form-control" min="1" max="@maxGuestCount" data-default-min="1" data-default-max="@maxGuestCount" />
                 <span asp-validation-for="NumberOfGuests" class="text-danger"></span>
             </div>
 
@@ -51,3 +108,54 @@
         </div>
     </form>
 </section>
+
+@functions {
+    private static DateTime NormalizeReservationDate(DateTime reservationDate, DateTime minDateTime, DateTime maxDateTime)
+    {
+        var normalized = reservationDate == default ? minDateTime : reservationDate;
+
+        if (normalized < minDateTime)
+        {
+            normalized = minDateTime;
+        }
+
+        if (normalized > maxDateTime)
+        {
+            normalized = maxDateTime;
+        }
+
+        normalized = RoundUpToNextHalfHour(normalized);
+
+        if (normalized.Hour < 8)
+        {
+            normalized = normalized.Date.AddHours(8);
+        }
+
+        if (normalized.Hour > 21 || (normalized.Hour == 21 && normalized.Minute > 0))
+        {
+            normalized = normalized.Date.AddDays(1).AddHours(8);
+        }
+
+        if (normalized > maxDateTime)
+        {
+            normalized = maxDateTime.Date.AddHours(21);
+        }
+
+        return normalized;
+    }
+
+    private static DateTime RoundUpToNextHalfHour(DateTime value)
+    {
+        var minutesToAdd = (30 - value.Minute % 30) % 30;
+
+        if ((value.Second > 0 || value.Millisecond > 0) && minutesToAdd == 0)
+        {
+            minutesToAdd = 30;
+        }
+
+        return value
+            .AddMinutes(minutesToAdd)
+            .AddSeconds(-value.Second)
+            .AddMilliseconds(-value.Millisecond);
+    }
+}

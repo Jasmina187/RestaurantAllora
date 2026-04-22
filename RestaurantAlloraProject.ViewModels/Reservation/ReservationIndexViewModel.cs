@@ -8,7 +8,7 @@ namespace RestaurantAlloraProjectViewModels.Reservation
         public Guid ReservationId { get; set; }
 
         [Required(ErrorMessage = "Номерът на масата е задължителен.")]
-        [Range(1, 100, ErrorMessage = "Номерът на масата трябва да бъде между 1 и 100.")]
+        [Range(1, 500, ErrorMessage = "Номерът на масата трябва да бъде между 1 и 500.")]
         public int TableNumber { get; set; }
 
         [Required(ErrorMessage = "Капацитетът на масата е задължителен.")]

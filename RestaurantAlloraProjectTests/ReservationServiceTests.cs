@@ -122,7 +122,7 @@ public class ReservationServiceTests
         await service.CreateReservationAsync(new ReservationCreateViewModel
         {
             TableId = table.TableId,
-            NumberOfGuests = 2,
+            NumberOfGuests = 3,
             ReservationDate = DateTime.Now.AddDays(2).Date.AddHours(19)
         }, customerId);
 
@@ -130,6 +130,34 @@ public class ReservationServiceTests
         Assert.Equal(table.TableId, reservation.TableId);
         Assert.Equal("Очаква одобрение", reservation.Status);
         Assert.True(await context.Set<CustomerProfile>().AnyAsync(cp => cp.UserId == customerId));
+    }
+
+    [Fact]
+    public async Task CreateReservationAsync_RejectsGuestCountOutsideSelectedTableRange()
+    {
+        await using var context = TestDataFactory.CreateContext();
+        var familyTable = TestDataFactory.CreateTable(capacity: 6);
+        var partyTable = TestDataFactory.CreateTable(number: 2, capacity: 10);
+        context.Tables.AddRange(familyTable, partyTable);
+        await context.SaveChangesAsync();
+        var service = new ReservationService(context);
+        var reservationDate = DateTime.Now.AddDays(2).Date.AddHours(19);
+
+        await Assert.ThrowsAsync<ArgumentException>(() => service.CreateReservationAsync(new ReservationCreateViewModel
+        {
+            TableId = familyTable.TableId,
+            NumberOfGuests = 4,
+            ReservationDate = reservationDate
+        }, Guid.NewGuid()));
+
+        await service.CreateReservationAsync(new ReservationCreateViewModel
+        {
+            TableId = partyTable.TableId,
+            NumberOfGuests = 8,
+            ReservationDate = reservationDate
+        }, Guid.NewGuid());
+
+        Assert.Single(context.Reservations);
     }
 
     [Fact]
@@ -151,6 +179,12 @@ public class ReservationServiceTests
         {
             NumberOfGuests = 1,
             ReservationDate = DateTime.Now.AddDays(-1)
+        }, Guid.NewGuid()));
+
+        await Assert.ThrowsAsync<ArgumentException>(() => service.CreateReservationAsync(new ReservationCreateViewModel
+        {
+            NumberOfGuests = 1,
+            ReservationDate = DateTime.Today.AddDays(ReservationCreateViewModel.MaxAdvanceReservationDays + 1).AddHours(18)
         }, Guid.NewGuid()));
 
         await Assert.ThrowsAsync<ArgumentException>(() => service.CreateReservationAsync(new ReservationCreateViewModel
@@ -377,7 +411,7 @@ public class ReservationServiceTests
         await Assert.ThrowsAsync<ArgumentException>(() => service.CreateReservationAsync(new ReservationCreateViewModel
         {
             TableId = table.TableId,
-            NumberOfGuests = 2,
+            NumberOfGuests = 3,
             ReservationDate = date.AddHours(1)
         }, Guid.NewGuid()));
     }

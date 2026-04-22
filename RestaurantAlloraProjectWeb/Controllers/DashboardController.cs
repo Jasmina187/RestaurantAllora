@@ -47,8 +47,17 @@ namespace RestaurantAlloraProjectWeb.Controllers
                 .AsNoTracking()
                 .CountAsync(order => ActiveOrderStatuses.Contains(order.Status));
 
+            var adminRoleIds = _context.Roles
+                .Where(role => role.NormalizedName == "ADMIN")
+                .Select(role => role.Id);
+            var adminUserIds = _context.UserRoles
+                .Where(userRole => adminRoleIds.Contains(userRole.RoleId))
+                .Select(userRole => userRole.UserId);
+
             var totalDishes = await _context.Dishes.AsNoTracking().CountAsync();
-            var totalUsers = await _context.Users.AsNoTracking().CountAsync();
+            var totalUsers = await _context.Users
+                .AsNoTracking()
+                .CountAsync(user => !adminUserIds.Contains(user.Id));
 
             var recentOrdersRaw = await _context.Orders
                 .AsNoTracking()

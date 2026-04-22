@@ -5,8 +5,6 @@
       <DataCollector friendlyName="XPlat Code Coverage">
         <Configuration>
           <Format>cobertura</Format>
-          <Include>[RestaurantAlloraProject.Core]*</Include>
-          <Exclude>[RestaurantAlloraProjectData]*,[RestaurantAlloraProjectViewModels]*,[RestaurantAlloraProjectTests]*</Exclude>
         </Configuration>
       </DataCollector>
     </DataCollectors>

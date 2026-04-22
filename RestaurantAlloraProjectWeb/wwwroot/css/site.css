@@ -414,12 +414,15 @@ h3,
 
 /* Dish create/edit */
 .dish-form-title {
-    margin-bottom: 18px;
+    max-width: 780px;
+    margin: 0 auto 18px;
     color: var(--gold-accent);
+    text-align: center;
 }
 
 .dish-form-card {
     max-width: 780px;
+    margin: 0 auto;
     border: 1px solid #2e353c;
     border-radius: 8px;
     background: #111417;
@@ -1577,6 +1580,12 @@ h3,
     gap: 1.1rem;
 }
 
+.reservation-date-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
 .reservation-field-wide {
     grid-column: 1 / -1;
 }
@@ -1706,6 +1715,10 @@ h3,
     }
 
     .reservation-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .reservation-date-fields {
         grid-template-columns: 1fr;
     }
 

@@ -163,6 +163,7 @@ namespace RestaurantAlloraProject.Core.Services
         public async Task CreateReservationAsync(ReservationCreateViewModel vm, Guid userId)
         {
             ValidateReservationInput(vm);
+            await ValidateSelectedTableGuestRangeAsync(vm);
 
             var availableTable = await FindAvailableTableAsync(vm);
 
@@ -267,6 +268,35 @@ namespace RestaurantAlloraProject.Core.Services
             }).ToList();
         }
 
+        private async Task ValidateSelectedTableGuestRangeAsync(ReservationCreateViewModel vm)
+        {
+            if (vm.TableId == Guid.Empty)
+            {
+                return;
+            }
+
+            var selectedTable = await _context.Tables
+                .AsNoTracking()
+                .FirstOrDefaultAsync(t => t.TableId == vm.TableId);
+
+            if (selectedTable == null)
+            {
+                throw new ArgumentException("Избраната маса не съществува.");
+            }
+
+            var guestRange = GetGuestRangeForCapacity(selectedTable.CapacityOfTheTable);
+
+            if (vm.NumberOfGuests < guestRange.MinGuests)
+            {
+                throw new ArgumentException($"Маса {selectedTable.TableNumber} приема {FormatGuestRange(guestRange)}. Избери маса според броя гости.");
+            }
+
+            if (vm.NumberOfGuests > guestRange.MaxGuests)
+            {
+                throw new ArgumentException($"Маса {selectedTable.TableNumber} приема {FormatGuestRange(guestRange)}. Избери по-голяма маса за {vm.NumberOfGuests} гости.");
+            }
+        }
+
         private IQueryable<Reservation> BuildReservationQuery()
         {
             return _context.Reservations
@@ -304,6 +334,12 @@ namespace RestaurantAlloraProject.Core.Services
                 throw new ArgumentException("Не може да резервирате за минало време.");
             }
 
+            var latestReservationDate = DateTime.Today.AddDays(ReservationCreateViewModel.MaxAdvanceReservationDays);
+            if (vm.ReservationDate.Date > latestReservationDate)
+            {
+                throw new ArgumentException($"Може да направите резервация най-много {ReservationCreateViewModel.MaxAdvanceReservationDays} дни напред.");
+            }
+
             if (vm.ReservationDate.Hour < 8)
             {
                 throw new ArgumentException("Ресторантът отваря в 08:00 ч.");
@@ -313,6 +349,41 @@ namespace RestaurantAlloraProject.Core.Services
             {
                 throw new ArgumentException("Резервацията е за 3 часа. Най-късният час за резервация е 21:00 ч.");
             }
+        }
+
+        private static (int MinGuests, int MaxGuests) GetGuestRangeForCapacity(int capacity)
+        {
+            if (capacity <= 2)
+            {
+                return (1, Math.Max(1, capacity));
+            }
+
+            if (capacity <= 4)
+            {
+                return (Math.Min(3, capacity), capacity);
+            }
+
+            if (capacity <= 6)
+            {
+                return (Math.Min(5, capacity), capacity);
+            }
+
+            if (capacity < 8)
+            {
+                return (capacity, capacity);
+            }
+
+            return (8, capacity);
+        }
+
+        private static string FormatGuestRange((int MinGuests, int MaxGuests) guestRange)
+        {
+            if (guestRange.MinGuests == guestRange.MaxGuests)
+            {
+                return guestRange.MaxGuests == 1 ? "1 гост" : $"{guestRange.MaxGuests} гости";
+            }
+
+            return $"между {guestRange.MinGuests} и {guestRange.MaxGuests} гости";
         }
 
         private async Task<Table?> FindAvailableTableAsync(ReservationCreateViewModel vm)

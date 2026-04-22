@@ -294,46 +294,36 @@ namespace RestaurantAlloraProjectWeb.Controllers
                 TempData["UserError"] = "Собственият профил не се управлява от този списък.";
                 return RedirectToAction(nameof(Manage));
             }
-
             if (!ManageableRoles.Contains(model.Role))
             {
                 ModelState.AddModelError(nameof(model.Role), "Невалидна роля.");
             }
-
             if (!ModelState.IsValid)
             {
                 ViewBag.Roles = new SelectList(ManageableRoles, model.Role);
                 return View(model);
             }
-
             var user = await userManager.FindByIdAsync(model.Id.ToString());
-
             if (user == null)
             {
                 return NotFound();
             }
-
             var currentRoles = await userManager.GetRolesAsync(user);
-
             if (currentRoles.Contains("Admin") && model.Role != "Admin" && await IsLastAdminAsync(user))
             {
                 ModelState.AddModelError(nameof(model.Role), "Не може да премахнете ролята на последния администратор.");
                 ViewBag.Roles = new SelectList(ManageableRoles, model.Role);
                 return View(model);
             }
-
             user.UserName = model.UserName.Trim();
             user.Email = model.Email.Trim();
-
             var updateResult = await userManager.UpdateAsync(user);
-
             if (!updateResult.Succeeded)
             {
                 AddIdentityErrors(updateResult);
                 ViewBag.Roles = new SelectList(ManageableRoles, model.Role);
                 return View(model);
             }
-
             if (currentRoles.Any())
             {
                 var removeResult = await userManager.RemoveFromRolesAsync(user, currentRoles);
@@ -345,16 +335,13 @@ namespace RestaurantAlloraProjectWeb.Controllers
                     return View(model);
                 }
             }
-
             var roleResult = await userManager.AddToRoleAsync(user, model.Role);
-
             if (!roleResult.Succeeded)
             {
                 AddIdentityErrors(roleResult);
                 ViewBag.Roles = new SelectList(ManageableRoles, model.Role);
                 return View(model);
             }
-
             TempData["UserSuccess"] = "Потребителят е обновен.";
             return RedirectToAction(nameof(Manage));
         }

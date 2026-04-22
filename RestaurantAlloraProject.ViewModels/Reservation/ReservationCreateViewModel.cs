@@ -6,6 +6,8 @@ namespace RestaurantAlloraProjectViewModels.Reservation
 {
     public class ReservationCreateViewModel
     {
+        public const int MaxAdvanceReservationDays = 90;
+
         public Guid TableId { get; set; }
 
         [Required(ErrorMessage = "Датата на резервацията е задължителна.")]

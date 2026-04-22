@@ -31,6 +31,7 @@ namespace RestaurantAlloraProjectWeb.Controllers
             ViewBag.SelectedCapacity = capacity;
             return View(tables);
         }
+
         [Authorize(Roles = "Admin,Employee")]
         [HttpGet]
         public IActionResult Create()

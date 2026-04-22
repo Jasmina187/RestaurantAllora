@@ -9,17 +9,17 @@
 <div class="row">
     <div class="col-md-4 offset-md-4">
         <section>
-            <form asp-action="LogIn" id="account" method="post">
+            <form asp-action="LogIn" id="account" method="post" autocomplete="off">
                 <hr />
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="text-center mb-3">
                     <label asp-for="UserName" class="form-label"></label>
-                    <input asp-for="UserName" class="form-control" autocomplete="username" aria-required="true" />
+                    <input asp-for="UserName" class="form-control" autocomplete="off" aria-required="true" readonly onfocus="this.removeAttribute('readonly')" />
                     <span asp-validation-for="UserName" class="text-danger"></span>
                 </div>
                 <div class="text-center mb-3">
                     <label asp-for="Password" class="form-label"></label>
-                    <input asp-for="Password" type="password" class="form-control" autocomplete="current-password" aria-required="true" />
+                    <input asp-for="Password" type="password" class="form-control" autocomplete="new-password" aria-required="true" readonly onfocus="this.removeAttribute('readonly')" />
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
                 <div class="form-check mb-3">
